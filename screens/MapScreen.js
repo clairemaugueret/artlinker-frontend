@@ -13,8 +13,8 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
 export default function MapScreen() {
-  // const dispatch = useDispatch();
-  // const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
 
   const [currentPosition, setCurrentPosition] = useState(null);
   const [tempCoordinates, setTempCoordinates] = useState(null);
@@ -33,45 +33,6 @@ export default function MapScreen() {
       }
     })();
   }, []);
-
-  const handleLongPress = (e) => {
-    setTempCoordinates(e.nativeEvent.coordinate);
-    setModalVisible(true);
-  };
-
-  const handleNewPlace = () => {
-    const data = {
-      nickname: user.nickname,
-      name: newPlace,
-      latitude: tempCoordinates.latitude,
-      longitude: tempCoordinates.longitude,
-    };
-    console.log(data);
-    fetch("https://locapic-two.vercel.app/places/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        data.result &&
-          dispatch(
-            addPlace({
-              name: newPlace,
-              latitude: tempCoordinates.latitude,
-              longitude: tempCoordinates.longitude,
-            })
-          );
-
-        setModalVisible(false);
-        setNewPlace("");
-      });
-  };
-
-  const handleClose = () => {
-    setModalVisible(false);
-    setNewPlace("");
-  };
 
   // useEffect(() => {
   //   fetch(`https://locapic-two.vercel.app/places/${user.nickname}`)
@@ -94,33 +55,6 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
-      <Modal visible={modalVisible} animationType="fade" transparent>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TextInput
-              placeholder="New place"
-              onChangeText={(value) => setNewPlace(value)}
-              value={newPlace}
-              style={styles.input}
-            />
-            <TouchableOpacity
-              onPress={() => handleNewPlace()}
-              style={styles.button}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.textButton}>Add</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleClose()}
-              style={styles.button}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.textButton}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
       <MapView
         onLongPress={(e) => handleLongPress(e)}
         mapType="hybrid"
@@ -151,25 +85,6 @@ const styles = StyleSheet.create({
   },
   map: {
     height: "55%",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalView: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 30,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
   input: {
     width: 150,
