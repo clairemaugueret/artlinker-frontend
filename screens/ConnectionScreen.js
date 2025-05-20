@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useState } from "react";
+import { login } from "../reducers/user";
 
 export default function ConnectionScreen() {
   const [email, setEmail] = useState("");
@@ -17,6 +18,30 @@ export default function ConnectionScreen() {
   const [lastname, setLastname] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  const handleConnection = () => {
+    fetch("http://localhost:3000/user/signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          dispatch(
+            login({
+              email: data.Email,
+              token: data.token,
+              firstname: data.firstname,
+              lastname: data.lastname,
+              favoriteItems: data.favoriteItems,
+            })
+          );
+          setEmail("");
+          setPassword("");
+        }
+      });
+  };
 
   return (
     <KeyboardAvoidingView
@@ -59,7 +84,6 @@ export default function ConnectionScreen() {
           style={styles.input}
           placeholder="Firstname"
           autoCapitalize="none"
-          keyboardType="firstname"
           textContentType="firstname"
           autoComplete="firstname"
         />
@@ -69,7 +93,6 @@ export default function ConnectionScreen() {
           style={styles.input}
           placeholder="Lastname"
           autoCapitalize="none"
-          keyboardType="lastname"
           textContentType="lasttname"
           autoComplete="lastname"
         />
@@ -78,10 +101,8 @@ export default function ConnectionScreen() {
           value={phoneNumber}
           style={styles.input}
           placeholder="Phone number"
-          autoCapitalize="none"
-          keyboardType="phone"
-          textContentType="phone"
-          autoComplete="phone"
+          keyboardType="phone-pad"
+          autoComplete="tel"
         />
         <TextInput
           onChangeText={(value) => setAddress(value)}
