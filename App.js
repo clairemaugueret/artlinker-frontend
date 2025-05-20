@@ -1,6 +1,9 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  createBottomTabNavigator,
+  createTopTabNavigator,
+} from "@react-navigation/bottom-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import AccountScreen from "./screens/AccountScreen";
 import MapScreen from "./screens/MapScreen";
@@ -15,6 +18,7 @@ const store = configureStore({
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const TabTop = createTopTabNavigator();
 
 const TabNavigator = () => {
   return (
