@@ -14,10 +14,15 @@ import {
 export default function SigninScreen({ navigation }) {
   return (
     <View>
-      <Text>Signin Screen</Text>
+      <Text>Home Screen</Text>
       <Button
-        title="Go to Home"
+        title="Go to Map"
         onPress={() => navigation.navigate("TabNavigator")}
+      />
+      <Text>Connection Screen</Text>
+      <Button
+        title="Go to Connection"
+        onPress={() => navigation.navigate("ConnectionScreen")}
       />
     </View>
   );

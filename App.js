@@ -84,6 +84,15 @@ export default function App() {
             name="TabNavigator"
             component={TabNavigator}
           />
+          <Stack.Screen
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: "ArtLinker",
+              headerRight: () => <Header navigation={navigation} />,
+            })}
+            name="ConnectionScreen"
+            component={ConnectionScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

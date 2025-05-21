@@ -17,8 +17,13 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Signin Screen</Text>
       <Button
-        title="Go to Home"
+        title="Go to Map"
         onPress={() => navigation.navigate("TabNavigator")}
+      />
+      <Text>Connection Screen</Text>
+      <Button
+        title="Go to Connection"
+        onPress={() => navigation.navigate("ConnectionScreen")}
       />
     </View>
   );
