@@ -12,10 +12,14 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 
-export default function AccountScreen() {
+export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Account Screen</Text>
+      <Text style={styles.title}>Signin Screen</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate("TabNavigator")}
+      />
     </View>
   );
 }
