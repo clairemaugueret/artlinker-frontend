@@ -1,5 +1,6 @@
 // RAPHAEL
 
+import { globalStyles } from "../globalStyles";
 import { useEffect, useState, useRef } from "react";
 import {
   Modal,
