@@ -57,7 +57,7 @@ export default function MapScreen() {
       })
         .then((response) => response.json())
         .then((data) => {
-          setFilteredData(data.artitemsList);
+          setFilteredData(data.placesList);
         });
     }
   }, [currentPosition]);
