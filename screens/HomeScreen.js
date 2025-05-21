@@ -15,10 +15,14 @@ import { useDispatch } from "react-redux";
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Signin Screen</Text>
+      <Text style={styles.title}>Home Screen</Text>
       <Button
-        title="Go to Home"
+        title="Go to Map"
         onPress={() => navigation.navigate("TabNavigator")}
+      />
+      <Button
+        title="Go to Screen"
+        onPress={() => navigation.navigate("Payment")}
       />
     </View>
   );
