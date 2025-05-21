@@ -1,30 +1,38 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  value: { nickname: null, places: [] },
+  value: {
+    email: "",
+    password: null,
+    firstname: "",
+    lastname: "",
+    favoriteItems: [],
+    hasSubcribed: false,
+    authorisedLoans: 0,
+    ongoingLoans: 0,
+  },
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    updateNickname: (state, action) => {
-      state.value.nickname = action.payload;
+    login: (state, action) => {
+      state.value.email = action.payload.email;
+      state.value.token = action.payload.token;
+      state.value.firstname = action.payload.firstname;
+      state.value.lastname = action.payload.lastname;
+      state.value.favoriteItems = action.payload.favoriteItems;
+      state.value.Subcribed = action.payload.Subcribed;
+      state.value.authorisedLoans = action.payload.authorisedLoans;
+      state.value.ongoingLoans = action.payload.ongoingLoans;
     },
-    addPlace: (state, action) => {
-      state.value.places.push(action.payload);
-    },
-    addPlaces: (state, action) => {
-      state.value.places = action.payload;
-    },
-    removePlace: (state, action) => {
-      state.value.places = state.value.places.filter(
-        (e) => e.name !== action.payload
-      );
-    },
+
+    // addPlaces: (state, action) => {
+    //   state.value.places = action.payload;
+    // },
   },
 });
 
-export const { updateNickname, addPlace, removePlace, addPlaces } =
-  userSlice.actions;
+export const { login } = userSlice.actions;
 export default userSlice.reducer;
