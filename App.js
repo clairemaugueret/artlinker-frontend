@@ -67,13 +67,18 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            options={({ navigation }) => ({
-              headerShown: false,
-              title: "ArtLinker",
-              headerRight: () => <Header navigation={navigation} />,
-            })}
             name="Home"
             component={HomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: "ArtLinker",
+              headerRight: () => <Header navigation={navigation} />, //à revoir car j'ai pas l'impression que ça revienne tout le temps à la page d'accueil, parfois ça revient juste en arrière
+            })}
+            name="TabNavigator"
+            component={TabNavigator}
           />
           <Stack.Screen
             options={({ navigation }) => ({
@@ -81,8 +86,17 @@ export default function App() {
               title: "ArtLinker",
               headerRight: () => <Header navigation={navigation} />,
             })}
-            name="TabNavigator"
-            component={TabNavigator}
+            name="Payment"
+            component={PaymentScreen}
+          />
+          <Stack.Screen
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: "ArtLinker",
+              headerRight: () => <Header navigation={navigation} />,
+            })}
+            name="ConnectionScreen"
+            component={ConnectionScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
