@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { globalStyles } from "../globalStyles";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 export default function SubScreen({ navigation }) {
@@ -55,17 +56,23 @@ export default function SubScreen({ navigation }) {
 
       {showTarifsNormal && (
         <View style={styles.tarifsContainer}>
-          <Text style={styles.tarifText}>
-            100 € / 1 œuvre tous les 3 mois (soit 4 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            100 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              1 œuvre tous les 3 mois (soit 4 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>
-            180 € / 2 œuvres tous les 3 mois (soit 8 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            180 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              2 œuvres tous les 3 mois (soit 8 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>
-            250 € / 3 œuvres tous les 3 mois (soit 12 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            250 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              3 œuvres tous les 3 mois (soit 12 œuvres différentes dans l'année)
+            </Text>
           </Text>
 
           <TouchableOpacity
@@ -83,17 +90,23 @@ export default function SubScreen({ navigation }) {
 
       {showTarifsSpecial && (
         <View style={styles.tarifsContainer}>
-          <Text style={styles.tarifText}>
-            75 € / 1 œuvre tous les 3 mois (soit 4 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            75 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              1 œuvre tous les 3 mois (soit 4 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>
-            130 € / 2 œuvres tous les 3 mois (soit 8 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            130 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              2 œuvres tous les 3 mois (soit 8 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>
-            180 € / 3 œuvres tous les 3 mois (soit 12 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            180 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              3 œuvres tous les 3 mois (soit 12 œuvres différentes dans l'année)
+            </Text>
           </Text>
 
           <TouchableOpacity
@@ -111,19 +124,27 @@ export default function SubScreen({ navigation }) {
 
       {showTarifsPublic && (
         <View style={styles.tarifsContainer}>
-          <Text style={styles.tarifText}>
-            350 € / 3 œuvre tous les 3 mois (soit 12 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            350 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              3 œuvre tous les 3 mois (soit 12 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>
-            420 € / 4 œuvres tous les 3 mois (soit 16 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            420 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              4 œuvres tous les 3 mois (soit 16 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>
-            500 € / 5 œuvres tous les 3 mois (soit 20 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            500 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              5 œuvres tous les 3 mois (soit 20 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>+100 € / œuvre supplémentaire</Text>
+          <Text style={globalStyles.lightred}>
+            +100 € / œuvre supplémentaire
+          </Text>
 
           <TouchableOpacity
             style={styles.validationButton}
@@ -140,19 +161,27 @@ export default function SubScreen({ navigation }) {
 
       {showTarifsBusiness && (
         <View style={styles.tarifsContainer}>
-          <Text style={styles.tarifText}>
-            500 € / 3 œuvre tous les 3 mois (soit 12 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            500 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              3 œuvre tous les 3 mois (soit 12 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>
-            600 € / 4 œuvres tous les 3 mois (soit 16 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            600 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              4 œuvres tous les 3 mois (soit 16 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>
-            700 € / 5 œuvres tous les 3 mois (soit 20 œuvres différentes dans
-            l'année)
+          <Text style={globalStyles.lightred}>
+            700 € ={" "}
+            <Text style={globalStyles.darkgray}>
+              5 œuvres tous les 3 mois (soit 20 œuvres différentes dans l'année)
+            </Text>
           </Text>
-          <Text style={styles.tarifText}>+130 € / œuvre supplémentaire</Text>
+          <Text style={globalStyles.lightred}>
+            +130 € / œuvre supplémentaire
+          </Text>
 
           <TouchableOpacity
             style={styles.validationButton}

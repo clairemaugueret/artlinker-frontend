@@ -24,6 +24,25 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/nunito/Nunito_300Light.ttf",
+            "node_modules/@expo-google-fonts/nunito/Nunito_400Regular.ttf",
+            "node_modules/@expo-google-fonts/nunito/Nunito_600SemiBold.ttf",
+            "node_modules/@expo-google-fonts/nunito/Nunito_700Bold.ttf",
+            "node_modules/@expo-google-fonts/montserrat/Montserrat_300Light.ttf",
+            "node_modules/@expo-google-fonts/montserrat/Montserrat_400Regular.ttf",
+            "node_modules/@expo-google-fonts/montserrat/Montserrat_600SemiBold.ttf",
+            "node_modules/@expo-google-fonts/montserrat/Montserrat_700Bold.ttf",
+            "node_modules/@expo-google-fonts/dosis/Dosis_400Regular.ttf",
+            "node_modules/@expo-google-fonts/dosis/Dosis_600SemiBold.ttf"
+          ]
+        }
+      ]
+    ]
   }
 }

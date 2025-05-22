@@ -17,6 +17,23 @@ import SubScreen from "./screens/SubScreen";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+import {
+  useFonts,
+  Dosis_400Regular,
+  Dosis_600SemiBold,
+} from "@expo-google-fonts/dosis";
+import {
+  Nunito_300Light,
+  Nunito_400Regular,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+} from "@expo-google-fonts/nunito";
+import {
+  Montserrat_300Light,
+  Montserrat_400Regular,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from "@expo-google-fonts/montserrat";
 
 const store = configureStore({
   reducer: { user },
@@ -67,6 +84,26 @@ const StackNavigator = () => {
 };
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    // Dosis
+    Dosis_400Regular,
+    Dosis_600SemiBold,
+    // Nunito
+    Nunito_300Light,
+    Nunito_400Regular,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    // Montserrat
+    Montserrat_300Light,
+    Montserrat_400Regular,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return null; // ou <View><ActivityIndicator /></View>
+  }
+
   return (
     <Provider store={store}>
       <NavigationContainer>
