@@ -13,12 +13,26 @@ import {
 
 export default function SubScreen({ navigation }) {
   return (
-    <View>
-      <Text>Sub Screen</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate("TabNavigator")}
-      />
+    <View style={styles.container}>
+      <Text style={styles.title}>Sub Screen</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  image: {
+    width: "100%",
+    height: "50%",
+  },
+  title: {
+    width: "80%",
+    fontSize: 38,
+    fontWeight: "600",
+  },
+});

@@ -13,12 +13,26 @@ import {
 
 export default function CartScreen({ navigation }) {
   return (
-    <View>
-      <Text>Cart Screen</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate("TabNavigator")}
-      />
+    <View style={styles.container}>
+      <Text style={styles.title}>Cart Screen</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  image: {
+    width: "100%",
+    height: "50%",
+  },
+  title: {
+    width: "80%",
+    fontSize: 38,
+    fontWeight: "600",
+  },
+});
