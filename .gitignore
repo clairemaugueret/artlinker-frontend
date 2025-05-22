@@ -36,5 +36,5 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# Custom config
+# Custom Config → POUR LES BESOINS DU DEV, À ENLEVER QUAND ON AURA DEPLOYE LE BACKEND
 componentFetchAddress.js
