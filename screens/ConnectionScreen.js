@@ -6,11 +6,12 @@ import {
   Platform,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-import fetchAddress from "./componentFetchAddress";
+import { fetchAddress } from "./componentFetchAddress";
 
 export default function ConnectionScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -69,12 +70,15 @@ export default function ConnectionScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
+          console.log("data", data);
+          dispatch(login(data.userInfo));
           setEmail("");
           setPassword("");
           setFirstname("");
           setLastname("");
           setPhoneNumber("");
           setAddress("");
+          navigation.navigate("Map");
         } else {
           setInscriptionError(true);
           setError(data.error);
@@ -83,97 +87,109 @@ export default function ConnectionScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={styles.connectionContain}>
-        <Text style={styles.title}>Connection</Text>
-        <TextInput
-          onChangeText={(value) => setEmail(value)}
-          value={email}
-          style={styles.input}
-          placeholder="Email"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          autoComplete="email"
-        />
-        <TextInput
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          style={styles.input}
-          placeholder="Password"
-          autoCapitalize="none"
-          textContentType="password"
-          autoComplete="none"
-          secureTextEntry={true}
-        />
-        {connectionError && <Text style={styles.error}>{error}</Text>}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleConnection()}
-        >
-          <Text style={styles.textButton}>Connection</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.inscriptionContain}>
-        <Text style={styles.title}>Inscription</Text>
-        <TextInput
-          onChangeText={(value) => setFirstname(value)}
-          value={firstname}
-          style={styles.input}
-          placeholder="Firstname"
-          autoCapitalize="words"
-          autoComplete="given-name"
-          textContentType="givenName"
-        />
-        <TextInput
-          onChangeText={(value) => setLastname(value)}
-          value={lastname}
-          style={styles.input}
-          placeholder="Lastname"
-          autoCapitalize="words"
-          autoComplete="name-family"
-          textContentType="familyName"
-        />
-        <TextInput
-          onChangeText={(value) => setPhoneNumber(value)}
-          value={phoneNumber}
-          style={styles.input}
-          placeholder="Phone number"
-          keyboardType="phone-pad"
-          autoComplete="tel"
-          textContentType="telephoneNumber"
-        />
-        <TextInput
-          onChangeText={(value) => setAddress(value)}
-          value={address}
-          style={styles.input}
-          placeholder="Address"
-          autoCapitalize="words"
-          textContentType="streetAddressLine1"
-          autoComplete="street-address"
-        />
-        <TextInput
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          style={styles.input}
-          placeholder="Password"
-          autoCapitalize="none"
-          textContentType="password"
-          autoComplete="none"
-          secureTextEntry={true}
-        />
-        {inscriptionError && <Text style={styles.error}>{error}</Text>}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleInscription()}
-        >
-          <Text style={styles.textButton}>Inscription</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+    <ScrollView>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View style={styles.connectionContain}>
+          <Text style={styles.title}>Connection</Text>
+          <TextInput
+            onChangeText={(value) => setEmail(value)}
+            value={email}
+            style={styles.input}
+            placeholder="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            autoComplete="email"
+          />
+          <TextInput
+            onChangeText={(value) => setPassword(value)}
+            value={password}
+            style={styles.input}
+            placeholder="Password"
+            autoCapitalize="none"
+            textContentType="password"
+            autoComplete="none"
+            secureTextEntry={true}
+          />
+          {connectionError && <Text style={styles.error}>{error}</Text>}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleConnection()}
+          >
+            <Text style={styles.textButton}>Connection</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.inscriptionContain}>
+          <Text style={styles.title}>Inscription</Text>
+          <TextInput
+            onChangeText={(value) => setEmail(value)}
+            value={email}
+            style={styles.input}
+            placeholder="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            autoComplete="email"
+          />
+          <TextInput
+            onChangeText={(value) => setFirstname(value)}
+            value={firstname}
+            style={styles.input}
+            placeholder="Firstname"
+            autoCapitalize="words"
+            autoComplete="given-name"
+            textContentType="givenName"
+          />
+          <TextInput
+            onChangeText={(value) => setLastname(value)}
+            value={lastname}
+            style={styles.input}
+            placeholder="Lastname"
+            autoCapitalize="words"
+            autoComplete="name-family"
+            textContentType="familyName"
+          />
+          <TextInput
+            onChangeText={(value) => setPhoneNumber(value)}
+            value={phoneNumber}
+            style={styles.input}
+            placeholder="Phone number"
+            keyboardType="phone-pad"
+            autoComplete="tel"
+            textContentType="telephoneNumber"
+          />
+          <TextInput
+            onChangeText={(value) => setAddress(value)}
+            value={address}
+            style={styles.input}
+            placeholder="Address"
+            autoCapitalize="words"
+            textContentType="streetAddressLine1"
+            autoComplete="street-address"
+          />
+          <TextInput
+            onChangeText={(value) => setPassword(value)}
+            value={password}
+            style={styles.input}
+            placeholder="Password"
+            autoCapitalize="none"
+            textContentType="password"
+            autoComplete="none"
+            secureTextEntry={true}
+          />
+          {inscriptionError && <Text style={styles.error}>{error}</Text>}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleInscription()}
+          >
+            <Text style={styles.textButton}>Inscription</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
@@ -183,6 +199,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     backgroundColor: "#fff",
     alignItems: "center",
+    marginBottom: 150,
   },
   connectionContain: {
     alignItems: "center",
