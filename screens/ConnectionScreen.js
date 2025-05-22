@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-
+import { fetchAddress } from "./componentFetchAddress";
 export default function ConnectionScreen() {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -25,7 +25,7 @@ export default function ConnectionScreen() {
   const [error, setError] = useState("");
 
   const handleConnection = () => {
-    fetch("http://192.168.1.27:3000/users/signin", {
+    fetch(`${fetchAddress}/users/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -53,7 +53,7 @@ export default function ConnectionScreen() {
   };
 
   const handleInscription = () => {
-    fetch("http://192.168.1.27:3000/users/signup", {
+    fetch(`${fetchAddress}/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
