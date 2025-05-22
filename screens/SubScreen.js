@@ -1,20 +1,167 @@
-import { useState } from "react";
-import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Button,
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 export default function SubScreen({ navigation }) {
+  const [selectedTarif, setSelectedTarif] = useState(null);
+  const [showTarifsNormal, setShowTarifsNormal] = useState(false);
+  const [showTarifsSpecial, setShowTarifsSpecial] = useState(false);
+  const [showTarifsPublic, setShowTarifsPublic] = useState(false);
+  const [showTarifsBusiness, setShowTarifsBusiness] = useState(false);
+
+  const toggleTarifsNormal = () => {
+    setShowTarifsNormal(!showTarifsNormal);
+    setShowTarifsSpecial(false);
+    setShowTarifsPublic(false);
+    setShowTarifsBusiness(false);
+  };
+
+  const toggleTarifsSpecial = () => {
+    setShowTarifsSpecial(!showTarifsSpecial);
+    setShowTarifsNormal(false);
+    setShowTarifsPublic(false);
+    setShowTarifsBusiness(false);
+  };
+
+  const toggleTarifsPublic = () => {
+    setShowTarifsPublic(!showTarifsPublic);
+    setShowTarifsNormal(false);
+    setShowTarifsSpecial(false);
+    setShowTarifsBusiness(false);
+  };
+
+  const toggleTarifsBusiness = () => {
+    setShowTarifsBusiness(!showTarifsBusiness);
+    setShowTarifsNormal(false);
+    setShowTarifsSpecial(false);
+    setShowTarifsPublic(false);
+  };
+
+  const handleValidation = () => {
+    if (selectedTarif) {
+      alert(`Abonnement validé : ${selectedTarif}`);
+      // Ajoutez ici la logique pour traiter la validation de l'abonnement
+    } else {
+      alert("Veuillez sélectionner un tarif.");
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sub Screen</Text>
+      <Text style={styles.title}>Choisir un abonnement</Text>
+
+      <TouchableOpacity style={styles.button} onPress={toggleTarifsNormal}>
+        <Text style={styles.buttonText}>Particulier (tarif normal)</Text>
+      </TouchableOpacity>
+
+      {showTarifsNormal && (
+        <View style={styles.tarifsContainer}>
+          <Text style={styles.tarifText}>
+            100 € / 1 œuvre tous les 3 mois (soit 4 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>
+            180 € / 2 œuvres tous les 3 mois (soit 8 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>
+            250 € / 3 œuvres tous les 3 mois (soit 12 œuvres différentes dans
+            l'année)
+          </Text>
+
+          <TouchableOpacity
+            style={styles.validationButton}
+            onPress={handleValidation}
+          >
+            <Text style={styles.buttonText}>Choisir cet abonnement</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <TouchableOpacity style={styles.button} onPress={toggleTarifsSpecial}>
+        <Text style={styles.buttonText}>Particulier (tarif spécial)</Text>
+      </TouchableOpacity>
+
+      {showTarifsSpecial && (
+        <View style={styles.tarifsContainer}>
+          <Text style={styles.tarifText}>
+            75 € / 1 œuvre tous les 3 mois (soit 4 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>
+            130 € / 2 œuvres tous les 3 mois (soit 8 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>
+            180 € / 3 œuvres tous les 3 mois (soit 12 œuvres différentes dans
+            l'année)
+          </Text>
+
+          <TouchableOpacity
+            style={styles.validationButton}
+            onPress={handleValidation}
+          >
+            <Text style={styles.buttonText}>Choisir cet abonnement</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <TouchableOpacity style={styles.button} onPress={toggleTarifsPublic}>
+        <Text style={styles.buttonText}>Établissements publics</Text>
+      </TouchableOpacity>
+
+      {showTarifsPublic && (
+        <View style={styles.tarifsContainer}>
+          <Text style={styles.tarifText}>
+            350 € / 3 œuvre tous les 3 mois (soit 12 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>
+            420 € / 4 œuvres tous les 3 mois (soit 16 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>
+            500 € / 5 œuvres tous les 3 mois (soit 20 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>+100 € / œuvre supplémentaire</Text>
+
+          <TouchableOpacity
+            style={styles.validationButton}
+            onPress={handleValidation}
+          >
+            <Text style={styles.buttonText}>Choisir cet abonnement</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <TouchableOpacity style={styles.button} onPress={toggleTarifsBusiness}>
+        <Text style={styles.buttonText}>Entreprises</Text>
+      </TouchableOpacity>
+
+      {showTarifsBusiness && (
+        <View style={styles.tarifsContainer}>
+          <Text style={styles.tarifText}>
+            500 € / 3 œuvre tous les 3 mois (soit 12 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>
+            600 € / 4 œuvres tous les 3 mois (soit 16 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>
+            700 € / 5 œuvres tous les 3 mois (soit 20 œuvres différentes dans
+            l'année)
+          </Text>
+          <Text style={styles.tarifText}>+130 € / œuvre supplémentaire</Text>
+
+          <TouchableOpacity
+            style={styles.validationButton}
+            onPress={handleValidation}
+          >
+            <Text style={styles.buttonText}>Choisir cet abonnement</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
@@ -26,13 +173,39 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  image: {
-    width: "100%",
-    height: "50%",
-  },
   title: {
     width: "80%",
     fontSize: 38,
     fontWeight: "600",
+    marginBottom: 30,
+  },
+  button: {
+    backgroundColor: "#393837",
+    padding: 15,
+    width: "80%",
+    alignItems: "center",
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 18,
+  },
+  tarifsContainer: {
+    width: "80%",
+    marginBottom: 20,
+  },
+  tarifText: {
+    fontSize: 16,
+    marginVertical: 5,
+    color: "#D27E75",
+  },
+  validationButton: {
+    backgroundColor: "#D27E75",
+    padding: 15,
+    width: "100%",
+    alignItems: "center",
+    borderRadius: 5,
+    marginTop: 20,
   },
 });
