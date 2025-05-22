@@ -16,13 +16,13 @@ import { useDispatch } from "react-redux";
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={globalStyles.button}
         onPress={() => navigation.navigate("TabNavigator")}
       >
         <Text style={globalStyles.button}>Go to Home</Text>
-      </TouchableOpacity>
-      <Text style={globalStyles.h1}>Home Screen</Text>
+      </TouchableOpacity> */}
+      <Text style={[globalStyles.h1, globalStyles.darkred]}>Home Screen</Text>
       <View style={{ width: "70%", height: "70%", gap: 20 }}>
         <Button
           title="Go to Art Screen"
