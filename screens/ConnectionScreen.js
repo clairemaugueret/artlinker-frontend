@@ -1,3 +1,4 @@
+import { globalStyles } from "../globalStyles";
 import {
   StyleSheet,
   Text,
@@ -7,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -15,26 +17,28 @@ import { fetchAddress } from "./componentFetchAddress";
 
 export default function ConnectionScreen({ navigation }) {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("");
+  const [emailSignIn, setEmailSignIn] = useState("");
+  const [emailSignUp, setEmailSignUp] = useState("");
   const [address, setAddress] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [password, setPassword] = useState("");
+  const [passwordSignIn, setPasswordSignIn] = useState("");
+  const [passwordSignUp, setPasswordSignUp] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [connectionError, setConnectionError] = useState(false);
   const [inscriptionError, setInscriptionError] = useState(false);
   const [error, setError] = useState("");
+  const [focusedField, setFocusedField] = useState(null);
 
   const handleConnection = () => {
     fetch(`${fetchAddress}/users/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email: emailSignIn, password: passwordSignIn }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          console.log("data", data);
           dispatch(
             login({
               email: data.email,
@@ -44,8 +48,8 @@ export default function ConnectionScreen({ navigation }) {
               favoriteItems: data.favoriteItems,
             })
           );
-          setEmail("");
-          setPassword("");
+          setEmailSignIn("");
+          setPasswordSignIn("");
           navigation.navigate("Map");
         } else {
           setConnectionError(true);
@@ -59,8 +63,8 @@ export default function ConnectionScreen({ navigation }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email,
-        password,
+        email: emailSignUp,
+        password: passwordSignUp,
         firstname,
         lastname,
         phoneNumber,
@@ -70,10 +74,9 @@ export default function ConnectionScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          console.log("data", data);
           dispatch(login(data.userInfo));
-          setEmail("");
-          setPassword("");
+          setEmailSignUp("");
+          setPasswordSignUp("");
           setFirstname("");
           setLastname("");
           setPhoneNumber("");
@@ -87,157 +90,168 @@ export default function ConnectionScreen({ navigation }) {
   };
 
   return (
-    <ScrollView>
+    <SafeAreaView style={styles.mainContainer}>
       <KeyboardAvoidingView
-        style={styles.container}
+        style={styles.keyboardviewContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
       >
-        <View style={styles.connectionContain}>
-          <Text style={styles.title}>Connection</Text>
-          <TextInput
-            onChangeText={(value) => setEmail(value)}
-            value={email}
-            style={styles.input}
-            placeholder="Email"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            textContentType="emailAddress"
-            autoComplete="email"
-          />
-          <TextInput
-            onChangeText={(value) => setPassword(value)}
-            value={password}
-            style={styles.input}
-            placeholder="Password"
-            autoCapitalize="none"
-            textContentType="password"
-            autoComplete="none"
-            secureTextEntry={true}
-          />
-          {connectionError && <Text style={styles.error}>{error}</Text>}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleConnection()}
-          >
-            <Text style={styles.textButton}>Connection</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inscriptionContain}>
-          <Text style={styles.title}>Inscription</Text>
-          <TextInput
-            onChangeText={(value) => setEmail(value)}
-            value={email}
-            style={styles.input}
-            placeholder="Email"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            textContentType="emailAddress"
-            autoComplete="email"
-          />
-          <TextInput
-            onChangeText={(value) => setFirstname(value)}
-            value={firstname}
-            style={styles.input}
-            placeholder="Firstname"
-            autoCapitalize="words"
-            autoComplete="given-name"
-            textContentType="givenName"
-          />
-          <TextInput
-            onChangeText={(value) => setLastname(value)}
-            value={lastname}
-            style={styles.input}
-            placeholder="Lastname"
-            autoCapitalize="words"
-            autoComplete="name-family"
-            textContentType="familyName"
-          />
-          <TextInput
-            onChangeText={(value) => setPhoneNumber(value)}
-            value={phoneNumber}
-            style={styles.input}
-            placeholder="Phone number"
-            keyboardType="phone-pad"
-            autoComplete="tel"
-            textContentType="telephoneNumber"
-          />
-          <TextInput
-            onChangeText={(value) => setAddress(value)}
-            value={address}
-            style={styles.input}
-            placeholder="Address"
-            autoCapitalize="words"
-            textContentType="streetAddressLine1"
-            autoComplete="street-address"
-          />
-          <TextInput
-            onChangeText={(value) => setPassword(value)}
-            value={password}
-            style={styles.input}
-            placeholder="Password"
-            autoCapitalize="none"
-            textContentType="password"
-            autoComplete="none"
-            secureTextEntry={true}
-          />
-          {inscriptionError && <Text style={styles.error}>{error}</Text>}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleInscription()}
-          >
-            <Text style={styles.textButton}>Inscription</Text>
-          </TouchableOpacity>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.scrollviewContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.connectionContain}>
+            <Text style={globalStyles.h4}>Vous avez déjà un compte ?</Text>
+            <TextInput
+              onChangeText={(value) => setEmailSignIn(value)}
+              value={emailSignIn}
+              onFocus={() => setFocusedField("emailSignIn")}
+              onBlur={() => setFocusedField(false)}
+              style={[
+                globalStyles.input,
+                focusedField === "emailSignIn" && globalStyles.inputIsFocused,
+              ]}
+              placeholder="Email"
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+            <TextInput
+              onChangeText={(value) => setPasswordSignIn(value)}
+              value={passwordSignIn}
+              onFocus={() => setFocusedField("passwordSignIn")}
+              onBlur={() => setFocusedField(false)}
+              style={[
+                globalStyles.input,
+                focusedField === "passwordSignIn" &&
+                  globalStyles.inputIsFocused,
+              ]}
+              placeholder="Mot de passe"
+              secureTextEntry
+            />
+            {connectionError && <Text style={styles.error}>{error}</Text>}
+            <TouchableOpacity
+              style={globalStyles.button}
+              onPress={handleConnection}
+            >
+              <Text style={globalStyles.buttonText}>Connexion</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.inscriptionContain}>
+            <Text style={globalStyles.h3}>Bienvenue dans l'artothèque</Text>
+            <TextInput
+              onChangeText={(value) => setEmailSignUp(value)}
+              value={emailSignUp}
+              onFocus={() => setFocusedField("emailSignUp")}
+              onBlur={() => setFocusedField(false)}
+              style={[
+                globalStyles.input,
+                focusedField === "emailSignUp" && globalStyles.inputIsFocused,
+              ]}
+              placeholder="Email"
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+            <TextInput
+              onChangeText={(value) => setFirstname(value)}
+              value={firstname}
+              onFocus={() => setFocusedField("firstname")}
+              onBlur={() => setFocusedField(false)}
+              style={[
+                globalStyles.input,
+                focusedField === "firstname" && globalStyles.inputIsFocused,
+              ]}
+              placeholder="Prénom"
+            />
+            <TextInput
+              onChangeText={(value) => setLastname(value)}
+              value={lastname}
+              onFocus={() => setFocusedField("lastname")}
+              onBlur={() => setFocusedField(false)}
+              style={[
+                globalStyles.input,
+                focusedField === "lastname" && globalStyles.inputIsFocused,
+              ]}
+              placeholder="Nom"
+            />
+            <TextInput
+              onChangeText={(value) => setPhoneNumber(value)}
+              value={phoneNumber}
+              onFocus={() => setFocusedField("phoneNumber")}
+              onBlur={() => setFocusedField(false)}
+              style={[
+                globalStyles.input,
+                focusedField === "phoneNumber" && globalStyles.inputIsFocused,
+              ]}
+              placeholder="Numéro de téléphone"
+              keyboardType="phone-pad"
+            />
+            <TextInput
+              onChangeText={(value) => setAddress(value)}
+              value={address}
+              onFocus={() => setFocusedField("address")}
+              onBlur={() => setFocusedField(false)}
+              style={[
+                globalStyles.input,
+                focusedField === "address" && globalStyles.inputIsFocused,
+              ]}
+              placeholder="Adresse"
+            />
+            <TextInput
+              onChangeText={(value) => setPasswordSignUp(value)}
+              value={passwordSignUp}
+              onFocus={() => setFocusedField("passwordSignUp")}
+              onBlur={() => setFocusedField(false)}
+              style={[
+                globalStyles.input,
+                focusedField === "passwordSignUp" &&
+                  globalStyles.inputIsFocused,
+              ]}
+              placeholder="Mot de passe"
+              secureTextEntry
+            />
+            {inscriptionError && <Text style={styles.error}>{error}</Text>}
+            <TouchableOpacity
+              style={globalStyles.button}
+              onPress={handleInscription}
+            >
+              <Text style={globalStyles.buttonText}>Inscription</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
-    paddingTop: 10,
     backgroundColor: "#fff",
+  },
+  keyboardviewContainer: {
+    flex: 1,
+  },
+  scrollviewContainer: {
+    flexGrow: 1,
     alignItems: "center",
-    marginBottom: 150,
+    paddingBottom: 50, // pour pouvoir scroller même après le dernier bouton
   },
   connectionContain: {
     alignItems: "center",
     width: "80%",
-    backgroundColor: "#d9d9d9",
-    borderRadius: 1,
-    marginBottom: 30,
+    borderRadius: 5,
+    marginTop: 20,
+    padding: 15,
+    gap: 10,
   },
   inscriptionContain: {
     alignItems: "center",
     width: "80%",
-    backgroundColor: "#d9d9d9",
-    borderRadius: 1,
-  },
-  text: {},
-  input: {
-    width: "80%",
-    alignItems: "center",
-    fontSize: 16,
-    margin: 10,
-    backgroundColor: "#f3edf7",
-  },
-  button: {
-    alignItems: "center",
-    paddingTop: 6,
-    backgroundColor: "#64558e",
-    borderRadius: 30,
-    width: "80%",
-    marginTop: 25,
-    height: 50,
-    marginBottom: 30,
-  },
-  textButton: {
-    paddingTop: 6,
-    height: 30,
-    fontSize: 16,
-    fontWeight: "600",
-    color: "white",
+    borderRadius: 5,
+    marginTop: 30,
+    padding: 15,
+    gap: 10,
   },
   error: {
     marginTop: 10,
@@ -246,7 +260,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "600",
-    marginTop: 20,
     marginBottom: 10,
   },
 });
