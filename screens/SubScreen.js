@@ -1,9 +1,25 @@
 import React, { useState } from "react";
 import { globalStyles } from "../globalStyles";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  ViewBase,
+} from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import { ScrollView } from "react-native";
+import {
+  setSubscriptionCount,
+  setSubscriptionPrice,
+  setSubscriptionType,
+} from "../reducers/subscription";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SubScreen({ navigation }) {
-  const [selectedTarif, setSelectedTarif] = useState(null);
+  const darkred = globalStyles.darkred.color;
+  const dispatch = useDispatch();
+  const subscription = useSelector((state) => state.subscription);
   const [showTarifsNormal, setShowTarifsNormal] = useState(false);
   const [showTarifsSpecial, setShowTarifsSpecial] = useState(false);
   const [showTarifsPublic, setShowTarifsPublic] = useState(false);
@@ -37,22 +53,51 @@ export default function SubScreen({ navigation }) {
     setShowTarifsPublic(false);
   };
 
-  const handleValidation = () => {
-    if (selectedTarif) {
-      alert(`Abonnement validé : ${selectedTarif}`);
-      // Ajoutez ici la logique pour traiter la validation de l'abonnement
-    } else {
-      alert("Veuillez sélectionner un tarif.");
-    }
+  const handleValidationNormal = () => {
+    dispatch(setSubscriptionCount("Particulier"));
+  };
+  const handleValidationSpecial = () => {
+    dispatch(setSubscriptionCount("ParticulierReduit"));
+  };
+  const handleValidationPublic = () => {
+    dispatch(setSubscriptionCount("EtablissementPublic"));
+  };
+  const handleValidationBusiness = () => {
+    dispatch(setSubscriptionCount("Entreprise"));
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Choisir un abonnement</Text>
+      {/* <ScrollView
+        contentContainerStyle={{ alignItems: "center", paddingBottom: 40 }}
+      > */}
+      <Text style={globalStyles.h1}>Choisir un abonnement</Text>
 
-      <TouchableOpacity style={styles.button} onPress={toggleTarifsNormal}>
-        <Text style={styles.buttonText}>Particulier (tarif normal)</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center" }}
+          onPress={toggleTarifsNormal}
+        >
+          <FontAwesome
+            name="angle-left"
+            size={32}
+            color={darkred}
+            style={{
+              transform: [{ rotate: showTarifsNormal ? "-90deg" : "0deg" }],
+              transition: "transform 0.2s",
+            }}
+          />
+          <Text
+            style={[
+              styles.buttonText,
+              globalStyles.lightred,
+              { marginLeft: 12, marginBottom: 0 }, // On annule le marginBottom ici
+            ]}
+          >
+            Particulier (tarif normal)
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {showTarifsNormal && (
         <View style={styles.tarifsContainer}>
@@ -75,18 +120,37 @@ export default function SubScreen({ navigation }) {
             </Text>
           </Text>
 
-          <TouchableOpacity
-            style={styles.validationButton}
-            onPress={handleValidation}
-          >
-            <Text style={styles.buttonText}>Choisir cet abonnement</Text>
+          <TouchableOpacity onPress={handleValidationNormal}>
+            <Text style={globalStyles.button}>Choisir cet abonnement</Text>
           </TouchableOpacity>
         </View>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={toggleTarifsSpecial}>
-        <Text style={styles.buttonText}>Particulier (tarif spécial)</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center" }}
+          onPress={toggleTarifsSpecial}
+        >
+          <FontAwesome
+            name="angle-left"
+            size={32}
+            color={darkred}
+            style={{
+              transform: [{ rotate: showTarifsSpecial ? "-90deg" : "0deg" }],
+              transition: "transform 0.2s",
+            }}
+          />
+          <Text
+            style={[
+              styles.buttonText,
+              globalStyles.lightred,
+              { marginLeft: 12, marginBottom: 0 }, // On annule le marginBottom ici
+            ]}
+          >
+            Particulier (tarif Special)
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {showTarifsSpecial && (
         <View style={styles.tarifsContainer}>
@@ -109,18 +173,37 @@ export default function SubScreen({ navigation }) {
             </Text>
           </Text>
 
-          <TouchableOpacity
-            style={styles.validationButton}
-            onPress={handleValidation}
-          >
-            <Text style={styles.buttonText}>Choisir cet abonnement</Text>
+          <TouchableOpacity onPress={handleValidationSpecial}>
+            <Text style={globalStyles.button}>Choisir cet abonnement</Text>
           </TouchableOpacity>
         </View>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={toggleTarifsPublic}>
-        <Text style={styles.buttonText}>Établissements publics</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center" }}
+          onPress={toggleTarifsPublic}
+        >
+          <FontAwesome
+            name="angle-left"
+            size={32}
+            color={darkred}
+            style={{
+              transform: [{ rotate: showTarifsPublic ? "-90deg" : "0deg" }],
+              transition: "transform 0.2s",
+            }}
+          />
+          <Text
+            style={[
+              styles.buttonText,
+              globalStyles.lightred,
+              { marginLeft: 12, marginBottom: 0 }, // On annule le marginBottom ici
+            ]}
+          >
+            Établissements publics
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {showTarifsPublic && (
         <View style={styles.tarifsContainer}>
@@ -146,18 +229,37 @@ export default function SubScreen({ navigation }) {
             +100 € / œuvre supplémentaire
           </Text>
 
-          <TouchableOpacity
-            style={styles.validationButton}
-            onPress={handleValidation}
-          >
-            <Text style={styles.buttonText}>Choisir cet abonnement</Text>
+          <TouchableOpacity onPress={handleValidationPublic}>
+            <Text style={globalStyles.button}>Choisir cet abonnement</Text>
           </TouchableOpacity>
         </View>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={toggleTarifsBusiness}>
-        <Text style={styles.buttonText}>Entreprises</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center" }}
+          onPress={toggleTarifsBusiness}
+        >
+          <FontAwesome
+            name="angle-left"
+            size={32}
+            color={darkred}
+            style={{
+              transform: [{ rotate: showTarifsBusiness ? "-90deg" : "0deg" }],
+              transition: "transform 0.2s",
+            }}
+          />
+          <Text
+            style={[
+              styles.buttonText,
+              globalStyles.lightred,
+              { marginLeft: 12, marginBottom: 0 }, // On annule le marginBottom ici
+            ]}
+          >
+            Entreprises
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {showTarifsBusiness && (
         <View style={styles.tarifsContainer}>
@@ -183,14 +285,12 @@ export default function SubScreen({ navigation }) {
             +130 € / œuvre supplémentaire
           </Text>
 
-          <TouchableOpacity
-            style={styles.validationButton}
-            onPress={handleValidation}
-          >
-            <Text style={styles.buttonText}>Choisir cet abonnement</Text>
+          <TouchableOpacity onPress={handleValidationBusiness}>
+            <Text style={globalStyles.button}>Choisir cet abonnement</Text>
           </TouchableOpacity>
         </View>
       )}
+      {/* </ScrollView> */}
     </View>
   );
 }
@@ -200,41 +300,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    gap: 50,
   },
-  title: {
-    width: "80%",
-    fontSize: 38,
-    fontWeight: "600",
-    marginBottom: 30,
-  },
-  button: {
-    backgroundColor: "#393837",
-    padding: 15,
-    width: "80%",
-    alignItems: "center",
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: "#ffffff",
-    fontSize: 18,
-  },
-  tarifsContainer: {
-    width: "80%",
-    marginBottom: 20,
-  },
-  tarifText: {
-    fontSize: 16,
-    marginVertical: 5,
-    color: "#D27E75",
-  },
-  validationButton: {
-    backgroundColor: "#D27E75",
-    padding: 15,
-    width: "100%",
-    alignItems: "center",
-    borderRadius: 5,
-    marginTop: 20,
-  },
+
+  // buttonText: {
+  //   fontSize: 18,
+  //   marginBottom: 20,
+  // },
+  // tarifsContainer: {
+  //   width: "80%",
+  //   marginBottom: 20,
+  // },
+  // validationButton: {
+  //   backgroundColor: "#D27E75",
+  //   padding: 15,
+  //   width: "100%",
+  //   alignItems: "center",
+  //   borderRadius: 5,
+  //   marginTop: 20,
+  // },
 });
