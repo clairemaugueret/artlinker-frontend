@@ -23,7 +23,18 @@ import {
   Dosis_400Regular,
   Dosis_600SemiBold,
 } from "@expo-google-fonts/dosis";
-import AppLoading from "expo-app-loading";
+import {
+  Nunito_300Light,
+  Nunito_400Regular,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+} from "@expo-google-fonts/nunito";
+import {
+  Montserrat_300Light,
+  Montserrat_400Regular,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from "@expo-google-fonts/montserrat";
 
 const store = configureStore({
   reducer: { user },
@@ -69,13 +80,23 @@ const TabNavigator = () => {
 
 export default function App() {
   const [fontsLoaded] = useFonts({
+    // Dosis
     Dosis_400Regular,
     Dosis_600SemiBold,
-    // Ajoute ici les autres fonts si besoin (Nunito, Montserrat, etc.)
+    // Nunito
+    Nunito_300Light,
+    Nunito_400Regular,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    // Montserrat
+    Montserrat_300Light,
+    Montserrat_400Regular,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
   });
 
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null; // ou <View><ActivityIndicator /></View>
   }
 
   return (
