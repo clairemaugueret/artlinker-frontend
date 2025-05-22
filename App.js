@@ -18,6 +18,12 @@ import ConnectionScreen from "./screens/ConnectionScreen";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+import {
+  useFonts,
+  Dosis_400Regular,
+  Dosis_600SemiBold,
+} from "@expo-google-fonts/dosis";
+import AppLoading from "expo-app-loading";
 
 const store = configureStore({
   reducer: { user },
@@ -62,6 +68,16 @@ const TabNavigator = () => {
 };
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Dosis_400Regular,
+    Dosis_600SemiBold,
+    // Ajoute ici les autres fonts si besoin (Nunito, Montserrat, etc.)
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
   return (
     <Provider store={store}>
       <NavigationContainer>
