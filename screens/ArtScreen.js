@@ -11,7 +11,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-export default function ArtScreen({ navigation }) {
+export default function ArtScreen({ navigation, route }) {
+  const { artitemData } = route.params;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Art Screen</Text>
