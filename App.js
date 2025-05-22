@@ -17,6 +17,7 @@ import SubScreen from "./screens/SubScreen";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+import subscription from "./reducers/subscription"; // <-- Ajout du reducer subscription
 import {
   useFonts,
   Dosis_400Regular,
@@ -36,7 +37,10 @@ import {
 } from "@expo-google-fonts/montserrat";
 
 const store = configureStore({
-  reducer: { user },
+  reducer: {
+    user,
+    subscription, // <-- Ajout ici aussi
+  },
 });
 
 const Stack = createNativeStackNavigator();
