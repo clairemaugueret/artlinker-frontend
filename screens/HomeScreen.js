@@ -1,3 +1,4 @@
+import { globalStyles } from "../globalStyles";
 import { useState } from "react";
 import {
   Image,
@@ -15,11 +16,13 @@ import { useDispatch } from "react-redux";
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Signin Screen</Text>
-      <Button
-        title="Go to Home"
+      <Text style={globalStyles.h1}>Signin Screen</Text>
+      <TouchableOpacity
+        style={globalStyles.button}
         onPress={() => navigation.navigate("TabNavigator")}
-      />
+      >
+        <Text style={globalStyles.button}>Go to Home</Text>
+      </TouchableOpacity>
     </View>
   );
 }

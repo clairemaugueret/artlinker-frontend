@@ -1,57 +1,178 @@
-import { StyleSheet } from "react-native";
-import {
-  useFonts as useNunito,
-  Nunito_400Regular,
-  Nunito_700Bold,
-} from "@expo-google-fonts/nunito";
-import {
-  useFonts as useMontserrat,
-  Montserrat_400Regular,
-  Montserrat_700Bold,
-} from "@expo-google-fonts/montserrat";
-import AppLoading from "expo-app-loading";
+//RAPHAEL
+
+import { StyleSheet, Platform } from "react-native";
+
+// Définition des variables de couleurs
+const DARK_RED = "#B85449";
+const LIGHT_RED = "#D27E75";
+const DARK_GRAY = "#393837";
+const LIGHT_GRAY = "#F5F5F5";
+const DARK_GREEN = "#609E72";
+const LIGHT_GREEN = "#A6CCB1";
 
 export const globalStyles = StyleSheet.create({
-  darkred: {
-    color: "#B85449",
+  // Définition des styles de couleurs
+  darkred: { color: DARK_RED },
+  darkredback: { backgroundColor: DARK_RED },
+  lightred: { color: LIGHT_RED },
+  lightredback: { backgroundColor: LIGHT_RED },
+  darkgray: { color: DARK_GRAY },
+  darkgrayback: { backgroundColor: DARK_GRAY },
+  lightgray: { color: LIGHT_GRAY },
+  lightgrayback: { backgroundColor: LIGHT_GRAY },
+  darkgreen: { color: DARK_GREEN },
+  darkgreenback: { backgroundColor: DARK_GREEN },
+  lightgreen: { color: LIGHT_GREEN },
+  lightgreenback: { backgroundColor: LIGHT_GREEN },
+
+  // Nunito
+  nunitoLight: {
+    fontFamily: Platform.select({
+      android: "Nunito_300Light",
+      ios: "Nunito-Light",
+    }),
   },
-  darkredback: {
-    backgroundColor: "#B85449",
+  nunito: {
+    fontFamily: Platform.select({
+      android: "Nunito_400Regular",
+      ios: "Nunito-Regular",
+    }),
   },
-  lightred: {
-    color: "#D27E75",
+  nunitoSemiBold: {
+    fontFamily: Platform.select({
+      android: "Nunito_600SemiBold",
+      ios: "Nunito-SemiBold",
+    }),
   },
-  lightredback: {
-    backgroundColor: "#D27E75",
+  nunitoBold: {
+    fontFamily: Platform.select({
+      android: "Nunito_700Bold",
+      ios: "Nunito-Bold",
+    }),
   },
-  darkgray: {
-    color: "#393837",
+
+  // Montserrat
+  montserratLight: {
+    fontFamily: Platform.select({
+      android: "Montserrat_300Light",
+      ios: "Montserrat-Light",
+    }),
   },
-  darkgrayback: {
-    backgroundColor: "#393837",
+  montserrat: {
+    fontFamily: Platform.select({
+      android: "Montserrat_400Regular",
+      ios: "Montserrat-Regular",
+    }),
   },
-  lightgray: {
-    color: "#F5F5F5",
+  montserratSemiBold: {
+    fontFamily: Platform.select({
+      android: "Montserrat_600SemiBold",
+      ios: "Montserrat-SemiBold",
+    }),
   },
-  lightgrayback: {
-    backgroundColor: "#F5F5F5",
+  montserratBold: {
+    fontFamily: Platform.select({
+      android: "Montserrat_700Bold",
+      ios: "Montserrat-Bold",
+    }),
   },
-  darkgreen: {
-    color: "#609E72",
+
+  // Dosis
+  dosis: {
+    fontFamily: Platform.select({
+      android: "Dosis_400Regular",
+      ios: "Dosis-Regular",
+    }),
   },
-  darkgreenback: {
-    backgroundColor: "#609E72",
+  dosisSemiBold: {
+    fontFamily: Platform.select({
+      android: "Dosis_600SemiBold",
+      ios: "Dosis-SemiBold",
+    }),
   },
-  lightgreen: {
-    color: "#A6CCB1",
+
+  // GROS TEXTE (EX: ACCUEIL)
+  big: {
+    fontFamily: Platform.select({
+      android: "Dosis_600SemiBold",
+      ios: "Dosis-SemiBold",
+    }),
+    fontSize: 72,
+    color: DARK_GRAY,
+    textAlign: "center", // Centrage du texte
   },
-  lightgreen: {
-    backgroundColor: "#A6CCB1",
-  },
+
+  // TITRE 1
   h1: {
-    fontFamily: "Dosis",
-    fontSize: 64, // exemple, ajuste selon ton besoin
-    fontWeight: "semi-bold",
-    color: "#393837",
+    fontFamily: Platform.select({
+      android: "Dosis_600SemiBold",
+      ios: "Dosis-SemiBold",
+    }),
+    fontSize: 56,
+    color: DARK_GRAY,
+    textAlign: "center", // Centrage du texte
+  },
+  // TITRE 2
+  h2: {
+    fontFamily: Platform.select({
+      android: "Montserrat_600SemiBold",
+      ios: "Montserrat-SemiBold",
+    }),
+    fontSize: 40,
+    color: DARK_GRAY,
+    textAlign: "center", // Centrage du texte
+  },
+  // TITRE 3
+  h3: {
+    fontFamily: Platform.select({
+      android: "Montserrat_400Regular",
+      ios: "Montserrat-Regular",
+    }),
+    fontSize: 32,
+    color: DARK_GRAY,
+    textAlign: "center", // Centrage du texte
+  },
+  // TITRE 4
+  h4: {
+    fontFamily: Platform.select({
+      android: "Montserrat_600SemiBold",
+      ios: "Montserrat-SemiBold",
+    }),
+    fontSize: 24,
+    color: DARK_GRAY,
+    textAlign: "center", // Centrage du texte
+  },
+  // PARAGRAPGE
+  p: {
+    fontFamily: Platform.select({
+      android: "Nunito_300Light",
+      ios: "Nunito-Light",
+    }),
+    fontSize: 20,
+    color: DARK_GRAY,
+  },
+  // INPUTS
+  input: {
+    fontFamily: Platform.select({
+      android: "Nunito_400Regular",
+      ios: "Nunito-Regular",
+    }),
+    fontSize: 20,
+    color: DARK_GRAY,
+  },
+  // BOUTONS
+  button: {
+    fontFamily: Platform.select({
+      android: "Nunito_400Regular",
+      ios: "Nunito-Regular",
+    }),
+    fontSize: 20,
+    color: "white",
+    backgroundColor: DARK_RED,
+    padding: 10,
+    borderRadius: 15,
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

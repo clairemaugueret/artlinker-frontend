@@ -19,33 +19,6 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 
-import {
-  useFonts as useNunito,
-  Nunito_300Light,
-  Nunito_400Regular,
-  Nunito_600SemiBold,
-  Nunito_700Bold,
-} from "@expo-google-fonts/nunito";
-import {
-  useFonts as useMontserrat,
-  Montserrat_300Light,
-  Montserrat_400Regular,
-  Montserrat_600SemiBold,
-  Montserrat_700Bold,
-} from "@expo-google-fonts/montserrat";
-
-let [nunitoLoaded] = useNunito({
-  Nunito_300Light,
-  Nunito_400Regular,
-  Nunito_600SemiBold,
-  Nunito_700Bold,
-});
-let [montserratLoaded] = useMontserrat({
-  Montserrat_300Light,
-  Montserrat_400Regular,
-  Montserrat_600SemiBold,
-  Montserrat_700Bold,
-});
 const store = configureStore({
   reducer: { user },
 });
