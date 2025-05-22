@@ -15,16 +15,37 @@ import { useDispatch } from "react-redux";
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Signin Screen</Text>
-      <Button
-        title="Go to Map"
-        onPress={() => navigation.navigate("TabNavigator")}
-      />
-      <Text>Connection Screen</Text>
-      <Button
-        title="Go to Connection"
-        onPress={() => navigation.navigate("ConnectionScreen")}
-      />
+      <Text style={styles.title}>Home Screen</Text>
+      <View style={{ width: "70%", height: "70%", gap: 20 }}>
+        <Button
+          title="Go to Art Screen"
+          onPress={() => navigation.navigate("Stack", { screen: "Art" })}
+        />
+        <Button
+          title="Go to Cart Screen"
+          onPress={() => navigation.navigate("Stack", { screen: "Cart" })}
+        />
+        <Button
+          title="Go to Connection Screen"
+          onPress={() => navigation.navigate("Stack", { screen: "Connection" })}
+        />
+        <Button
+          title="Go to List Screen"
+          onPress={() => navigation.navigate("Stack", { screen: "List" })}
+        />
+        <Button
+          title="Go to Payment Screen"
+          onPress={() => navigation.navigate("Stack", { screen: "Payment" })}
+        />
+        <Button
+          title="Go to Price Screen"
+          onPress={() => navigation.navigate("Stack", { screen: "Price" })}
+        />
+        <Button
+          title="Go to Sub Screen"
+          onPress={() => navigation.navigate("Stack", { screen: "Sub" })}
+        />
+      </View>
     </View>
   );
 }
