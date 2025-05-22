@@ -10,17 +10,16 @@ import {
   Image,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { addPlace, addPlaces } from "../reducers/user";
+import { addPosition } from "../reducers/user";
 import MapView, { Marker } from "react-native-maps";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as Location from "expo-location";
 import { current } from "@reduxjs/toolkit";
 import Carousel from "react-native-snap-carousel";
+import { fetchAddress } from "./componentFetchAddress";
 
 const { width: screenWidth } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
-
-const fetchAddress = "192.168.1.32:3000"; //changer par notre adresse IP
 
 export default function MapScreen() {
   //CLAIRE
@@ -43,7 +42,7 @@ export default function MapScreen() {
   const user = useSelector((state) => state.user.value);
 
   // États locaux pour la position, la recherche, les markers, etc.
-  const [currentPosition, setCurrentPosition] = useState(null); // Position affichée sur la carte
+  const [currentPosition, setCurrentPosition] = useState(user.position); // Position affichée sur la carte (grâce au store persistant on garde la dernière géolocalisation de l'utilisateur et par défaut null dans le store)
   const [modalVisible, setModalVisible] = useState(false); // Contrôle de la modale pour les filtres
   const [placesFiltered, setPlacesFiltered] = useState([]); // Données des lieux filtrés reçues par le backend
   const [city, setCity] = useState(""); // Ville saisie dans la barre de recherche
@@ -59,6 +58,7 @@ export default function MapScreen() {
         Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
           setGpsPosition(location.coords); // Position GPS réelle
           setCurrentPosition(location.coords); // Position affichée (peut être modifiée par recherche)
+          dispatch(addPosition(location.coords)); // Met à jour la géolocation de l'utilisateur dans Redux persistant (tant que pas déconnecté on garde l'info)
         });
       }
     })();
