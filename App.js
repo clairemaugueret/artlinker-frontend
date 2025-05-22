@@ -2,18 +2,17 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { TouchableOpacity, Image, Text } from "react-native";
 import AccountScreen from "./screens/AccountScreen";
-import MapScreen from "./screens/MapScreen";
-import { TouchableOpacity, Image } from "react-native";
-import SubScreen from "./screens/SubScreen";
-import SigninScreen from "./screens/SignScreen";
-import PriceScreen from "./screens/PriceScreen";
-import PaymentScreen from "./screens/PaymentScreen";
-import ListScreen from "./screens/ListScreen";
-import CartScreen from "./screens/CartScreen";
 import ArtScreen from "./screens/ArtScreen";
-import HomeScreen from "./screens/HomeScreen";
+import CartScreen from "./screens/CartScreen";
 import ConnectionScreen from "./screens/ConnectionScreen";
+import HomeScreen from "./screens/HomeScreen";
+import ListScreen from "./screens/ListScreen";
+import MapScreen from "./screens/MapScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+import PriceScreen from "./screens/PriceScreen";
+import SubScreen from "./screens/SubScreen";
 
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -43,38 +42,44 @@ const store = configureStore({
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const Header = ({ navigation }) => {
-  <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-    <Image
-      // source={require("logo-lettres-red.png")}
-      style={{ width: 40, height: 40, marginRight: 15 }}
-    />
-  </TouchableOpacity>;
-};
+const StackHeader = ({ navigation }) => ({
+  headerShown: true,
+  headerTitle: "",
+  headerLeft: () => (
+    <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+      <Text style={{ marginLeft: 10 }}>Home</Text>
+    </TouchableOpacity>
+  ),
+});
 
-const TabNavigator = () => {
+const StackNavigator = () => {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName = "";
-
-          if (route.name === "Map") {
-            iconName = "location-arrow";
-          } else if (route.name === "Account") {
-            iconName = "map-pin";
-          }
-
-          return <FontAwesome name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: "#ec6e5b",
-        tabBarInactiveTintColor: "#335561",
-        headerShown: false,
-      })}
-    >
-      <Tab.Screen name="Map" component={MapScreen} />
-      <Tab.Screen name="Account" component={AccountScreen} />
-    </Tab.Navigator>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="Art" component={ArtScreen} options={StackHeader} />
+      <Stack.Screen name="Cart" component={CartScreen} options={StackHeader} />
+      <Stack.Screen
+        name="Connection"
+        component={ConnectionScreen}
+        options={StackHeader}
+      />
+      <Stack.Screen name="List" component={ListScreen} options={StackHeader} />
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={StackHeader}
+      />
+      <Stack.Screen
+        name="Price"
+        component={PriceScreen}
+        options={StackHeader}
+      />
+      <Stack.Screen name="Sub" component={SubScreen} options={StackHeader} />
+    </Stack.Navigator>
   );
 };
 
@@ -102,40 +107,36 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, size }) => {
+              if (route.name === "Map") {
+                return <FontAwesome name="map-pin" size={size} color={color} />;
+              } else if (route.name === "Account") {
+                return <FontAwesome name="user" size={size} color={color} />;
+              }
+              return null; // Du coup si route = "Stack", alors bouton caché mais bouton existant et actif
+            },
+            tabBarButton: (props) =>
+              route.name === "Stack" ? null : <TouchableOpacity {...props} />, // En complément de tabBarIcon, si route = "Stack" alors bouton désactivé, sinon on peut cliquer sur les autres boutons existants
+            tabBarActiveTintColor: "#ec6e5b",
+            tabBarInactiveTintColor: "#335561",
+            headerShown: false,
+            tabBarShowLabel: false,
+          })}
+        >
+          <Tab.Screen name="Stack" component={StackNavigator} />
+          <Tab.Screen
+            name="Map"
+            component={MapScreen}
+            options={({ navigation }) => StackHeader({ navigation })} //déclaration du header différente par rapport à la stack car tab navigation
           />
-          <Stack.Screen
-            options={({ navigation }) => ({
-              headerShown: true,
-              title: "ArtLinker",
-              headerRight: () => <Header navigation={navigation} />, //à revoir car j'ai pas l'impression que ça revienne tout le temps à la page d'accueil, parfois ça revient juste en arrière
-            })}
-            name="TabNavigator"
-            component={TabNavigator}
+          <Tab.Screen
+            name="Account"
+            component={AccountScreen}
+            options={({ navigation }) => StackHeader({ navigation })} //déclaration du header différente par rapport à la stack car tab navigation
           />
-          <Stack.Screen
-            options={({ navigation }) => ({
-              headerShown: true,
-              title: "ArtLinker",
-              headerRight: () => <Header navigation={navigation} />,
-            })}
-            name="Payment"
-            component={PaymentScreen}
-          />
-          <Stack.Screen
-            options={({ navigation }) => ({
-              headerShown: true,
-              title: "ArtLinker",
-              headerRight: () => <Header navigation={navigation} />,
-            })}
-            name="ConnectionScreen"
-            component={ConnectionScreen}
-          />
-        </Stack.Navigator>
+        </Tab.Navigator>
       </NavigationContainer>
     </Provider>
   );
