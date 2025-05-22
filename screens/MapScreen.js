@@ -116,7 +116,7 @@ export default function MapScreen() {
         latitude: currentPosition.latitude,
         longitude: currentPosition.longitude,
       };
-      fetch(`http://${fetchAddress}/places/all`, {
+      fetch(`${fetchAddress}/places/all`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -157,7 +157,7 @@ export default function MapScreen() {
         latitude: currentPosition.latitude,
         longitude: currentPosition.longitude,
       };
-      fetch(`http://${fetchAddress}/artitems/all`, {
+      fetch(`${fetchAddress}/artitems/all`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
