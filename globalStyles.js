@@ -162,17 +162,23 @@ export const globalStyles = StyleSheet.create({
   },
   // BOUTONS
   button: {
-    fontFamily: Platform.select({
-      android: "Nunito_400Regular",
-      ios: "Nunito-Regular",
-    }),
-    fontSize: 20,
-    color: "white",
     backgroundColor: DARK_RED,
-    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    minWidth: 200,
     borderRadius: 15,
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
+  },
+  buttonText: {
+    fontFamily: Platform.select({
+      android: "Nunito_400Regular",
+      ios: "Nunito-Regular",
+    }),
+    padding: 15,
+    fontSize: 20,
+    color: "white",
+    textAlign: "center",
   },
 });
