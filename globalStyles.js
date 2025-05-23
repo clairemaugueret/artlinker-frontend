@@ -130,7 +130,7 @@ export const globalStyles = StyleSheet.create({
     }),
     fontSize: 32,
     color: DARK_GRAY,
-    textAlign: "center", // Centrage du texte
+    //textAlign: "center", Centrage du texte
   },
   // TITRE 4
   h4: {
@@ -140,7 +140,7 @@ export const globalStyles = StyleSheet.create({
     }),
     fontSize: 24,
     color: DARK_GRAY,
-    textAlign: "center", // Centrage du texte
+    //textAlign: "center", Centrage du texte
   },
   // PARAGRAPGE
   p: {
