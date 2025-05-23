@@ -145,6 +145,8 @@ export default function App() {
                 route.name === "Stack" ? null : <TouchableOpacity {...props} />, // En complément de tabBarIcon, si route = "Stack" alors bouton désactivé, sinon on peut cliquer sur les autres boutons existants
               tabBarActiveTintColor: "#B85449",
               tabBarInactiveTintColor: "#393837",
+              headerShown: false,
+              tabBarShowLabel: false,
               tabBarStyle: {
                 backgroundColor: "#f5f5f5",
                 borderTopWidth: 1,
@@ -156,8 +158,6 @@ export default function App() {
                 },
                 height: 110,
               },
-              headerShown: false,
-              tabBarShowLabel: false,
             })}
           >
             <Tab.Screen name="Stack" component={StackNavigator} />
@@ -167,7 +167,7 @@ export default function App() {
               options={({ navigation }) =>
                 StackHeader({ navigation, height: 120, margin: 25 })
               } //déclaration du header différente par rapport à la stack car tab navigation
-              // on passe des height et margin spécifiques pour le header (car affichage header sur les page tab navigation différent de la stack)
+              // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
             />
             <Tab.Screen
               name="Account"
@@ -175,7 +175,7 @@ export default function App() {
               options={({ navigation }) =>
                 StackHeader({ navigation, height: 120, margin: 25 })
               } //déclaration du header différente par rapport à la stack car tab navigation
-              // on passe des height et margin spécifiques pour le header (car affichage header sur les page tab navigation différent de la stack)
+              // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
             />
           </Tab.Navigator>
         </NavigationContainer>

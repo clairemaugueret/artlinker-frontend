@@ -1,7 +1,8 @@
 import { TouchableOpacity, View, Image } from "react-native";
 
-// dans App.js, pour les écrans tab navigation, on a envoyé des props height et margin spécifiques pour le header
-// pour le header de la stack, on n'a pas besoin de ces props, donc on les met par défaut à 60 et 10 par défaut
+// l'affichage du header est différent entre les écrans TabNavigation et StackNavigation
+// height et margin ci-dessous représentent les valuers par défaut utilisées dans la StackNavigation
+// pour les écrans TabNavigation, on peut passer des props height et margin différentes
 export const StackHeader = ({ navigation, height = 60, margin = 10 }) => ({
   headerShown: true,
   headerTitle: "",
@@ -14,12 +15,12 @@ export const StackHeader = ({ navigation, height = 60, margin = 10 }) => ({
       width: 0,
       height: 2,
     },
-    height, // ici seulement height car on récupère soit la props soit la valeur par défaut
+    height, // ici juste height car on utilise soit valuer par défaut soit props
   },
   headerLeft: () => (
     <View
       style={{
-        margin, // ici seulement margin car on récupère soit la props soit la valeur par défaut
+        margin, // ici juste margin car on utilise soit valuer par défaut soit props
       }}
     >
       <TouchableOpacity

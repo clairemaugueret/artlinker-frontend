@@ -316,7 +316,7 @@ export default function MapScreen({ navigation }) {
             alignItems: "center",
           }}
         >
-          <Text style={globalStyles.h1}>
+          <Text style={[globalStyles.h1, { textAlign: "center" }]}>
             <Text style={globalStyles.darkred}>A</Text>UCUNE OEUVRE À PROXIMITÉ
           </Text>
           <Text style={globalStyles.p}>

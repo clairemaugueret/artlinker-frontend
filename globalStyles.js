@@ -99,7 +99,6 @@ export const globalStyles = StyleSheet.create({
     }),
     fontSize: 72,
     color: DARK_GRAY,
-    textAlign: "center", // Centrage du texte
   },
 
   // TITRE 1
@@ -110,7 +109,6 @@ export const globalStyles = StyleSheet.create({
     }),
     fontSize: 56,
     color: DARK_GRAY,
-    textAlign: "center", // Centrage du texte
   },
   // TITRE 2
   h2: {
@@ -120,7 +118,6 @@ export const globalStyles = StyleSheet.create({
     }),
     fontSize: 40,
     color: DARK_GRAY,
-    textAlign: "center", // Centrage du texte
   },
   // TITRE 3
   h3: {
@@ -130,7 +127,6 @@ export const globalStyles = StyleSheet.create({
     }),
     fontSize: 32,
     color: DARK_GRAY,
-    //textAlign: "center", Centrage du texte
   },
   // TITRE 4
   h4: {
@@ -140,7 +136,6 @@ export const globalStyles = StyleSheet.create({
     }),
     fontSize: 24,
     color: DARK_GRAY,
-    //textAlign: "center", Centrage du texte
   },
   // PARAGRAPGE
   p: {
