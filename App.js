@@ -45,7 +45,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // module de stockage asynchrone spécifique à react native pour le store persistant
 import { ActivityIndicator } from "react-native"; // pour le logo "loader" de la page de chargement le temps que le store se charge
 
-const reducers = combineReducers({ user, subscription });
+const reducers = combineReducers({ user });
 const persistConfig = { key: "artlinker", storage: AsyncStorage };
 
 const store = configureStore({
@@ -129,20 +129,33 @@ export default function App() {
         <NavigationContainer>
           <Tab.Navigator
             screenOptions={({ route }) => ({
-              tabBarIcon: ({ color, size }) => {
+              tabBarIcon: ({ color }) => {
                 if (route.name === "Map") {
                   return (
-                    <FontAwesome name="map-pin" size={size} color={color} />
+                    <FontAwesome name="map-marker" size={45} color={color} />
                   );
                 } else if (route.name === "Account") {
-                  return <FontAwesome name="user" size={size} color={color} />;
+                  return (
+                    <FontAwesome name="user-circle-o" size={40} color={color} />
+                  );
                 }
                 return null; // Du coup si route = "Stack", alors bouton caché mais bouton existant et actif
               },
               tabBarButton: (props) =>
                 route.name === "Stack" ? null : <TouchableOpacity {...props} />, // En complément de tabBarIcon, si route = "Stack" alors bouton désactivé, sinon on peut cliquer sur les autres boutons existants
-              tabBarActiveTintColor: "#ec6e5b",
-              tabBarInactiveTintColor: "#335561",
+              tabBarActiveTintColor: "#B85449",
+              tabBarInactiveTintColor: "#393837",
+              tabBarStyle: {
+                backgroundColor: "#f5f5f5",
+                borderTopWidth: 1,
+                borderTopColor: "#ccc",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                height: 110,
+              },
               headerShown: false,
               tabBarShowLabel: false,
             })}
@@ -152,13 +165,17 @@ export default function App() {
               name="Map"
               component={MapScreen}
               options={({ navigation }) =>
-                StackHeader({ navigation, margin: 20 })
+                StackHeader({ navigation, height: 120, margin: 25 })
               } //déclaration du header différente par rapport à la stack car tab navigation
+              // on passe des height et margin spécifiques pour le header (car affichage header sur les page tab navigation différent de la stack)
             />
             <Tab.Screen
               name="Account"
               component={AccountScreen}
-              options={({ navigation }) => StackHeader({ navigation })} //déclaration du header différente par rapport à la stack car tab navigation
+              options={({ navigation }) =>
+                StackHeader({ navigation, height: 120, margin: 25 })
+              } //déclaration du header différente par rapport à la stack car tab navigation
+              // on passe des height et margin spécifiques pour le header (car affichage header sur les page tab navigation différent de la stack)
             />
           </Tab.Navigator>
         </NavigationContainer>

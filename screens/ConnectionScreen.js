@@ -46,15 +46,7 @@ export default function ConnectionScreen({ navigation }) {
         .then((response) => response.json())
         .then((data) => {
           if (data.result) {
-            dispatch(
-              loginAndUpdate({
-                email: data.email,
-                token: data.token,
-                firstname: data.firstname,
-                lastname: data.lastname,
-                favoriteItems: data.favoriteItems,
-              })
-            );
+            dispatch(loginAndUpdate(data.userInfo));
             setEmailSignIn("");
             setPasswordSignIn("");
             navigation.navigate("Map");
@@ -115,7 +107,11 @@ export default function ConnectionScreen({ navigation }) {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.connectionContain}>
-            <Text style={globalStyles.h2}>Vous avez déjà un compte ?</Text>
+            <Text
+              style={[globalStyles.h2, { fontSize: 24, textAlign: "center" }]}
+            >
+              Vous avez déjà un compte ?
+            </Text>
             <TextInput
               onChangeText={(value) => setEmailSignIn(value)}
               value={emailSignIn}
@@ -163,7 +159,12 @@ export default function ConnectionScreen({ navigation }) {
           </View>
 
           <View style={styles.inscriptionContain}>
-            <Text style={globalStyles.h1}>Bienvenue dans l'artothèque</Text>
+            <Text
+              style={[globalStyles.h1, { fontSize: 40, textAlign: "center" }]}
+            >
+              <Text style={globalStyles.darkred}>B</Text>ienvenue dans
+              l'artothèque
+            </Text>
             <TextInput
               onChangeText={(value) => setEmailSignUp(value)}
               value={emailSignUp}
