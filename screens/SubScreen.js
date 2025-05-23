@@ -9,11 +9,11 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
-// import {
-//   setSubscriptionCount,
-//   setSubscriptionPrice,
-//   setSubscriptionType,
-// } from "../reducers/subscription";
+import {
+  setSubscriptionCount,
+  setSubscriptionPrice,
+  setSubscriptionType,
+} from "../reducers/subscription";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function SubScreen({ navigation }) {
@@ -54,24 +54,28 @@ export default function SubScreen({ navigation }) {
   };
 
   const handleValidationNormal = () => {
-    dispatch(setSubscriptionCount("Particulier"));
+    dispatch(setSubscriptionType("Particulier"));
   };
   const handleValidationSpecial = () => {
-    dispatch(setSubscriptionCount("ParticulierReduit"));
+    dispatch(setSubscriptionType("ParticulierReduit"));
   };
   const handleValidationPublic = () => {
-    dispatch(setSubscriptionCount("EtablissementPublic"));
+    dispatch(setSubscriptionType("EtablissementPublic"));
   };
   const handleValidationBusiness = () => {
-    dispatch(setSubscriptionCount("Entreprise"));
+    dispatch(setSubscriptionType("Entreprise"));
   };
 
   return (
     <View style={styles.container}>
       <ScrollView
-        style={{ flex: 1, width: "100%" }}
-        contentContainerStyle={{ alignItems: "center", paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          alignItems: "center",
+          paddingBottom: 40,
+          gap: 50,
+          margin: 20,
+        }}
       >
         <Text style={globalStyles.h1}>Choisir un abonnement</Text>
 
@@ -93,7 +97,7 @@ export default function SubScreen({ navigation }) {
               style={[
                 styles.buttonText,
                 globalStyles.lightred,
-                { marginLeft: 12, marginBottom: 0 }, // On annule le marginBottom ici
+                { marginLeft: 12, marginBottom: 0 },
               ]}
             >
               Particulier (tarif normal)
@@ -148,7 +152,7 @@ export default function SubScreen({ navigation }) {
               style={[
                 styles.buttonText,
                 globalStyles.lightred,
-                { marginLeft: 12, marginBottom: 0 }, // On annule le marginBottom ici
+                { marginLeft: 12, marginBottom: 0 },
               ]}
             >
               Particulier (tarif Special)
@@ -203,7 +207,7 @@ export default function SubScreen({ navigation }) {
               style={[
                 styles.buttonText,
                 globalStyles.lightred,
-                { marginLeft: 12, marginBottom: 0 }, // On annule le marginBottom ici
+                { marginLeft: 12, marginBottom: 0 },
               ]}
             >
               Établissements publics
@@ -262,7 +266,7 @@ export default function SubScreen({ navigation }) {
               style={[
                 styles.buttonText,
                 globalStyles.lightred,
-                { marginLeft: 12, marginBottom: 0 }, // On annule le marginBottom ici
+                { marginLeft: 12, marginBottom: 0 },
               ]}
             >
               Entreprises
@@ -311,6 +315,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+    alignContent: "center",
     justifyContent: "flex-start",
   },
 });
