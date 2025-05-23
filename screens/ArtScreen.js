@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { globalStyles } from "../globalStyles";
 import {
   Image,
   KeyboardAvoidingView,
@@ -8,7 +9,8 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { fetchAddress } from "./componentFetchAddress";
+import { fetchAddress } from "../components/FetchAddress";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ArtScreen({ navigation, route }) {
   const [works, setWorks] = useState([]);
@@ -47,61 +49,69 @@ export default function ArtScreen({ navigation, route }) {
   console.log("works", worksFound);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={styles.cart}>
+    <SafeAreaView style={styles.mainContainer}>
+      <KeyboardAvoidingView
+        style={styles.keyboardviewContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <Image source={{ uri: artitemData.imgMain }} style={styles.image} />
-        <View>
-          <View>
-            <Text style={styles.title}>{artitemData.title}</Text>
-            <Text style={styles.title}>{artitemData.authors.join(", ")}</Text>
-          </View>
-          <Image source={{ uri: artitemData.imgMain }} />
+        <View style={styles.cart}>
+          <Text style={[globalStyles.h3, styles.title]}>
+            {artitemData.title}
+          </Text>
+          <Text style={globalStyles.h4}>{artitemData.authors.join(", ")}</Text>
+          <Text style={globalStyles.p}>{artitemData.dimensions}</Text>
+
+          {/* <Text style={styles.title}>{artitemData.info}</Text> */}
         </View>
-        <Text style={styles.title}>{artitemData.dimensions}</Text>
-        <Text style={styles.title}>{artitemData.description}</Text>
-        {/* <Text style={styles.title}>{artitemData.info}</Text> */}
         <TouchableOpacity
-          style={styles.button}
+          style={globalStyles.button}
           onPress={() => navigation.navigate("Sub", { artitemData })} // Pass the artitemData to the Sub screen
         >
           <Text style={styles.textButton}>Emprunter</Text>
         </TouchableOpacity>
-      </View>
-      <View style={styles.oeuvres}>{worksFound}</View>
-      <Text style={styles.title}>Art Screen</Text>
-    </KeyboardAvoidingView>
+        <View style={styles.oeuvres}>{worksFound}</View>
+        <Text style={styles.title}>Art Screen</Text>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  keyboardviewContainer: {
     flex: 1,
-    backgroundColor: "#ffffff",
-    alignItems: "center",
-    justifyContent: "center",
   },
-  image: {
-    width: "100%",
-    height: "50%",
+  mainContainer: {
+    flex: 1,
   },
-  title: {
-    width: "80%",
-    fontSize: 38,
-    fontWeight: "600",
+  scrollviewContainer: {
+    flexGrow: 1,
+    paddingBottom: 50,
   },
   cart: {
-    width: "80%",
-    height: "60%",
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    alignItems: "flex-start",
     backgroundColor: "#f0f0f0",
-
-    alignItems: "center",
   },
+
+  image: {
+    alignItems: "center",
+    resizeMode: "cover",
+    width: "80%",
+    height: "40%",
+    marginTop: 5,
+    marginLeft: 35,
+    borderRadius: 15,
+  },
+
   oeuvres: {
     width: "100%",
     height: "40%",
     backgroundColor: "#f0f0f0",
+  },
+  title: {
+    padding: 10,
   },
 });
