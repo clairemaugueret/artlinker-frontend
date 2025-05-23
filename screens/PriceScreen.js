@@ -9,10 +9,10 @@ import {
 } from "../reducers/subscription";
 
 const priceGrids = {
-  Particulier: { 1: 100, 2: 180, 3: 250 },
-  ParticulierReduit: { 1: 80, 2: 150, 3: 200 },
-  EtablissementPublic: { 3: 350, 4: 420, 5: 500 },
-  Entreprise: { 3: 500, 4: 600, 5: 700 },
+  INDIVIDUAL_BASIC_COST: { 1: 100, 2: 180, 3: 250 },
+  INDIVIDUAL_REDUCT_COST: { 1: 80, 2: 150, 3: 200 },
+  PUBLIC_ESTABLISHMENT: { 3: 350, 4: 420, 5: 500 },
+  LIBERAL_PRO: { 3: 500, 4: 600, 5: 700 },
 };
 
 export default function PriceScreen({ navigation }) {
@@ -20,35 +20,41 @@ export default function PriceScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription);
   const dispatch = useDispatch();
 
-  // Utilise subscription.type pour la logique
+  // Utilise subscription.type pour calculer le nombre minimum et maximum d'œuvres à emprunter
   const isPublicOrEntreprise =
-    subscription.type === "EtablissementPublic" ||
-    subscription.type === "Entreprise";
-  const minCount = isPublicOrEntreprise ? 3 : 1;
-  const maxCount = isPublicOrEntreprise ? 5 : 3;
+    subscription.type === "PUBLIC_ESTABLISHMENT" ||
+    subscription.type === "LIBERAL_PRO";
+  const minCount = isPublicOrEntreprise ? 3 : 1; // On définit le nombre minimum d'œuvres à 3 pour les abonnements Public et Entreprise, sinon c'est 1
+  const maxCount = isPublicOrEntreprise ? 5 : 3; // On définit le nombre maximum d'œuvres à 5 pour les abonnements Public et Entreprise, sinon c'est 3
 
-  // Initialiser le compteur selon le type d'abonnement
-  const [count, setCount] = useState(minCount);
-
-  // Si le type d'abonnement change, réinitialiser le compteur si hors bornes
+  // Si le type d'abonnement change, réinitialiser le compteur au cas où il est en dehors du nombre minimum ou maximum
   useEffect(() => {
-    setCount((prev) => {
-      if (prev < minCount) return minCount;
-      if (prev > maxCount) return maxCount;
-      return prev;
+    setCount((actualValue) => {
+      if (actualValue < minCount) return minCount; // Si la valeur actuelle est inférieure au minimum possible par l'abonnement, on la met à jour avec cette valeur minimum
+      if (actualValue > maxCount) return maxCount; // Si la valeur actuelle est supérieure au maximum possible par l'abonnement, on la met à jour avec cette valeur maximale
+      return actualValue; // Sinon, on garde la valeur actuelle
     });
-  }, [subscription.type]);
+  }, [subscription.type]); // On fait en sorte que le
+  // Initialiser le compteur selon le type d'abonnement
 
-  // Sélectionne la grille de prix selon l'abonnement
-  const priceGrid = priceGrids[subscription.type] || priceGrids["Particulier"];
+  //Création de la variable qui stocke le nombre d'œuvres sélectionnées par l'utilisateur
+  const [count, setCount] = useState(minCount); // Ne pas déplacer !!
+
+  // Sélectionne la grille de prix selon l'abonnement ou par défaut l'abonnement particulier
+  const priceGrid =
+    priceGrids[subscription.type] || priceGrids["INDIVIDUAL_BASIC_COST"];
   const price = priceGrid[count];
 
+  // Récupère les valeurs des styles globaux à l'intérieur de variables (pour pouvoir les utiliser dans les attribut color de Fontawesome)
   const darkred = globalStyles.darkred.color;
   const lightgray = globalStyles.lightgray.color;
 
+  // Fonctions pour incrémenter et décrémenter le compteur sans dépasser le nombre minimumu ou le nombre maximum
   const increment = () => setCount((c) => (c < maxCount ? c + 1 : c));
   const decrement = () => setCount((c) => (c > minCount ? c - 1 : c));
 
+  // Fonction de validation qui met à jour le store Redux avec le nombre d'œuvres et le prix
+  // et navigue vers l'écran du panier
   const validate = () => {
     dispatch(setSubscriptionCount(count));
     dispatch(setSubscriptionPrice(price));
@@ -77,7 +83,6 @@ export default function PriceScreen({ navigation }) {
           />
         </TouchableOpacity>
       </View>
-      {/* Affichage du prix */}
       <Text style={styles.priceText}>
         Prix : <Text style={{ fontWeight: "bold" }}>{price} €</Text>
       </Text>
