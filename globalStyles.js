@@ -193,6 +193,8 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: DARK_RED,
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 10,
     borderRadius: 8,
     textAlign: "center",
     justifyContent: "center",
