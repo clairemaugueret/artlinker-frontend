@@ -45,14 +45,15 @@ export default function ConnectionScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
+          console.log(data);
           if (data.result) {
             dispatch(
               loginAndUpdate({
-                email: data.email,
-                token: data.token,
-                firstname: data.firstname,
-                lastname: data.lastname,
-                favoriteItems: data.favoriteItems,
+                email: data.userInfo.email,
+                token: data.userInfo.token,
+                firstname: data.userInfo.firstname,
+                lastname: data.userInfo.lastname,
+                favoriteItems: data.userInfo.favoriteItems,
               })
             );
             setEmailSignIn("");

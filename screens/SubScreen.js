@@ -133,10 +133,10 @@ export default function SubScreen({ navigation }) {
             </Text>
 
             <TouchableOpacity
-              style={globalStyles.button}
+              style={globalStyles.buttonRed}
               onPress={handleValidationNormal}
             >
-              <Text style={globalStyles.buttonText}>
+              <Text style={globalStyles.buttonRedText}>
                 Choisir cet abonnement
               </Text>
             </TouchableOpacity>
@@ -193,10 +193,10 @@ export default function SubScreen({ navigation }) {
             </Text>
 
             <TouchableOpacity
-              style={globalStyles.button}
+              style={globalStyles.buttonRed}
               onPress={handleValidationSpecial}
             >
-              <Text style={globalStyles.buttonText}>
+              <Text style={globalStyles.buttonRedText}>
                 Choisir cet abonnement
               </Text>
             </TouchableOpacity>
@@ -257,10 +257,10 @@ export default function SubScreen({ navigation }) {
             </Text>
 
             <TouchableOpacity
-              style={globalStyles.button}
+              style={globalStyles.buttonRed}
               onPress={handleValidationPublic}
             >
-              <Text style={globalStyles.buttonText}>
+              <Text style={globalStyles.buttonRedText}>
                 Choisir cet abonnement
               </Text>
             </TouchableOpacity>
@@ -321,10 +321,10 @@ export default function SubScreen({ navigation }) {
             </Text>
 
             <TouchableOpacity
-              style={globalStyles.button}
+              style={globalStyles.buttonRed}
               onPress={handleValidationBusiness}
             >
-              <Text style={globalStyles.buttonText}>
+              <Text style={globalStyles.buttonRedText}>
                 Choisir cet abonnement
               </Text>
             </TouchableOpacity>

@@ -1,10 +1,43 @@
 import { globalStyles } from "../globalStyles";
 import { useSelector } from "react-redux";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { fetchAddress } from "../components/FetchAddress";
 
 export default function CartScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription);
   const user = useSelector((state) => state.user);
+  console.log(user);
+
+  const validate = () => {
+    // Préparer les données à envoyer
+    const body = {
+      token: user.value.token,
+      subscriptionType: subscription.type,
+      count: subscription.count,
+      price: subscription.price,
+    };
+
+    //console.log(body);
+
+    fetch(`${fetchAddress}/subscriptions/update`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.result) {
+          navigation.navigate("Stack", { screen: "Payment" });
+        } else {
+          // Gérer l'erreur (affichage, alert, etc.)
+          alert(data.error || "Erreur lors de la mise à jour de l'abonnement.");
+        }
+      })
+      .catch((err) => {
+        alert("Erreur réseau ou serveur.");
+        console.error(err);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -22,16 +55,13 @@ export default function CartScreen({ navigation }) {
         <Text style={{ fontWeight: "bold" }}>{subscription.price} €</Text>
       </Text>
       <TouchableOpacity
-        style={globalStyles.button}
+        style={globalStyles.buttonRed}
         onPress={() => navigation.navigate("Stack", { screen: "Art" })}
       >
-        <Text style={globalStyles.buttonText}>Ajouter d'autres œuvres</Text>
+        <Text style={globalStyles.buttonRedText}>Ajouter d'autres œuvres</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={globalStyles.button}
-        onPress={() => navigation.navigate("Stack", { screen: "Payment" })}
-      >
-        <Text style={globalStyles.buttonText}>Terminer</Text>
+      <TouchableOpacity style={globalStyles.buttonRed} onPress={validate}>
+        <Text style={globalStyles.buttonRedText}>Terminer</Text>
       </TouchableOpacity>
     </View>
   );
