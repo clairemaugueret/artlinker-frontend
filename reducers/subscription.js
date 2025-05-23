@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  type: "Particulier", // valeur par défaut
+  type: "INDIVIDUAL_BASIC_COST",
   count: 1, // nombre d'œuvres sélectionné par défaut
   price: 100, // prix par défaut (correspondant à 1 oeuvre pour Particulier)
 };
