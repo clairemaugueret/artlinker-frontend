@@ -54,19 +54,19 @@ export default function SubScreen({ navigation }) {
   };
 
   const handleValidationNormal = () => {
-    dispatch(setSubscriptionType("Particulier"));
+    dispatch(setSubscriptionType("INDIVIDUAL_BASIC_COST"));
     navigation.navigate("Price");
   };
   const handleValidationSpecial = () => {
-    dispatch(setSubscriptionType("ParticulierReduit"));
+    dispatch(setSubscriptionType("INDIVIDUAL_REDUCT_COST"));
     navigation.navigate("Price");
   };
   const handleValidationPublic = () => {
-    dispatch(setSubscriptionType("EtablissementPublic"));
+    dispatch(setSubscriptionType("PUBLIC_ESTABLISHMENT"));
     navigation.navigate("Price");
   };
   const handleValidationBusiness = () => {
-    dispatch(setSubscriptionType("Entreprise"));
+    dispatch(setSubscriptionType("LIBERAL_PRO"));
     navigation.navigate("Price");
   };
 
