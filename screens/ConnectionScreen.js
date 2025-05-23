@@ -47,15 +47,7 @@ export default function ConnectionScreen({ navigation }) {
         .then((data) => {
           console.log(data);
           if (data.result) {
-            dispatch(
-              loginAndUpdate({
-                email: data.userInfo.email,
-                token: data.userInfo.token,
-                firstname: data.userInfo.firstname,
-                lastname: data.userInfo.lastname,
-                favoriteItems: data.userInfo.favoriteItems,
-              })
-            );
+            dispatch(loginAndUpdate(data.userInfo));
             setEmailSignIn("");
             setPasswordSignIn("");
             navigation.navigate("Map");

@@ -214,8 +214,10 @@ export default function MapScreen({ navigation }) {
           }
         >
           <Image source={{ uri: item.imgMain }} style={styles.image} />
-          <View style={styles.textOverlay}>
-            <Text style={[globalStyles.h4]}>{item.title}</Text>
+          <View style={styles.overlayImage}>
+            <Text style={[globalStyles.h4, { textAlign: "left" }]}>
+              {item.title}
+            </Text>
             <Text style={globalStyles.p}>{item.authors.join(", ")}</Text>
             <Text style={globalStyles.p}>
               <FontAwesome name="location-arrow" size={16} /> Distance:{" "}
@@ -314,7 +316,7 @@ export default function MapScreen({ navigation }) {
             alignItems: "center",
           }}
         >
-          <Text style={globalStyles.h1}>
+          <Text style={[globalStyles.h1, { textAlign: "center" }]}>
             <Text style={globalStyles.darkred}>A</Text>UCUNE OEUVRE À PROXIMITÉ
           </Text>
           <Text style={globalStyles.p}>
@@ -323,7 +325,9 @@ export default function MapScreen({ navigation }) {
         </View>
       ) : (
         <>
-          <Text style={globalStyles.h4}>{carouselTitle}</Text>
+          <Text style={[globalStyles.h4, { textAlign: "center" }]}>
+            {carouselTitle}
+          </Text>
           <View style={styles.carouselWrapper}>
             <Carousel
               key={artitemsReduced.length}

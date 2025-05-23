@@ -1,6 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 
-export const StackHeader = ({ navigation, margin = 10 }) => ({
+// l'affichage du header est différent entre les écrans TabNavigation et StackNavigation
+// height et margin ci-dessous représentent les valuers par défaut utilisées dans la StackNavigation
+// pour les écrans TabNavigation, on peut passer des props height et margin différentes
+export const StackHeader = ({ navigation, height = 60, margin = 10 }) => ({
   headerShown: true,
   headerTitle: "",
   headerStyle: {
@@ -12,13 +15,12 @@ export const StackHeader = ({ navigation, margin = 10 }) => ({
       width: 0,
       height: 2,
     },
-    height: 80,
+    height, // ici juste height car on utilise soit valuer par défaut soit props
   },
   headerLeft: () => (
     <View
       style={{
-        margin,
-        gap: 5,
+        margin, // ici juste margin car on utilise soit valuer par défaut soit props
       }}
     >
       <TouchableOpacity
@@ -26,6 +28,7 @@ export const StackHeader = ({ navigation, margin = 10 }) => ({
         style={{
           flexDirection: "row",
           alignItems: "center",
+          gap: 5,
         }}
       >
         <Image
