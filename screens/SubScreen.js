@@ -55,15 +55,19 @@ export default function SubScreen({ navigation }) {
 
   const handleValidationNormal = () => {
     dispatch(setSubscriptionType("Particulier"));
+    navigation.navigate("Price");
   };
   const handleValidationSpecial = () => {
     dispatch(setSubscriptionType("ParticulierReduit"));
+    navigation.navigate("Price");
   };
   const handleValidationPublic = () => {
     dispatch(setSubscriptionType("EtablissementPublic"));
+    navigation.navigate("Price");
   };
   const handleValidationBusiness = () => {
     dispatch(setSubscriptionType("Entreprise"));
+    navigation.navigate("Price");
   };
 
   return (
@@ -128,8 +132,13 @@ export default function SubScreen({ navigation }) {
               </Text>
             </Text>
 
-            <TouchableOpacity onPress={handleValidationNormal}>
-              <Text style={globalStyles.button}>Choisir cet abonnement</Text>
+            <TouchableOpacity
+              style={globalStyles.button}
+              onPress={handleValidationNormal}
+            >
+              <Text style={globalStyles.buttonText}>
+                Choisir cet abonnement
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -183,8 +192,13 @@ export default function SubScreen({ navigation }) {
               </Text>
             </Text>
 
-            <TouchableOpacity onPress={handleValidationSpecial}>
-              <Text style={globalStyles.button}>Choisir cet abonnement</Text>
+            <TouchableOpacity
+              style={globalStyles.button}
+              onPress={handleValidationNormal}
+            >
+              <Text style={globalStyles.buttonText}>
+                Choisir cet abonnement
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -242,8 +256,13 @@ export default function SubScreen({ navigation }) {
               +100 € / œuvre supplémentaire
             </Text>
 
-            <TouchableOpacity onPress={handleValidationPublic}>
-              <Text style={globalStyles.button}>Choisir cet abonnement</Text>
+            <TouchableOpacity
+              style={globalStyles.button}
+              onPress={handleValidationNormal}
+            >
+              <Text style={globalStyles.buttonText}>
+                Choisir cet abonnement
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -301,8 +320,13 @@ export default function SubScreen({ navigation }) {
               +130 € / œuvre supplémentaire
             </Text>
 
-            <TouchableOpacity onPress={handleValidationBusiness}>
-              <Text style={globalStyles.button}>Choisir cet abonnement</Text>
+            <TouchableOpacity
+              style={globalStyles.button}
+              onPress={handleValidationNormal}
+            >
+              <Text style={globalStyles.buttonText}>
+                Choisir cet abonnement
+              </Text>
             </TouchableOpacity>
           </View>
         )}
