@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-import { fetchAddress } from "./componentFetchAddress";
+import { fetchAddress } from "../components/FetchAddress";
 
 export default function ConnectionScreen({ navigation }) {
   const dispatch = useDispatch();

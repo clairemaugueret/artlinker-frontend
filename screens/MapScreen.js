@@ -20,7 +20,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import * as Location from "expo-location";
 import { current } from "@reduxjs/toolkit";
 import Carousel from "react-native-snap-carousel";
-import { fetchAddress } from "./componentFetchAddress";
+import { fetchAddress } from "../components/FetchAddress";
 
 const { width: screenWidth } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 

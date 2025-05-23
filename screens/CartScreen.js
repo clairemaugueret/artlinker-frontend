@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 export default function CartScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription);
+  const user = useSelector((state) => state.user);
 
   return (
     <View style={styles.container}>
