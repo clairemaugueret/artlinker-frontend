@@ -148,7 +148,7 @@ export const globalStyles = StyleSheet.create({
       android: "Nunito_300Light",
       ios: "Nunito-Light",
     }),
-    fontSize: 20,
+    fontSize: 18,
     color: DARK_GRAY,
   },
   // INPUTS
@@ -166,6 +166,11 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: 10,
     borderColor: DARK_GRAY,
     borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
   },
   inputIsFocused: {
     fontFamily: Platform.select({
@@ -181,12 +186,17 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: 10,
     borderColor: DARK_GREEN,
     borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
   },
   // BOUTONS
-  button: {
+  buttonRed: {
     fontFamily: Platform.select({
-      android: "Nunito_400Regular",
-      ios: "Nunito-Regular",
+      android: "Nunito_600SemiBold",
+      ios: "Nunito-SemiBold",
     }),
     fontSize: 18,
     color: "white",
@@ -198,13 +208,44 @@ export const globalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonText: {
+  buttonRedText: {
     fontFamily: Platform.select({
-      android: "Nunito_400Regular",
-      ios: "Nunito-Regular",
+      android: "Nunito_600SemiBold",
+      ios: "Nunito-SemiBold",
     }),
     fontSize: 18,
     color: "white",
+    textAlign: "center",
+  },
+  buttonWhite: {
+    fontFamily: Platform.select({
+      android: "Nunito_600SemiBold",
+      ios: "Nunito-SemiBold",
+    }),
+    fontSize: 18,
+    color: DARK_GRAY,
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "white", //nécessaire que le shadow soit visible
+    borderWidth: 1, //nécessaire que le shadow soit visible
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
+  },
+  buttonWhiteText: {
+    fontFamily: Platform.select({
+      android: "Nunito_600SemiBold",
+      ios: "Nunito-SemiBold",
+    }),
+    fontSize: 18,
+    color: DARK_GRAY,
     textAlign: "center",
   },
 });

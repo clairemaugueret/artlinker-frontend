@@ -20,7 +20,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import * as Location from "expo-location";
 import { current } from "@reduxjs/toolkit";
 import Carousel from "react-native-snap-carousel";
-import { fetchAddress } from "./componentFetchAddress";
+import { fetchAddress } from "../components/FetchAddress";
 
 const { width: screenWidth } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
@@ -215,10 +215,11 @@ export default function MapScreen({ navigation }) {
         >
           <Image source={{ uri: item.imgMain }} style={styles.image} />
           <View style={styles.textOverlay}>
-            <Text style={styles.overlayText}>{item.title}</Text>
-            <Text style={styles.overlayText}>{item.authors.join(", ")}</Text>
-            <Text style={styles.overlayText}>
-              Distance: {formattedDistance}
+            <Text style={[globalStyles.h4]}>{item.title}</Text>
+            <Text style={globalStyles.p}>{item.authors.join(", ")}</Text>
+            <Text style={globalStyles.p}>
+              <FontAwesome name="location-arrow" size={16} /> Distance:{" "}
+              {formattedDistance}
             </Text>
           </View>
         </TouchableOpacity>
@@ -231,7 +232,7 @@ export default function MapScreen({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Carte principale */}
-      <View style={{ height: "55%" }}>
+      <View style={styles.map}>
         <MapView
           ref={mapRef}
           mapType="standard"
@@ -275,16 +276,30 @@ export default function MapScreen({ navigation }) {
 
       {/* Barre de recherche en haut */}
       <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
+        <View
+          style={[
+            globalStyles.input,
+            {
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: 0,
+            },
+          ]}
+        >
           <TextInput
-            style={styles.searchInput}
+            style={[globalStyles.buttonWhiteText, { textAlign: "left" }]}
             placeholder="Rechercher..."
             value={city}
             onChangeText={(value) => setCity(value)}
             placeholderTextColor="#888"
           />
           <TouchableOpacity onPress={handleSearchCity}>
-            <FontAwesome name="search" size={22} color="#888" />
+            <FontAwesome
+              name="search"
+              size={27}
+              style={[globalStyles.lightred, { marginBottom: 3 }]}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -292,35 +307,50 @@ export default function MapScreen({ navigation }) {
       {/* CLAIRE - Carrousel d'oeuvres */}
       {/* Carrousel ou message si pas d'oeuvre à proximité */}
       {artitemsFiltered.length === 0 ? (
-        <Text style={styles.overlayText}>Pas d'oeuvre</Text>
-      ) : (
-        <View style={styles.carouselWrapper}>
-          <Text style={styles.overlayText}>{carouselTitle}</Text>
-          <Carousel
-            key={artitemsReduced.length}
-            ref={carouselRef}
-            data={artitemsReduced}
-            renderItem={renderItem}
-            sliderWidth={screenWidth}
-            itemWidth={screenWidth * 0.8}
-            layout="default"
-            onSnapToItem={(index) => setActiveSlide(index)}
-            loop={artitemsReduced.length > 2} // Boucle seulement si plus de 2 oeuvres (car bug déjà signalié sur le module du carrousel)
-            extraData={activeSlide}
-          />
-          {/* Pagination du carrousel (= points sous les images) */}
-          <View style={styles.paginationContainer}>
-            {artitemsReduced.map((_, index) => (
-              <View
-                key={`dot-${index}`}
-                style={[
-                  styles.dotStyle,
-                  index === activeSlide ? styles.activeDot : null,
-                ]}
-              />
-            ))}
-          </View>
+        <View
+          style={{
+            marginTop: "15%",
+            paddingHorizontal: 20,
+            alignItems: "center",
+          }}
+        >
+          <Text style={globalStyles.h1}>
+            <Text style={globalStyles.darkred}>A</Text>UCUNE OEUVRE À PROXIMITÉ
+          </Text>
+          <Text style={globalStyles.p}>
+            Rechercher une nouvelle localisation.
+          </Text>
         </View>
+      ) : (
+        <>
+          <Text style={globalStyles.h4}>{carouselTitle}</Text>
+          <View style={styles.carouselWrapper}>
+            <Carousel
+              key={artitemsReduced.length}
+              ref={carouselRef}
+              data={artitemsReduced}
+              renderItem={renderItem}
+              sliderWidth={screenWidth}
+              itemWidth={screenWidth * 0.8}
+              layout="default"
+              onSnapToItem={(index) => setActiveSlide(index)}
+              loop={artitemsReduced.length > 2} // Boucle seulement si plus de 2 oeuvres (car bug déjà signalié sur le module du carrousel)
+              extraData={activeSlide}
+            />
+            {/* Pagination du carrousel (= points sous les images) */}
+            <View style={styles.paginationContainer}>
+              {artitemsReduced.map((_, index) => (
+                <View
+                  key={`dot-${index}`}
+                  style={[
+                    styles.dotStyle,
+                    index === activeSlide ? styles.activeDot : null,
+                  ]}
+                />
+              ))}
+            </View>
+          </View>
+        </>
       )}
     </View>
   );
@@ -330,30 +360,12 @@ export default function MapScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   //STYLE MAP
   map: {
     height: "55%",
-  },
-  input: {
-    width: 150,
-    borderBottomColor: "#ec6e5b",
-    borderBottomWidth: 1,
-    fontSize: 16,
-  },
-  button: {
-    width: 150,
-    alignItems: "center",
-    marginTop: 20,
-    paddingTop: 8,
-    backgroundColor: "#ec6e5b",
-    borderRadius: 10,
-  },
-  textButton: {
-    color: "#ffffff",
-    height: 24,
-    fontWeight: "600",
-    fontSize: 15,
+    marginBottom: 10,
   },
   searchContainer: {
     position: "absolute",
@@ -361,34 +373,6 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     zIndex: 1,
-  },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    height: 40,
-    borderColor: "#F5F5F5",
-    borderWidth: 1,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: "#222",
-    paddingBottom: 8,
-  },
-  gpsButton: {
-    position: "absolute",
-    right: 20,
-    bottom: 20,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 8,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   gpsButtonOnMap: {
     position: "absolute",
@@ -405,9 +389,10 @@ const styles = StyleSheet.create({
   },
   //STYLE CARROUSEL
   carouselWrapper: {
-    height: 300, // hauteur totale image + pagination (permet aussi de gérer espacement entre image et pagination)
+    height: 265, // hauteur totale image + pagination (permet aussi de gérer espacement entre image et pagination)
     justifyContent: "flex-start",
     alignItems: "center",
+    marginTop: 5,
   },
   slide: {
     overflow: "hidden",
@@ -426,22 +411,19 @@ const styles = StyleSheet.create({
   },
   image: {
     width: screenWidth * 0.8,
-    height: 250,
+    height: 240,
     borderRadius: 10,
   },
-  textOverlay: {
+  overlayImage: {
     position: "absolute",
-    bottom: 10,
+    top: 10,
     left: 10,
-    backgroundColor: "rgba(250, 250, 250, 0.5)",
+    backgroundColor: "rgba(250, 250, 250, 0.8)",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 6,
-  },
-  overlayText: {
-    color: "#111",
-    fontSize: 16,
-    fontWeight: "bold",
+    borderColor: "white", //nécessaire que le shadow soit visible
+    borderWidth: 1, //nécessaire que le shadow soit visible
   },
   paginationContainer: {
     flexDirection: "row",
@@ -455,6 +437,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   activeDot: {
-    backgroundColor: "#111",
+    backgroundColor: "#B85449",
   },
 });
