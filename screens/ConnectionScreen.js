@@ -12,81 +12,95 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../reducers/user";
+import { loginAndUpdate } from "../reducers/user";
 import { fetchAddress } from "../components/FetchAddress";
+
+// Grabbed from emailregex.com
+const EMAIL_REGEX =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default function ConnectionScreen({ navigation }) {
   const dispatch = useDispatch();
   const [emailSignIn, setEmailSignIn] = useState("");
-  const [emailSignUp, setEmailSignUp] = useState("");
+  const [emailSignUp, setEmailSignUp] = useState(""); // deux états différents entre SignIn et SignUp pour éviter que les champs se remplissent en même temps
   const [address, setAddress] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [passwordSignIn, setPasswordSignIn] = useState("");
-  const [passwordSignUp, setPasswordSignUp] = useState("");
+  const [passwordSignUp, setPasswordSignUp] = useState(""); // deux états différents entre SignIn et SignUp pour éviter que les champs se remplissent en même temps
   const [phoneNumber, setPhoneNumber] = useState("");
   const [connectionError, setConnectionError] = useState(false);
   const [inscriptionError, setInscriptionError] = useState(false);
   const [error, setError] = useState("");
-  const [focusedField, setFocusedField] = useState(null);
+  const [focusedField, setFocusedField] = useState(null); // pour pouvoir gérer l'état focus des inputs afin de pouvoir changer le style quand l'input est actif/focusé
+  const [emailSignInError, setEmailSignInError] = useState(false);
+  const [emailSignUpError, setEmailSignUpError] = useState(false);
 
   const handleConnection = () => {
-    fetch(`${fetchAddress}/users/signin`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: emailSignIn, password: passwordSignIn }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result) {
-          dispatch(
-            login({
-              email: data.email,
-              token: data.token,
-              firstname: data.firstname,
-              lastname: data.lastname,
-              favoriteItems: data.favoriteItems,
-            })
-          );
-          setEmailSignIn("");
-          setPasswordSignIn("");
-          navigation.navigate("Map");
-        } else {
-          setConnectionError(true);
-          setError(data.error);
-        }
-      });
+    if (EMAIL_REGEX.test(emailSignIn)) {
+      fetch(`${fetchAddress}/users/signin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailSignIn, password: passwordSignIn }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.result) {
+            dispatch(
+              loginAndUpdate({
+                email: data.email,
+                token: data.token,
+                firstname: data.firstname,
+                lastname: data.lastname,
+                favoriteItems: data.favoriteItems,
+              })
+            );
+            setEmailSignIn("");
+            setPasswordSignIn("");
+            navigation.navigate("Map");
+          } else {
+            setConnectionError(true);
+            setError(data.error);
+          }
+        });
+    } else {
+      setEmailSignInError(true);
+    }
   };
 
   const handleInscription = () => {
-    fetch(`${fetchAddress}/users/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: emailSignUp,
-        password: passwordSignUp,
-        firstname,
-        lastname,
-        phoneNumber,
-        address,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result) {
-          dispatch(login(data.userInfo));
-          setEmailSignUp("");
-          setPasswordSignUp("");
-          setFirstname("");
-          setLastname("");
-          setPhoneNumber("");
-          setAddress("");
-          navigation.navigate("Map");
-        } else {
-          setInscriptionError(true);
-          setError(data.error);
-        }
-      });
+    if (EMAIL_REGEX.test(emailSignUp)) {
+      fetch(`${fetchAddress}/users/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: emailSignUp,
+          password: passwordSignUp,
+          firstname,
+          lastname,
+          phoneNumber,
+          address,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.result) {
+            dispatch(loginAndUpdate(data.userInfo));
+            setEmailSignUp("");
+            setPasswordSignUp("");
+            setFirstname("");
+            setLastname("");
+            setPhoneNumber("");
+            setAddress("");
+            navigation.navigate("Map");
+          } else {
+            setInscriptionError(true);
+            setError(data.error);
+          }
+        });
+    } else {
+      setEmailSignUpError(true);
+    }
   };
 
   return (
@@ -101,7 +115,7 @@ export default function ConnectionScreen({ navigation }) {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.connectionContain}>
-            <Text style={globalStyles.h4}>Vous avez déjà un compte ?</Text>
+            <Text style={globalStyles.h2}>Vous avez déjà un compte ?</Text>
             <TextInput
               onChangeText={(value) => setEmailSignIn(value)}
               value={emailSignIn}
@@ -114,6 +128,7 @@ export default function ConnectionScreen({ navigation }) {
               placeholder="Email"
               autoCapitalize="none"
               keyboardType="email-address"
+              textContenType="emailAddress"
             />
             <TextInput
               onChangeText={(value) => setPasswordSignIn(value)}
@@ -126,19 +141,29 @@ export default function ConnectionScreen({ navigation }) {
                   globalStyles.inputIsFocused,
               ]}
               placeholder="Mot de passe"
+              autoCapitalize="none"
               secureTextEntry
             />
-            {connectionError && <Text style={styles.error}>{error}</Text>}
+            {connectionError && (
+              <Text style={[globalStyles.p, globalStyles.darkred]}>
+                {error}
+              </Text>
+            )}
+            {emailSignInError && (
+              <Text style={[globalStyles.p, globalStyles.darkred]}>
+                Email invalide
+              </Text>
+            )}
             <TouchableOpacity
-              style={globalStyles.button}
+              style={globalStyles.buttonRed}
               onPress={handleConnection}
             >
-              <Text style={globalStyles.buttonText}>Connexion</Text>
+              <Text style={globalStyles.buttonRedText}>Connexion</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.inscriptionContain}>
-            <Text style={globalStyles.h3}>Bienvenue dans l'artothèque</Text>
+            <Text style={globalStyles.h1}>Bienvenue dans l'artothèque</Text>
             <TextInput
               onChangeText={(value) => setEmailSignUp(value)}
               value={emailSignUp}
@@ -208,14 +233,24 @@ export default function ConnectionScreen({ navigation }) {
                   globalStyles.inputIsFocused,
               ]}
               placeholder="Mot de passe"
+              autoCapitalize="none"
               secureTextEntry
             />
-            {inscriptionError && <Text style={styles.error}>{error}</Text>}
+            {inscriptionError && (
+              <Text style={[globalStyles.p, globalStyles.darkred]}>
+                {error}
+              </Text>
+            )}
+            {emailSignUpError && (
+              <Text style={[globalStyles.p, globalStyles.darkred]}>
+                Email invalide
+              </Text>
+            )}
             <TouchableOpacity
-              style={globalStyles.button}
+              style={globalStyles.buttonRed}
               onPress={handleInscription}
             >
-              <Text style={globalStyles.buttonText}>Inscription</Text>
+              <Text style={globalStyles.buttonRedText}>Inscription</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -252,14 +287,5 @@ const styles = StyleSheet.create({
     marginTop: 30,
     padding: 15,
     gap: 10,
-  },
-  error: {
-    marginTop: 10,
-    color: "red",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 10,
   },
 });

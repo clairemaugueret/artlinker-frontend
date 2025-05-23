@@ -13,6 +13,7 @@ import MapScreen from "./screens/MapScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import PriceScreen from "./screens/PriceScreen";
 import SubScreen from "./screens/SubScreen";
+import { StackHeader } from "./components/StackHeader";
 
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -59,16 +60,6 @@ const persistor = persistStore(store);
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const StackHeader = ({ navigation }) => ({
-  headerShown: true,
-  headerTitle: "",
-  headerLeft: () => (
-    <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-      <Text style={{ marginLeft: 10 }}>Home</Text>
-    </TouchableOpacity>
-  ),
-});
 
 const StackNavigator = () => {
   return (
@@ -160,7 +151,9 @@ export default function App() {
             <Tab.Screen
               name="Map"
               component={MapScreen}
-              options={({ navigation }) => StackHeader({ navigation })} //déclaration du header différente par rapport à la stack car tab navigation
+              options={({ navigation }) =>
+                StackHeader({ navigation, margin: 20 })
+              } //déclaration du header différente par rapport à la stack car tab navigation
             />
             <Tab.Screen
               name="Account"
