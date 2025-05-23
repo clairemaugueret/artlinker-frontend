@@ -45,6 +45,7 @@ export default function ConnectionScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
+          console.log(data);
           if (data.result) {
             dispatch(loginAndUpdate(data.userInfo));
             setEmailSignIn("");

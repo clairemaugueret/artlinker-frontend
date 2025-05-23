@@ -86,8 +86,8 @@ export default function PriceScreen({ navigation }) {
       <Text style={styles.priceText}>
         Prix : <Text style={{ fontWeight: "bold" }}>{price} €</Text>
       </Text>
-      <TouchableOpacity style={globalStyles.button} onPress={validate}>
-        <Text style={globalStyles.buttonText}>Valider</Text>
+      <TouchableOpacity style={globalStyles.buttonRed} onPress={validate}>
+        <Text style={globalStyles.buttonRedText}>Valider</Text>
       </TouchableOpacity>
     </View>
   );
