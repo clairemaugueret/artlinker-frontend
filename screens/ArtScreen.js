@@ -10,16 +10,20 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { fetchAddress } from "../components/FetchAddress";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Carousel from "react-native-snap-carousel";
 
+//FATOUMATA
 export default function ArtScreen({ navigation, route }) {
   const [works, setWorks] = useState([]);
-  const { artitemData } = route.params || {};
-  // navigation est toujours disponible;
-  console.log("artitemData", artitemData);
+  const { artitemData } = route.params || {}; // navigation est toujours disponible;
+
   //GET Works by the Same Author
   useEffect(() => {
+    console.log("artitemData", artitemData);
     if (artitemData && artitemData.authors && artitemData.authors.length > 0) {
       const author = Array.isArray(artitemData.authors)
         ? artitemData.authors[0]
@@ -38,14 +42,18 @@ export default function ArtScreen({ navigation, route }) {
     }
   }, [artitemData]);
 
-  const worksFound = works.map((work) => {
+  //CAROUSEL
+  const renderItem = ({ item }) => {
     return (
-      <View key={work._id}>
-        <Text>{work.title}</Text>
-        <Text>{work.authors.join(", ")}</Text>
+      <View style={styles.slide}>
+        <TouchableOpacity onPress={console.log("Item pressed")}>
+          <Image source={{ uri: item.imgMain }} style={styles.imageSlide} />
+          <Text style={styles.title}>{item.titleSlide}</Text>
+        </TouchableOpacity>
       </View>
     );
-  });
+  };
+
   console.log("works", worksFound);
 
   return (
@@ -59,7 +67,8 @@ export default function ArtScreen({ navigation, route }) {
           <Text style={globalStyles.h3}>{artitemData.title}</Text>
           <Text style={globalStyles.h4}>{artitemData.authors.join(", ")}</Text>
           <Text style={globalStyles.p}>{artitemData.dimensions}</Text>
-
+          <FontAwesome name="location-arrow" size={16} /> Distance:{" "}
+          {formattedDistance}
           {/* <Text style={styles.title}>{artitemData.info}</Text> */}
           <TouchableOpacity
             style={[globalStyles.buttonRed, { width: "100%" }]}
@@ -67,78 +76,20 @@ export default function ArtScreen({ navigation, route }) {
           >
             <Text style={globalStyles.buttonRedText}>Emprunter</Text>
           </TouchableOpacity>
-
-          <Text>
-            The standard Lorem Ipsum passage, used since the 1500s "Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in
-            voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-            officia deserunt mollit anim id est laborum." Section 1.10.32 of "de
-            Finibus Bonorum et Malorum", written by Cicero in 45 BC "Sed ut
-            perspiciatis unde omnis iste natus error sit voluptatem accusantium
-            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-            inventore veritatis et quasi architecto beatae vitae dicta sunt
-            explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur
-            aut odit aut fugit, sed quia consequuntur magni dolores eos qui
-            ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
-            dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
-            quia non numquam eius modi tempora incidunt ut labore et dolore
-            magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
-            nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut
-            aliquid ex ea commodi consequatur? Quis autem vel eum iure
-            reprehenderit qui in ea voluptate velit esse quam nihil molestiae
-            consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
-            pariatur?" 1914 translation by H. Rackham "But I must explain to you
-            how all this mistaken idea of denouncing pleasure and praising pain
-            was born and I will give you a complete account of the system, and
-            expound the actual teachings of the great explorer of the truth, the
-            master-builder of human happiness. No one rejects, dislikes, or
-            avoids pleasure itself, because it is pleasure, but because those
-            who do not know how to pursue pleasure rationally encounter
-            consequences that are extremely painful. Nor again is there anyone
-            who loves or pursues or desires to obtain pain of itself, because it
-            is pain, but because occasionally circumstances occur in which toil
-            and pain can procure him some great pleasure. To take a trivial
-            example, which of us ever undertakes laborious physical exercise,
-            except to obtain some advantage from it? But who has any right to
-            find fault with a man who chooses to enjoy a pleasure that has no
-            annoying consequences, or one who avoids a pain that produces no
-            resultant pleasure?" Section 1.10.33 of "de Finibus Bonorum et
-            Malorum", written by Cicero in 45 BC "At vero eos et accusamus et
-            iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
-            deleniti atque corrupti quos dolores et quas molestias excepturi
-            sint occaecati cupiditate non provident, similique sunt in culpa qui
-            officia deserunt mollitia animi, id est laborum et dolorum fuga. Et
-            harum quidem rerum facilis est et expedita distinctio. Nam libero
-            tempore, cum soluta nobis est eligendi optio cumque nihil impedit
-            quo minus id quod maxime placeat facere possimus, omnis voluptas
-            assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
-            et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et
-            voluptates repudiandae sint et molestiae non recusandae. Itaque
-            earum rerum hic tenetur a sapiente delectus, ut aut reiciendis
-            voluptatibus maiores alias consequatur aut perferendis doloribus
-            asperiores repellat." 1914 translation by H. Rackham "On the other
-            hand, we denounce with righteous indignation and dislike men who are
-            so beguiled and demoralized by the charms of pleasure of the moment,
-            so blinded by desire, that they cannot foresee the pain and trouble
-            that are bound to ensue; and equal blame belongs to those who fail
-            in their duty through weakness of will, which is the same as saying
-            through shrinking from toil and pain. These cases are perfectly
-            simple and easy to distinguish. In a free hour, when our power of
-            choice is untrammelled and when nothing prevents our being able to
-            do what we like best, every pleasure is to be welcomed and every
-            pain avoided. But in certain circumstances and owing to the claims
-            of duty or the obligations of business it will frequently occur that
-            pleasures have to be repudiated and annoyances accepted. The wise
-            man therefore always holds in these matters to this principle of
-            selection: he rejects pleasures to secure other greater pleasures,
-            or else he endures pains to avoid worse pains."
-          </Text>
         </View>
-        <View style={styles.oeuvres}>{worksFound}</View>
+        <ScrollView style={styles.scrollviewContainer}>
+          {/* ...autres composants... */}
+          <Text style={globalStyles.h3}>Œuvres du même auteur :</Text>
+          <Carousel
+            data={works}
+            renderItem={renderItem}
+            sliderWidth={350} // largeur du carrousel (à adapter à ton écran)
+            itemWidth={250} // largeur d'un slide
+            layout="default"
+            keyExtractor={(item) => item._id}
+          />
+          {/* ...autres composants... */}
+        </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
@@ -166,7 +117,6 @@ const styles = StyleSheet.create({
     marginLeft: 35,
     borderRadius: 15,
   },
-
   oeuvres: {
     width: "100%",
     height: "40%",
@@ -174,5 +124,25 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "red",
+  },
+  titleSlide: {
+    color: "red",
+  },
+  slide: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 10,
+  },
+  imageSlide: {
+    width: 220,
+    height: 180,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  formattedDistance: {
+    fontSize: 16,
+    color: "#333",
   },
 });
