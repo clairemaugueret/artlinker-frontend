@@ -128,7 +128,7 @@ export const globalStyles = StyleSheet.create({
       android: "Montserrat_400Regular",
       ios: "Montserrat-Regular",
     }),
-    fontSize: 32,
+    fontSize: 24,
     color: DARK_GRAY,
     //textAlign: "center", Centrage du texte
   },
@@ -138,7 +138,7 @@ export const globalStyles = StyleSheet.create({
       android: "Montserrat_600SemiBold",
       ios: "Montserrat-SemiBold",
     }),
-    fontSize: 24,
+    fontSize: 18,
     color: DARK_GRAY,
     //textAlign: "center", Centrage du texte
   },
@@ -148,7 +148,7 @@ export const globalStyles = StyleSheet.create({
       android: "Nunito_300Light",
       ios: "Nunito-Light",
     }),
-    fontSize: 20,
+    fontSize: 18,
     color: DARK_GRAY,
   },
   // INPUTS
@@ -206,5 +206,9 @@ export const globalStyles = StyleSheet.create({
     fontSize: 18,
     color: "white",
     textAlign: "center",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
