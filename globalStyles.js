@@ -125,7 +125,7 @@ export const globalStyles = StyleSheet.create({
       android: "Montserrat_400Regular",
       ios: "Montserrat-Regular",
     }),
-    fontSize: 32,
+    fontSize: 24,
     color: DARK_GRAY,
   },
   // TITRE 4
@@ -134,7 +134,7 @@ export const globalStyles = StyleSheet.create({
       android: "Montserrat_600SemiBold",
       ios: "Montserrat-SemiBold",
     }),
-    fontSize: 24,
+    fontSize: 18,
     color: DARK_GRAY,
   },
   // PARAGRAPGE
@@ -143,6 +143,7 @@ export const globalStyles = StyleSheet.create({
       android: "Nunito_300Light",
       ios: "Nunito-Light",
     }),
+    fontSize: 18,
     fontSize: 18,
     color: DARK_GRAY,
   },

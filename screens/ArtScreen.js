@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { globalStyles } from "../globalStyles";
 import {
   Image,
-  KeyboardAvoidingView,
   Platform,
   StyleSheet,
   View,
@@ -11,7 +10,6 @@ import {
   ScrollView,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { fetchAddress } from "../components/FetchAddress";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
@@ -19,7 +17,7 @@ import Carousel from "react-native-snap-carousel";
 //FATOUMATA
 export default function ArtScreen({ navigation, route }) {
   const [works, setWorks] = useState([]);
-  const { artitemData } = route.params || {}; // navigation est toujours disponible;
+  const [artitemData, setArtitemData] = useState(route.params?.artitemData); // navigation est toujours disponible;
 
   //GET Works by the Same Author
   useEffect(() => {
@@ -42,19 +40,55 @@ export default function ArtScreen({ navigation, route }) {
     }
   }, [artitemData]);
 
+  // Filtrer l'œuvre principale du carrousel
+  const worksCarousel = works.filter((work) => work._id !== artitemData._id);
+
   //CAROUSEL
   const renderItem = ({ item }) => {
+    if (worksCarousel.length === 0) {
+      return; // Si aucun travail n'est disponible, ne rien afficher
+    }
     return (
       <View style={styles.slide}>
-        <TouchableOpacity onPress={console.log("Item pressed")}>
+        <TouchableOpacity onPress={() => setArtitemData(item)}>
           <Image source={{ uri: item.imgMain }} style={styles.imageSlide} />
-          <Text style={styles.title}>{item.titleSlide}</Text>
+          <View style={styles.textOverlay}>
+            <Text style={globalStyles.overlayText}>{item.title}</Text>
+          </View>
         </TouchableOpacity>
       </View>
     );
   };
 
-  console.log("works", worksFound);
+  // Affichage conditionné de la disponibilité de l'oeuvre
+  function renderAvailability(disponibility) {
+    return (
+      <Text
+        style={[
+          globalStyles.p,
+          { color: disponibility ? "#609E72" : "#D27E75" },
+        ]}
+      >
+        {disponibility
+          ? "Disponible"
+          : `Indisponible (Retour le: ${formatDate(
+              artitemData.expectedReturnDate
+            )} )`}
+      </Text>
+    );
+  }
+  // solution 2 voir avec le groupe pour le component ou module????????
+  //de meme pour formate distance de Claire ??????????????????????????????????
+  function formatDate(dateString) {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("fr-FR");
+  }
+
+  function formatDistance(distance) {
+    if (typeof distance !== "number") return "";
+    return `${distance.toFixed(2)} km`;
+  }
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -67,28 +101,32 @@ export default function ArtScreen({ navigation, route }) {
           <Text style={globalStyles.h3}>{artitemData.title}</Text>
           <Text style={globalStyles.h4}>{artitemData.authors.join(", ")}</Text>
           <Text style={globalStyles.p}>{artitemData.dimensions}</Text>
-          <FontAwesome name="location-arrow" size={16} /> Distance:{" "}
-          {formattedDistance}
+          <View style={globalStyles.row}>
+            <FontAwesome name="location-arrow" size={20} />
+            <Text style={[globalStyles.p, { marginLeft: 5 }]}>
+              Distance: {formatDistance(artitemData.distance)}
+            </Text>
+          </View>
+
           {/* <Text style={styles.title}>{artitemData.info}</Text> */}
+          <Text>{renderAvailability(artitemData.disponibility)}</Text>
           <TouchableOpacity
-            style={[globalStyles.buttonRed, { width: "100%" }]}
+            style={[globalStyles.button, { width: "100%", marginTop: 15 }]}
             onPress={() => navigation.navigate("Sub", { artitemData })} // Pass the artitemData to the Sub screen
           >
-            <Text style={globalStyles.buttonRedText}>Emprunter</Text>
+            <Text style={globalStyles.buttonText}>Emprunter</Text>
           </TouchableOpacity>
         </View>
         <ScrollView style={styles.scrollviewContainer}>
-          {/* ...autres composants... */}
-          <Text style={globalStyles.h3}>Œuvres du même auteur :</Text>
+          <Text style={globalStyles.h3}>Autres œuvres de l’artiste :</Text>
           <Carousel
-            data={works}
+            data={worksCarousel}
             renderItem={renderItem}
-            sliderWidth={350} // largeur du carrousel (à adapter à ton écran)
+            sliderWidth={350} // largeur du carrousel
             itemWidth={250} // largeur d'un slide
             layout="default"
-            keyExtractor={(item) => item._id}
+            layoutCardOffset={9} // pour un effet de profondeur
           />
-          {/* ...autres composants... */}
         </ScrollView>
       </ScrollView>
     </SafeAreaView>
@@ -101,11 +139,15 @@ const styles = StyleSheet.create({
   },
   scrollviewContainer: {
     flexGrow: 1,
+    marginTop: 20,
+    marginLeft: 15,
   },
   cart: {
-    marginLeft: 35,
+    marginTop: 10,
+    marginLeft: 20,
     marginRight: 35,
     alignItems: "flex-start",
+    padding: 5,
     backgroundColor: "#f0f0f0",
   },
   image: {
@@ -114,7 +156,7 @@ const styles = StyleSheet.create({
     height: 240,
     width: "85%",
     marginTop: 5,
-    marginLeft: 35,
+    marginLeft: 25,
     borderRadius: 15,
   },
   oeuvres: {
@@ -131,9 +173,24 @@ const styles = StyleSheet.create({
   slide: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+
+    padding: 15,
+  },
+  imageSlide: {
+    width: 250,
+    height: 180,
     borderRadius: 10,
-    padding: 10,
+    marginBottom: 10,
+    resizeMode: "cover", // pour que l'image remplisse tout le conteneur
+  },
+  textOverlay: {
+    position: "absolute",
+    bottom: 15,
+    left: 5,
+    backgroundColor: "rgba(250, 250, 250, 0.5)", // fond semi-transparent
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
   },
   imageSlide: {
     width: 220,
