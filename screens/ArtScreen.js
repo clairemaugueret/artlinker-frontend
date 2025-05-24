@@ -19,7 +19,6 @@ export default function ArtScreen({ navigation, route }) {
   console.log("artitemData", artitemData);
   //GET Works by the Same Author
   useEffect(() => {
-    console.log("artitemData", artitemData);
     if (artitemData && artitemData.authors && artitemData.authors.length > 0) {
       const author = Array.isArray(artitemData.authors)
         ? artitemData.authors[0]
