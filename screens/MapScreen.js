@@ -22,6 +22,7 @@ import * as Location from "expo-location";
 import { current } from "@reduxjs/toolkit";
 import Carousel from "react-native-snap-carousel";
 import { fetchAddress } from "../components/FetchAddress";
+import { FormatDistance } from "../components/FormatDistance";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
@@ -196,12 +197,7 @@ export default function MapScreen({ navigation }) {
 
   //Render pour le carrousel
   const renderItem = ({ item }) => {
-    let formattedDistance = "";
-    if (item.distance < 1) {
-      formattedDistance = `${(item.distance * 1000).toFixed(0)} m`;
-    } else {
-      formattedDistance = `${item.distance.toFixed(2)} km`;
-    }
+    // Formate la distance de l'oeuvre par rapport à la position courante
 
     return (
       <View style={styles.slide}>
@@ -222,7 +218,7 @@ export default function MapScreen({ navigation }) {
             <Text style={globalStyles.p}>{item.authors.join(", ")}</Text>
             <Text style={globalStyles.p}>
               <FontAwesome name="location-arrow" size={16} /> Distance:{" "}
-              {formattedDistance}
+              {FormatDistance(item.distance)}
             </Text>
           </View>
         </TouchableOpacity>

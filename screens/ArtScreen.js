@@ -14,6 +14,8 @@ import { fetchAddress } from "../components/FetchAddress";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
 
+import { FormatDistance } from "../components/FormatDistance";
+
 //FATOUMATA
 export default function ArtScreen({ navigation, route }) {
   const [works, setWorks] = useState([]);
@@ -77,17 +79,11 @@ export default function ArtScreen({ navigation, route }) {
       </Text>
     );
   }
-  // solution 2 voir avec le groupe pour le component ou module????????
-  //de meme pour formate distance de Claire ??????????????????????????????????
+
   function formatDate(dateString) {
     if (!dateString) return "";
     const date = new Date(dateString);
     return date.toLocaleDateString("fr-FR");
-  }
-
-  function formatDistance(distance) {
-    if (typeof distance !== "number") return "";
-    return `${distance.toFixed(2)} km`;
   }
 
   return (
@@ -102,20 +98,22 @@ export default function ArtScreen({ navigation, route }) {
           <Text style={globalStyles.h4}>{artitemData.authors.join(", ")}</Text>
           <Text style={globalStyles.p}>{artitemData.dimensions}</Text>
           <View style={globalStyles.row}>
-            <FontAwesome name="location-arrow" size={20} />
             <Text style={[globalStyles.p, { marginLeft: 5 }]}>
-              Distance: {formatDistance(artitemData.distance)}
+              <FontAwesome name="location-arrow" size={20} /> Distance:{" "}
+              {FormatDistance(artitemData.distance)}
             </Text>
           </View>
 
           {/* <Text style={styles.title}>{artitemData.info}</Text> */}
           <Text>{renderAvailability(artitemData.disponibility)}</Text>
-          <TouchableOpacity
-            style={[globalStyles.button, { width: "100%", marginTop: 15 }]}
-            onPress={() => navigation.navigate("Sub", { artitemData })} // Pass the artitemData to the Sub screen
-          >
-            <Text style={globalStyles.buttonText}>Emprunter</Text>
-          </TouchableOpacity>
+          {artitemData.disponibility && (
+            <TouchableOpacity
+              style={[globalStyles.buttonRed, { width: "100%", marginTop: 15 }]}
+              onPress={() => navigation.navigate("Sub", { artitemData })} // Pass the artitemData to the Sub screen
+            >
+              <Text style={globalStyles.buttonRedText}>Emprunter</Text>
+            </TouchableOpacity>
+          )}
         </View>
         <ScrollView style={styles.scrollviewContainer}>
           <Text style={globalStyles.h3}>Autres œuvres de l’artiste :</Text>
