@@ -13,12 +13,15 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { fetchAddress } from "../components/FetchAddress";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../reducers/cart";
+import { FormatDistance } from "../components/FormatDistance";
 
 //FATOUMATA
 export default function ArtScreen({ navigation, route }) {
   const [works, setWorks] = useState([]);
   const [artitemData, setArtitemData] = useState(route.params?.artitemData); // navigation est toujours disponible;
-
+  const dispatch = useDispatch();
   //GET Works by the Same Author
   useEffect(() => {
     console.log("artitemData", artitemData);
@@ -43,14 +46,25 @@ export default function ArtScreen({ navigation, route }) {
   // Filtrer l'œuvre principale du carrousel
   const worksCarousel = works.filter((work) => work._id !== artitemData._id);
 
-  //CAROUSEL
-  const renderItem = ({ item }) => {
-    if (worksCarousel.length === 0) {
-      return; // Si aucun travail n'est disponible, ne rien afficher
-    }
+  //CAROUSEL imgList de l'oeuvre
+  const renderImageItem = ({ item }) => {
     return (
       <View style={styles.slide}>
-        <TouchableOpacity onPress={() => setArtitemData(item)}>
+        <Image source={{ uri: item }} style={styles.imageSlide2} />
+      </View>
+    );
+  };
+
+  //CAROUSEL autres oeuvres de l'artiste
+  const renderItem = ({ item }) => {
+    // if (worksCarousel.length === 0) {
+    //   return; // Si aucun travail n'est disponible, ne rien afficher
+    // }
+    return (
+      <View style={styles.slide}>
+        <TouchableOpacity
+          onPress={() => navigation.replace("Art", { artitemData: item })}
+        >
           <Image source={{ uri: item.imgMain }} style={styles.imageSlide} />
           <View style={styles.textOverlay}>
             <Text style={globalStyles.overlayText}>{item.title}</Text>
@@ -77,17 +91,11 @@ export default function ArtScreen({ navigation, route }) {
       </Text>
     );
   }
-  // solution 2 voir avec le groupe pour le component ou module????????
-  //de meme pour formate distance de Claire ??????????????????????????????????
+
   function formatDate(dateString) {
     if (!dateString) return "";
     const date = new Date(dateString);
     return date.toLocaleDateString("fr-FR");
-  }
-
-  function formatDistance(distance) {
-    if (typeof distance !== "number") return "";
-    return `${distance.toFixed(2)} km`;
   }
 
   return (
@@ -96,26 +104,48 @@ export default function ArtScreen({ navigation, route }) {
         style={styles.scrollviewContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Image source={{ uri: artitemData.imgMain }} style={styles.image} />
+        <Carousel
+          data={artitemData.imgList}
+          renderItem={renderImageItem}
+          sliderWidth={370} // largeur du carrousel
+          itemWidth={320} // largeur d'un slide
+          layout="default"
+          layoutCardOffset={9} // pour un effet de profondeur
+          style={styles.oeuvres}
+        />
+        {/* <Image source={{ uri: artitemData.imgMain }} style={styles.image} /> */}
         <View style={styles.cart}>
           <Text style={globalStyles.h3}>{artitemData.title}</Text>
           <Text style={globalStyles.h4}>{artitemData.authors.join(", ")}</Text>
           <Text style={globalStyles.p}>{artitemData.dimensions}</Text>
           <View style={globalStyles.row}>
-            <FontAwesome name="location-arrow" size={20} />
             <Text style={[globalStyles.p, { marginLeft: 5 }]}>
-              Distance: {formatDistance(artitemData.distance)}
+              <FontAwesome name="location-arrow" size={20} /> Distance:{" "}
+              {FormatDistance(artitemData.distance)}
             </Text>
           </View>
 
           {/* <Text style={styles.title}>{artitemData.info}</Text> */}
           <Text>{renderAvailability(artitemData.disponibility)}</Text>
-          <TouchableOpacity
-            style={[globalStyles.button, { width: "100%", marginTop: 15 }]}
-            onPress={() => navigation.navigate("Sub", { artitemData })} // Pass the artitemData to the Sub screen
-          >
-            <Text style={globalStyles.buttonText}>Emprunter</Text>
-          </TouchableOpacity>
+          {artitemData.disponibility && (
+            <TouchableOpacity
+              style={[globalStyles.buttonRed, { width: "100%", marginTop: 15 }]}
+              onPress={() => {
+                dispatch(
+                  addToCart({
+                    id: artitemData._id,
+                    imgMain: artitemData.imgMain,
+                    title: artitemData.title,
+                    authors: artitemData.authors,
+                    distance: artitemData.distance,
+                  })
+                );
+                navigation.navigate("Sub", { artitemData });
+              }}
+            >
+              <Text style={globalStyles.buttonRedText}>Emprunter</Text>
+            </TouchableOpacity>
+          )}
         </View>
         <ScrollView style={styles.scrollviewContainer}>
           <Text style={globalStyles.h3}>Autres œuvres de l’artiste :</Text>
@@ -153,8 +183,8 @@ const styles = StyleSheet.create({
   image: {
     alignItems: "center",
     resizeMode: "cover",
-    height: 240,
-    width: "85%",
+    height: 300,
+    width: "100%",
     marginTop: 5,
     marginLeft: 25,
     borderRadius: 15,
@@ -192,11 +222,12 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 6,
   },
-  imageSlide: {
-    width: 220,
-    height: 180,
+  imageSlide2: {
+    width: 340,
+    height: 250,
     borderRadius: 10,
     marginBottom: 10,
+    resizeMode: "cover",
   },
   formattedDistance: {
     fontSize: 16,
