@@ -45,7 +45,16 @@ export default function ArtScreen({ navigation, route }) {
   // Filtrer l'œuvre principale du carrousel
   const worksCarousel = works.filter((work) => work._id !== artitemData._id);
 
-  //CAROUSEL
+  //CAROUSEL imgList de l'oeuvre
+  const renderImageItem = ({ item }) => {
+    return (
+      <View style={styles.slide}>
+        <Image source={{ uri: item }} style={styles.imageSlide} />
+      </View>
+    );
+  };
+
+  //CAROUSEL autres oeuvres de l'artiste
   const renderItem = ({ item }) => {
     if (worksCarousel.length === 0) {
       return; // Si aucun travail n'est disponible, ne rien afficher
@@ -92,7 +101,16 @@ export default function ArtScreen({ navigation, route }) {
         style={styles.scrollviewContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Image source={{ uri: artitemData.imgMain }} style={styles.image} />
+        <Carousel
+          data={artitemData.imgList}
+          renderItem={renderImageItem}
+          sliderWidth={370} // largeur du carrousel
+          itemWidth={320} // largeur d'un slide
+          layout="default"
+          layoutCardOffset={9} // pour un effet de profondeur
+          style={styles.oeuvres}
+        />
+        {/* <Image source={{ uri: artitemData.imgMain }} style={styles.image} /> */}
         <View style={styles.cart}>
           <Text style={globalStyles.h3}>{artitemData.title}</Text>
           <Text style={globalStyles.h4}>{artitemData.authors.join(", ")}</Text>
@@ -151,8 +169,8 @@ const styles = StyleSheet.create({
   image: {
     alignItems: "center",
     resizeMode: "cover",
-    height: 240,
-    width: "85%",
+    height: 300,
+    width: "100%",
     marginTop: 5,
     marginLeft: 25,
     borderRadius: 15,
