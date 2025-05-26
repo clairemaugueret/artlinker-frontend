@@ -1,6 +1,7 @@
 import { globalStyles } from "../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
 import { setSubscriptionCount } from "../reducers/subscription";
+import { removeFromCart, clearCart } from "../reducers/cart";
 import { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -27,41 +28,40 @@ const priceGrids = {
   LIBERAL_PRO: { 3: 500, 4: 600, 5: 700 },
 };
 
-const initialArtworks = [
-  {
-    id: 1,
-    image:
-      "https://serv.theartlinker.com/assets/uploads/4b6ace0e5126088a7ffa1c6469a7a1347bfdadc741063f3d3be4cf1a20952ab7.jpg",
-    title: "Titre de l’œuvre",
-    artist: "Nom artiste",
-    distance: "3 km",
-  },
-  {
-    id: 2,
-    image:
-      "https://serv.theartlinker.com/assets/uploads/9a8782e8241b8e257a5ccf7e4dc483e30571aa3c54a3b28fb9894ac63235c27b.jpg",
-    title: "Titre de l’œuvre trop long pour être affiché",
-    artist: "Nom artiste",
-    distance: "3 km",
-  },
-  {
-    id: 3,
-    image:
-      "https://serv.theartlinker.com/assets/uploads/71a331c7b6f42cca763454e7b4163d976351f19f35ff1c7279c8a5156694628d.jpg",
-    title: "Titre de l’œuvre",
-    artist: "Nom artiste",
-    distance: "3 km",
-  },
-];
+// const initialArtworks = [
+//   {
+//     id: 1,
+//     image:
+//       "https://serv.theartlinker.com/assets/uploads/4b6ace0e5126088a7ffa1c6469a7a1347bfdadc741063f3d3be4cf1a20952ab7.jpg",
+//     title: "Titre de l’œuvre",
+//     artist: "Nom artiste",
+//     distance: "3 km",
+//   },
+//   {
+//     id: 2,
+//     image:
+//       "https://serv.theartlinker.com/assets/uploads/9a8782e8241b8e257a5ccf7e4dc483e30571aa3c54a3b28fb9894ac63235c27b.jpg",
+//     title: "Titre de l’œuvre trop long pour être affiché",
+//     artist: "Nom artiste",
+//     distance: "3 km",
+//   },
+//   {
+//     id: 3,
+//     image:
+//       "https://serv.theartlinker.com/assets/uploads/71a331c7b6f42cca763454e7b4163d976351f19f35ff1c7279c8a5156694628d.jpg",
+//     title: "Titre de l’œuvre",
+//     artist: "Nom artiste",
+//     distance: "3 km",
+//   },
+// ];
 
 export default function CartScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription) || {};
+  const artworks = useSelector((state) => state.cart.artWorkInCart) || [];
   const user = useSelector((state) => state.user) || {};
-  const dispatch = useDispatch(); // Ajoute ce hook en haut du composant si ce n'est pas déjà fait
-  //const [actualCount, setActualCount] = useState(subscription.count || 1);
+  const dispatch = useDispatch();
 
-  // State local pour le nombre d'œuvres
-  const [count, setCount] = useState(initialArtworks.length);
+  const count = artworks.length;
   // State local pour le prix
   const [price, setPrice] = useState(
     (priceGrids[subscription.type] || priceGrids["INDIVIDUAL_BASIC_COST"])[
@@ -70,13 +70,6 @@ export default function CartScreen({ navigation }) {
   );
   // State local pour la capacité future
   const [futurBorrowCapacity, setFuturBorrowCapacity] = useState(0);
-  // Remplace artworks par un state local
-  const [artworks, setArtworks] = useState(initialArtworks);
-
-  // Met à jour count si subscription.count change (ex: retour depuis une autre page)
-  useEffect(() => {
-    setCount(artworks.length);
-  }, [artworks]);
 
   // Met à jour le prix dynamiquement quand count ou type change
   useEffect(() => {
@@ -144,7 +137,8 @@ export default function CartScreen({ navigation }) {
 
   // Fonction de suppression
   const handleDelete = (id) => {
-    setArtworks((prev) => prev.filter((art) => art.id !== id));
+    dispatch(removeFromCart({ id }));
+    //setArtworks((prev) => prev.filter((art) => art.id !== id));
   };
 
   return (
@@ -152,8 +146,8 @@ export default function CartScreen({ navigation }) {
       <Text style={[globalStyles.h2, styles.title]}>Récapitulatif</Text>
       <View style={StyleSheet.card}>
         <View style={styles.cardsContainer}>
-          {artworks.map((art, index) => (
-            <View style={styles.card} key={art.id}>
+          {artworks.map((art) => (
+            <View key={art.id} style={styles.card}>
               <View style={styles.cardImageWrapper}>
                 <Image source={{ uri: art.image }} style={styles.cardImage} />
                 <TouchableOpacity
@@ -199,7 +193,8 @@ export default function CartScreen({ navigation }) {
         </Text>
       </Text>
       <Text style={styles.info}>
-        Œuvres sélectionné : <Text style={{ fontWeight: "bold" }}>{count}</Text>
+        Œuvres sélectionnées :{" "}
+        <Text style={{ fontWeight: "bold" }}>{count}</Text>
       </Text>
       <Text style={styles.info}>
         Crédit actuel:{" "}
@@ -232,6 +227,12 @@ export default function CartScreen({ navigation }) {
           Crédit insuffisant, veuillez réduire le nombre d'œuvres.
         </Text>
       )}
+      <TouchableOpacity
+        style={globalStyles.buttonRed}
+        onPress={() => dispatch(clearCart())}
+      >
+        <Text style={globalStyles.buttonRedText}>Vider le panier</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
