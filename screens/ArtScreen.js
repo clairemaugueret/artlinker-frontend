@@ -13,14 +13,15 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { fetchAddress } from "../components/FetchAddress";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
-
+import { useDispatch } from "react-redux";
+import { addToCart } from "../reducers/cart";
 import { FormatDistance } from "../components/FormatDistance";
 
 //FATOUMATA
 export default function ArtScreen({ navigation, route }) {
   const [works, setWorks] = useState([]);
   const [artitemData, setArtitemData] = useState(route.params?.artitemData); // navigation est toujours disponible;
-
+  const dispatch = useDispatch();
   //GET Works by the Same Author
   useEffect(() => {
     console.log("artitemData", artitemData);
@@ -49,19 +50,21 @@ export default function ArtScreen({ navigation, route }) {
   const renderImageItem = ({ item }) => {
     return (
       <View style={styles.slide}>
-        <Image source={{ uri: item }} style={styles.imageSlide} />
+        <Image source={{ uri: item }} style={styles.imageSlide2} />
       </View>
     );
   };
 
   //CAROUSEL autres oeuvres de l'artiste
   const renderItem = ({ item }) => {
-    if (worksCarousel.length === 0) {
-      return; // Si aucun travail n'est disponible, ne rien afficher
-    }
+    // if (worksCarousel.length === 0) {
+    //   return; // Si aucun travail n'est disponible, ne rien afficher
+    // }
     return (
       <View style={styles.slide}>
-        <TouchableOpacity onPress={() => setArtitemData(item)}>
+        <TouchableOpacity
+          onPress={() => navigation.replace("Art", { artitemData: item })}
+        >
           <Image source={{ uri: item.imgMain }} style={styles.imageSlide} />
           <View style={styles.textOverlay}>
             <Text style={globalStyles.overlayText}>{item.title}</Text>
@@ -127,7 +130,18 @@ export default function ArtScreen({ navigation, route }) {
           {artitemData.disponibility && (
             <TouchableOpacity
               style={[globalStyles.buttonRed, { width: "100%", marginTop: 15 }]}
-              onPress={() => navigation.navigate("Sub", { artitemData })} // Pass the artitemData to the Sub screen
+              onPress={() => {
+                dispatch(
+                  addToCart({
+                    id: artitemData._id,
+                    imgMain: artitemData.imgMain,
+                    title: artitemData.title,
+                    authors: artitemData.authors,
+                    distance: artitemData.distance,
+                  })
+                );
+                navigation.navigate("Sub", { artitemData });
+              }}
             >
               <Text style={globalStyles.buttonRedText}>Emprunter</Text>
             </TouchableOpacity>
@@ -208,11 +222,12 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 6,
   },
-  imageSlide: {
-    width: 220,
-    height: 180,
+  imageSlide2: {
+    width: 340,
+    height: 250,
     borderRadius: 10,
     marginBottom: 10,
+    resizeMode: "cover",
   },
   formattedDistance: {
     fontSize: 16,
