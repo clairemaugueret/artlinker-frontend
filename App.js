@@ -45,7 +45,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // module de stockage asynchrone spécifique à react native pour le store persistant
 import { ActivityIndicator } from "react-native"; // pour le logo "loader" de la page de chargement le temps que le store se charge
 
-const reducers = combineReducers({ user });
+const reducers = combineReducers({ user, subscription });
 const persistConfig = { key: "artlinker", storage: AsyncStorage };
 
 const store = configureStore({

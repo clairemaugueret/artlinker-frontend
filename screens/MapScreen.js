@@ -11,6 +11,7 @@ import {
   View,
   Dimensions,
   Image,
+  ScrollView,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addPosition } from "../reducers/user";
@@ -22,7 +23,7 @@ import { current } from "@reduxjs/toolkit";
 import Carousel from "react-native-snap-carousel";
 import { fetchAddress } from "../components/FetchAddress";
 
-const { width: screenWidth } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
 export default function MapScreen({ navigation }) {
   // Récupération du dispatch Redux et des infos utilisateur
@@ -232,7 +233,7 @@ export default function MapScreen({ navigation }) {
   // RAPHAEL - Map
   // Rendu principal : carte, barre de recherche, bouton GPS
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* Carte principale */}
       <View style={styles.map}>
         <MapView
@@ -356,24 +357,24 @@ export default function MapScreen({ navigation }) {
           </View>
         </>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
 // Styles pour la carte, la barre de recherche et le bouton GPS
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: "white",
   },
   //STYLE MAP
   map: {
-    height: "55%",
+    height: screenHeight * 0.5,
     marginBottom: 10,
   },
   searchContainer: {
     position: "absolute",
-    top: 40,
+    top: 10,
     left: 20,
     right: 20,
     zIndex: 1,
