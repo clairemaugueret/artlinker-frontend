@@ -56,6 +56,9 @@ const initialArtworks = [
 export default function CartScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription) || {};
   const user = useSelector((state) => state.user) || {};
+  const [subscriptionCount, setSubscriptionCount] = useState(
+    subscription.count || 1
+  );
 
   // State local pour le nombre d'œuvres
   const [count, setCount] = useState(initialArtworks.length);
@@ -88,7 +91,7 @@ export default function CartScreen({ navigation }) {
     if (user.value?.hasSubcribed) {
       borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
     } else {
-      borrowCapacity = count;
+      borrowCapacity = subscriptionCount;
     }
     setFuturBorrowCapacity(borrowCapacity - count);
   }, [count, user]);
@@ -98,7 +101,7 @@ export default function CartScreen({ navigation }) {
   if (user.value?.hasSubcribed) {
     borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
   } else {
-    borrowCapacity = count;
+    borrowCapacity = subscriptionCount;
   }
 
   // Désactive le bouton si le nombre d'œuvres dépasse la capacité
@@ -109,9 +112,11 @@ export default function CartScreen({ navigation }) {
     const body = {
       token: user.value?.token,
       subscriptionType: subscription.type,
-      count,
+      count: futurBorrowCapacity,
       price,
     };
+
+    console.log(body);
 
     fetch(`${fetchAddress}/subscriptions/update`, {
       method: "PUT",
