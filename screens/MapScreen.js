@@ -23,6 +23,7 @@ import { current } from "@reduxjs/toolkit";
 import Carousel from "react-native-snap-carousel";
 import { fetchAddress } from "../components/FetchAddress";
 import { FormatDistance } from "../components/FormatDistance";
+import { FormatTitleCarousel } from "../components/FormatTitleCarousel";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
@@ -192,7 +193,7 @@ export default function MapScreen({ navigation }) {
       (artitem) => artitem.artothequePlace._id === id
     );
     setArtitemsReduced(itemsInThisLocation.slice(0, 15)); // met à jour en une seule fois le carrousel avec toutes les 15 premières oeuvres du lieu
-    setCarouselTitle(`Oeuvres de ${name}`);
+    setCarouselTitle(FormatTitleCarousel(name)); // Met à jour le titre du carrousel en fonction du lieu sélectionné
   };
 
   //Render pour le carrousel
@@ -325,32 +326,49 @@ export default function MapScreen({ navigation }) {
           <Text style={[globalStyles.h4, { textAlign: "center" }]}>
             {carouselTitle}
           </Text>
-          <View style={styles.carouselWrapper}>
-            <Carousel
-              key={artitemsReduced.length}
-              ref={carouselRef}
-              data={artitemsReduced}
-              renderItem={renderItem}
-              sliderWidth={screenWidth}
-              itemWidth={screenWidth * 0.8}
-              layout="default"
-              onSnapToItem={(index) => setActiveSlide(index)}
-              loop={artitemsReduced.length > 2} // Boucle seulement si plus de 2 oeuvres (car bug déjà signalié sur le module du carrousel)
-              extraData={activeSlide}
-            />
-            {/* Pagination du carrousel (= points sous les images) */}
-            <View style={styles.paginationContainer}>
-              {artitemsReduced.map((_, index) => (
-                <View
-                  key={`dot-${index}`}
-                  style={[
-                    styles.dotStyle,
-                    index === activeSlide ? styles.activeDot : null,
-                  ]}
-                />
-              ))}
+
+          {artitemsReduced.length === 0 ? (
+            <Text
+              style={[
+                globalStyles.p,
+                { textAlign: "center", marginTop: 40, paddingHorizontal: 30 },
+              ]}
+            >
+              <Text style={globalStyles.darkred}>
+                Aucune œuvre n'est actuellement associée à ce lieu.
+              </Text>
+              {"\n"}
+              {"\n"}
+              Choisissez un autre lieu ou recherchez une nouvelle localisation.
+            </Text>
+          ) : (
+            <View style={styles.carouselWrapper}>
+              <Carousel
+                key={artitemsReduced.length}
+                ref={carouselRef}
+                data={artitemsReduced}
+                renderItem={renderItem}
+                sliderWidth={screenWidth}
+                itemWidth={screenWidth * 0.8}
+                layout="default"
+                onSnapToItem={(index) => setActiveSlide(index)}
+                loop={artitemsReduced.length > 2}
+                extraData={activeSlide}
+              />
+              {/* Pagination du carrousel */}
+              <View style={styles.paginationContainer}>
+                {artitemsReduced.map((_, index) => (
+                  <View
+                    key={`dot-${index}`}
+                    style={[
+                      styles.dotStyle,
+                      index === activeSlide ? styles.activeDot : null,
+                    ]}
+                  />
+                ))}
+              </View>
             </View>
-          </View>
+          )}
         </>
       )}
     </ScrollView>
@@ -365,7 +383,7 @@ const styles = StyleSheet.create({
   },
   //STYLE MAP
   map: {
-    height: screenHeight * 0.5,
+    height: screenHeight * 0.45,
     marginBottom: 10,
   },
   searchContainer: {
@@ -390,7 +408,7 @@ const styles = StyleSheet.create({
   },
   //STYLE CARROUSEL
   carouselWrapper: {
-    height: 265, // hauteur totale image + pagination (permet aussi de gérer espacement entre image et pagination)
+    height: screenHeight * 0.26, // hauteur totale image + pagination (permet aussi de gérer espacement entre image et pagination)
     justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 5,
@@ -412,7 +430,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: screenWidth * 0.8,
-    height: 240,
+    height: screenHeight * 0.23,
     borderRadius: 10,
   },
   overlayImage: {
