@@ -46,7 +46,13 @@ export default function ArtScreen({ navigation, route }) {
         distance: artitemData.distance,
       })
     );
-    navigation.navigate("Sub");
+    if (user.hasSubcribed) {
+      // Si l'utilisateur a un abonnement, on navigue vers la page du panier
+      navigation.navigate("Cart");
+    } else {
+      // Si l'utilisateur n'a pas d'abonnement, on navigue vers la page de choix d'abonnement
+      navigation.navigate("Sub");
+    }
   };
 
   //LIGNE DE CODE POUR L'OEUVRE PRINCIPALE
