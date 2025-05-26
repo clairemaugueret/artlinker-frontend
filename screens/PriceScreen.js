@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
   },
   title: {
     width: "80%",
-    fontSize: 38,
-    fontWeight: "600",
+    fontSize: 46,
+    textAlign: "center",
   },
   counterRow: {
     flexDirection: "row",

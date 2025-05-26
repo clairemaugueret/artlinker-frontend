@@ -18,7 +18,7 @@ import { StackHeader } from "./components/StackHeader";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
-import subscription from "./reducers/subscription"; // <-- Ajout du reducer subscription
+import subscription from "./reducers/subscription";
 import {
   useFonts,
   Dosis_400Regular,
