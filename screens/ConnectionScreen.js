@@ -71,7 +71,7 @@ export default function ConnectionScreen({ navigation }) {
           password: passwordSignUp,
           firstname,
           lastname,
-          phoneNumber,
+          phone: phoneNumber,
           address,
         }),
       })
