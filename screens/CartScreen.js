@@ -1,5 +1,6 @@
 import { globalStyles } from "../globalStyles";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setSubscriptionCount } from "../reducers/subscription";
 import { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -10,7 +11,7 @@ import {
   ScrollView,
 } from "react-native";
 import { fetchAddress } from "../components/FetchAddress";
-import { FontAwesome } from "@expo/vector-icons"; // Ajoute cet import
+import { FontAwesome } from "@expo/vector-icons";
 
 const typeLabels = {
   INDIVIDUAL_BASIC_COST: "Particulier",
@@ -56,9 +57,8 @@ const initialArtworks = [
 export default function CartScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription) || {};
   const user = useSelector((state) => state.user) || {};
-  const [subscriptionCount, setSubscriptionCount] = useState(
-    subscription.count || 1
-  );
+  const dispatch = useDispatch(); // Ajoute ce hook en haut du composant si ce n'est pas déjà fait
+  //const [actualCount, setActualCount] = useState(subscription.count || 1);
 
   // State local pour le nombre d'œuvres
   const [count, setCount] = useState(initialArtworks.length);
@@ -91,7 +91,7 @@ export default function CartScreen({ navigation }) {
     if (user.value?.hasSubcribed) {
       borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
     } else {
-      borrowCapacity = subscriptionCount;
+      borrowCapacity = subscription.count || 1; // Utilise le count de l'abonnement si l'utilisateur n'est pas abonné
     }
     setFuturBorrowCapacity(borrowCapacity - count);
   }, [count, user]);
@@ -101,7 +101,7 @@ export default function CartScreen({ navigation }) {
   if (user.value?.hasSubcribed) {
     borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
   } else {
-    borrowCapacity = subscriptionCount;
+    borrowCapacity = subscription.count;
   }
 
   // Désactive le bouton si le nombre d'œuvres dépasse la capacité
@@ -109,32 +109,37 @@ export default function CartScreen({ navigation }) {
   const markerImage = require("../assets/redmarker.png");
 
   const validate = () => {
-    const body = {
-      token: user.value?.token,
-      subscriptionType: subscription.type,
-      count: futurBorrowCapacity,
-      price,
-    };
+    if (!user.value.hasSubcribed) {
+      // Met à jour le count dans le reducer subscription
+      dispatch(setSubscriptionCount(futurBorrowCapacity));
+      // Navigue vers la page Payment
+      navigation.navigate("Payment");
+    } else {
+      navigation.navigate("Payment");
 
-    console.log(body);
+      // const body = {};
+      // console.log(body);
 
-    fetch(`${fetchAddress}/subscriptions/update`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.result) {
-          navigation.navigate("Stack", { screen: "Payment" });
-        } else {
-          alert(data.error || "Erreur lors de la mise à jour de l'abonnement.");
-        }
-      })
-      .catch((err) => {
-        alert("Erreur réseau ou serveur.");
-        console.error(err);
-      });
+      // fetch(`${fetchAddress}/URLROUTE`, {
+      //   method: "PUT",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(body),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      //     if (data.result) {
+      //       navigation.navigate("Account");
+      //     } else {
+      //       alert(
+      //         data.error || "Erreur lors de la mise à jour de l'abonnement."
+      //       );
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     alert("Erreur réseau ou serveur.");
+      //     console.error(err);
+      //   });
+    }
   };
 
   // Fonction de suppression
@@ -194,7 +199,7 @@ export default function CartScreen({ navigation }) {
         </Text>
       </Text>
       <Text style={styles.info}>
-        Nombre d'œuvres : <Text style={{ fontWeight: "bold" }}>{count}</Text>
+        Œuvres sélectionné : <Text style={{ fontWeight: "bold" }}>{count}</Text>
       </Text>
       <Text style={styles.info}>
         Crédit actuel:{" "}
@@ -204,9 +209,11 @@ export default function CartScreen({ navigation }) {
         Crédit restant après emprunt:{" "}
         <Text style={{ fontWeight: "bold" }}>{futurBorrowCapacity}</Text>
       </Text>
-      <Text style={styles.info}>
-        Prix total : <Text style={{ fontWeight: "bold" }}>{price} €</Text>
-      </Text>
+      {!user.value?.hasSubcribed && (
+        <Text style={styles.info}>
+          Prix total : <Text style={{ fontWeight: "bold" }}>{price} €</Text>
+        </Text>
+      )}
       <TouchableOpacity
         style={globalStyles.buttonRed}
         onPress={() => navigation.navigate("Map")}
