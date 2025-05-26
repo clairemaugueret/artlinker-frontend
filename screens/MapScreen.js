@@ -106,6 +106,7 @@ export default function MapScreen({ navigation }) {
           longitude: firstCity.geometry.coordinates[0],
         };
         setCurrentPosition(searchedCity);
+        dispatch(addPosition(searchedCity)); // Met à jour les données de position de l'utilisateur dans Redux persistant en fonction de sa recherche
 
         mapRef.current?.animateToRegion(
           {
