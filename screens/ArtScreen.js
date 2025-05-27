@@ -189,7 +189,7 @@ export default function ArtScreen({ navigation, route }) {
             itemWidth={screenWidth * 0.75}
             layout={"stack"}
             layoutCardOffset={`18`}
-            loop={false}
+            loop={true}
           />
         </View>
 
