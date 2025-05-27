@@ -97,7 +97,7 @@ export const globalStyles = StyleSheet.create({
       android: "Dosis_600SemiBold",
       ios: "Dosis-SemiBold",
     }),
-    fontSize: 72,
+    fontSize: 48,
     color: DARK_GRAY,
   },
 
@@ -107,7 +107,9 @@ export const globalStyles = StyleSheet.create({
       android: "Dosis_600SemiBold",
       ios: "Dosis-SemiBold",
     }),
-    fontSize: 56,
+    fontSize: 42,
+    lineHeight: 42,
+    marginBottom: 10,
     color: DARK_GRAY,
   },
   // TITRE 2

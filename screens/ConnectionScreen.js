@@ -108,10 +108,9 @@ export default function ConnectionScreen({ navigation }) {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.connectionContain}>
-            <Text
-              style={[globalStyles.h2, { fontSize: 24, textAlign: "center" }]}
-            >
-              Vous avez déjà un compte ?
+            <Text style={[globalStyles.h1, { textAlign: "center" }]}>
+              <Text style={globalStyles.darkred}>V</Text>ous avez déjà un compte
+              ?
             </Text>
             <TextInput
               onChangeText={(value) => setEmailSignIn(value)}
