@@ -37,6 +37,10 @@ export default function ArtScreen({ navigation, route }) {
 
   const isButtonDisabled = !artitemData?.disponibility || !user?.token;
 
+  useEffect(() => {
+    setArtitemData(route.params?.artitemData);
+  }, [route.params?.artitemData]); // Met à jour artitemData si les paramètres de la route changent (quand on revient sur cette page depuis la Map)
+
   //BOUTON EMPRUNTER
   const handleLoanButtonPress = () => {
     if (artitemData.disponibility && user.token) {
@@ -46,7 +50,7 @@ export default function ArtScreen({ navigation, route }) {
           id: artitemData._id,
           image: artitemData.imgMain,
           title: artitemData.title,
-          artiste: artitemData.authors,
+          artist: artitemData.authors,
           distance: artitemData.distance,
         })
       );
@@ -67,16 +71,25 @@ export default function ArtScreen({ navigation, route }) {
       artitemData.imgMain,
       ...(artitemData.imgList || []),
     ];
+    const objCombinedImages = combinedImages.map((img, index) => {
+      return {
+        id: `img-${index}`,
+        uri: img,
+      };
+    });
     // On vérifie si artitemData.imgList existe avant de l'utiliser et on le combine avec imgMain
-    setArtitemAllImages(combinedImages);
+    setArtitemAllImages(objCombinedImages);
   }, [artitemData]);
 
   //CAROUSEL imgList de l'oeuvre
   const renderArtitemAllImages = ({ item }) => {
-    if (!item) return null;
+    if (!item?.uri) return null;
     return (
       <View style={styles.slideArtitemAllImages}>
-        <Image source={{ uri: item }} style={styles.imageArtitemAllImages} />
+        <Image
+          source={{ uri: item.uri }}
+          style={styles.imageArtitemAllImages}
+        />
       </View>
     );
   };
@@ -134,7 +147,7 @@ export default function ArtScreen({ navigation, route }) {
   const renderItemsAuthor = ({ item }) => {
     if (!item) return null;
     return (
-      <View style={styles.slideItemsAuthor}>
+      <View key={item._id} style={styles.slideItemsAuthor}>
         <TouchableOpacity
           style={styles.imageWrapperItemsAuthor}
           onPress={() => {
@@ -183,9 +196,8 @@ export default function ArtScreen({ navigation, route }) {
             renderItem={renderArtitemAllImages}
             sliderWidth={screenWidth}
             itemWidth={screenWidth * 0.75}
-            layout={"stack"}
-            layoutCardOffset={`18`}
-            loop={false}
+            layout="default"
+            loop={artitemAllImages.length > 2}
           />
         </View>
 
@@ -335,6 +347,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderColor: "white", //nécessaire que le shadow soit visible
     borderWidth: 1, //nécessaire que le shadow soit visible
+    width: "90%",
   },
   //Style communs aux deux carrousels
   paginationContainer: {
