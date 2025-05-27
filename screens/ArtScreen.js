@@ -35,18 +35,21 @@ export default function ArtScreen({ navigation, route }) {
   const carouselItemsAuthorRef = useRef(null); //référence pour le carrousel des autres oeuvres de l'artiste
   const [activeItemsAuthorSlide, setActiveItemsAuthorSlide] = useState(0); //slide actif du carrousel autres oeuvres de l'artiste (pour la pagination)
 
-  const isButtonDisabled = !artitemData?.disponibility || !user?.token;
+  const isAlreadyInCart = artworks.some((art) => art.id === artitemData._id);
+
+  const isButtonDisabled =
+    !artitemData?.disponibility || !user?.token || isAlreadyInCart; // le bouton est désactivé si l'oeuvre n'est pas disponible, si l'utilisateur n'est pas connecté ou si l'oeuvre est déjà dans le panier
 
   //BOUTON EMPRUNTER
   const handleLoanButtonPress = () => {
-    if (artitemData.disponibility && user.token) {
-      // double vérification avec isButtonDisable: les actions de validation ne se font que si l'oeuvre est disponible et que si l'utilisateur est inscrit/connecté
+    if (artitemData.disponibility && user.token && !isAlreadyInCart) {
+      // double vérification avec isButtonDisable: les actions de validation ne se font que si l'oeuvre est disponible, si l'utilisateur est inscrit/connecté et si l'oeuvre n'est pas déjà dans le panier
       dispatch(
         addToCart({
           id: artitemData._id,
-          imgMain: artitemData.imgMain,
+          image: artitemData.imgMain,
           title: artitemData.title,
-          authors: artitemData.authors,
+          artiste: artitemData.authors,
           distance: artitemData.distance,
         })
       );
@@ -202,7 +205,7 @@ export default function ArtScreen({ navigation, route }) {
             style={[
               globalStyles.buttonRed,
               { width: "100%", marginTop: 15 },
-              isButtonDisabled && { opacity: 0.4 }, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
+              isButtonDisabled && { opacity: 0.5 }, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
             ]}
             onPress={() => handleLoanButtonPress()}
             disabled={isButtonDisabled} // désactive le bouton si l'oeuvre n'est pas disponible ou si l'utilisateur n'est pas connecté
@@ -216,6 +219,17 @@ export default function ArtScreen({ navigation, route }) {
               Emprunter
             </Text>
           </TouchableOpacity>
+          {isAlreadyInCart && ( // si oeuvre déjà dans la panier, on affiche un message
+            <Text
+              style={[
+                globalStyles.p,
+                globalStyles.darkred,
+                { fontSize: 14, textAlign: "center" },
+              ]}
+            >
+              Œuvre déjà sélectionnée.
+            </Text>
+          )}
           {artitemData?.disponibility &&
             !user?.token && ( // si oeuvre dispo mais user pas inscrit/connecté, on affiche message pour lui demander de se inscrire ou se connecter
               <Text

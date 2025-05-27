@@ -10,7 +10,7 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      state.items.push({
+      state.artWorkInCart.push({
         id: action.payload.id,
         image: action.payload.imgMain,
         title: action.payload.title,
@@ -20,10 +20,15 @@ export const cartSlice = createSlice({
     },
     removeFromCart: (state, action) => {
       // Retire une oeuvre du panier par id
-      state.items = state.items.filter((item) => item.id !== action.payload.id);
+      state.artWorkInCart = state.artWorkInCart.filter(
+        (item) => item.id !== action.payload.id
+      );
+    },
+    clearCart: (state) => {
+      state.artWorkInCart = [];
     },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
