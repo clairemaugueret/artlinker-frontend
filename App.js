@@ -19,6 +19,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import subscription from "./reducers/subscription";
+import cart from "./reducers/cart";
 import {
   useFonts,
   Dosis_400Regular,
@@ -45,7 +46,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // module de stockage asynchrone spécifique à react native pour le store persistant
 import { ActivityIndicator } from "react-native"; // pour le logo "loader" de la page de chargement le temps que le store se charge
 
-const reducers = combineReducers({ user, subscription });
+const reducers = combineReducers({ user, subscription, cart });
 const persistConfig = { key: "artlinker", storage: AsyncStorage };
 
 const store = configureStore({
@@ -165,7 +166,7 @@ export default function App() {
               name="Map"
               component={MapScreen}
               options={({ navigation }) =>
-                StackHeader({ navigation, height: 120, margin: 25 })
+                StackHeader({ navigation, height: 100, margin: 25 })
               } //déclaration du header différente par rapport à la stack car tab navigation
               // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
             />
@@ -173,7 +174,7 @@ export default function App() {
               name="Account"
               component={AccountScreen}
               options={({ navigation }) =>
-                StackHeader({ navigation, height: 120, margin: 25 })
+                StackHeader({ navigation, height: 100, margin: 25 })
               } //déclaration du header différente par rapport à la stack car tab navigation
               // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
             />

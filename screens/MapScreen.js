@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
   },
   //STYLE CARROUSEL
   carouselWrapper: {
-    height: screenHeight * 0.26, // hauteur totale image + pagination (permet aussi de gérer espacement entre image et pagination)
+    height: screenHeight * 0.24, // hauteur totale image + pagination (permet aussi de gérer espacement entre image et pagination)
     justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 5,
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: screenWidth * 0.8,
-    height: screenHeight * 0.23,
+    height: screenHeight * 0.21,
     borderRadius: 10,
   },
   overlayImage: {

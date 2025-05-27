@@ -11,11 +11,15 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AccountScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Account Screen</Text>
+      <TouchableOpacity onPress={() => AsyncStorage.clear()}>
+        <Text>Vider le storage</Text>
+      </TouchableOpacity>
     </View>
   );
 }

@@ -25,6 +25,8 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); /
 //FATOUMATA
 export default function ArtScreen({ navigation, route }) {
   const user = useSelector((state) => state.user.value);
+  const subscription = useSelector((state) => state.subscription);
+  const artworks = useSelector((state) => state.cart.artWorkInCart);
   const dispatch = useDispatch();
 
   //NB: on récupère les informations sur l'oeuvre principale depuis la route.params
@@ -35,7 +37,10 @@ export default function ArtScreen({ navigation, route }) {
   const carouselItemsAuthorRef = useRef(null); //référence pour le carrousel des autres oeuvres de l'artiste
   const [activeItemsAuthorSlide, setActiveItemsAuthorSlide] = useState(0); //slide actif du carrousel autres oeuvres de l'artiste (pour la pagination)
 
-  const isButtonDisabled = !artitemData?.disponibility || !user?.token;
+  const isAlreadyInCart = artworks.some((art) => art.id === artitemData._id);
+
+  const isButtonDisabled =
+    !artitemData?.disponibility || !user?.token || isAlreadyInCart; // le bouton est désactivé si l'oeuvre n'est pas disponible, si l'utilisateur n'est pas connecté ou si l'oeuvre est déjà dans le panier
 
   useEffect(() => {
     setArtitemData(route.params?.artitemData);
@@ -43,8 +48,8 @@ export default function ArtScreen({ navigation, route }) {
 
   //BOUTON EMPRUNTER
   const handleLoanButtonPress = () => {
-    if (artitemData.disponibility && user.token) {
-      // double vérification avec isButtonDisable: les actions de validation ne se font que si l'oeuvre est disponible et que si l'utilisateur est inscrit/connecté
+    if (artitemData.disponibility && user.token && !isAlreadyInCart) {
+      // double vérification avec isButtonDisable: les actions de validation ne se font que si l'oeuvre est disponible, si l'utilisateur est inscrit/connecté et si l'oeuvre n'est pas déjà dans le panier
       dispatch(
         addToCart({
           id: artitemData._id,
@@ -54,7 +59,7 @@ export default function ArtScreen({ navigation, route }) {
           distance: artitemData.distance,
         })
       );
-      if (user.hasSubcribed) {
+      if (user.hasSubcribed || subscription.subscriptionState) {
         // Si l'utilisateur a un abonnement, on navigue vers la page du panier
         navigation.navigate("Cart");
       } else {
@@ -214,7 +219,7 @@ export default function ArtScreen({ navigation, route }) {
             style={[
               globalStyles.buttonRed,
               { width: "100%", marginTop: 15 },
-              isButtonDisabled && { opacity: 0.4 }, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
+              isButtonDisabled && { opacity: 0.5 }, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
             ]}
             onPress={() => handleLoanButtonPress()}
             disabled={isButtonDisabled} // désactive le bouton si l'oeuvre n'est pas disponible ou si l'utilisateur n'est pas connecté
@@ -228,16 +233,30 @@ export default function ArtScreen({ navigation, route }) {
               Emprunter
             </Text>
           </TouchableOpacity>
+          {isAlreadyInCart && ( // si oeuvre déjà dans la panier, on affiche un message
+            <Text
+              style={[
+                globalStyles.p,
+                globalStyles.darkred,
+                { fontSize: 14, textAlign: "center" },
+              ]}
+            >
+              Œuvre déjà sélectionnée.
+            </Text>
+          )}
           {artitemData?.disponibility &&
             !user?.token && ( // si oeuvre dispo mais user pas inscrit/connecté, on affiche message pour lui demander de se inscrire ou se connecter
               <Text
-                style={[
-                  globalStyles.p,
-                  globalStyles.darkred,
-                  { fontSize: 14, textAlign: "center" },
-                ]}
+                style={[globalStyles.p, { fontSize: 14, textAlign: "center" }]}
               >
-                Veuillez vous inscrire / connecter pour emprunter.
+                Veuillez vous{" "}
+                <Text
+                  style={globalStyles.darkred}
+                  onPress={() => navigation.navigate("Connection")}
+                >
+                  inscrire / connecter
+                </Text>{" "}
+                pour emprunter.
               </Text>
             )}
         </View>
@@ -284,7 +303,7 @@ const styles = StyleSheet.create({
   // Style carousel oeuvre principale
   artitemAllImagesCarousel: {
     width: "100%",
-    height: screenHeight * 0.26,
+    height: screenHeight * 0.22,
     marginTop: 25, // à revoir et enlever dans dur dans carousel
   },
   slideArtitemAllImages: {
@@ -301,13 +320,13 @@ const styles = StyleSheet.create({
   },
   imageArtitemAllImages: {
     width: screenWidth * 0.75,
-    height: screenHeight * 0.25,
+    height: screenHeight * 0.22,
     borderRadius: 10,
   },
   // Style info oeuvre principale
   artitemInfo: {
     width: "85%",
-    height: screenHeight * 0.26,
+    height: screenHeight * 0.3,
     alignItems: "flex-start",
     justifyContent: "center",
   },
