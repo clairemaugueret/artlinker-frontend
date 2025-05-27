@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { fetchAddress } from "../components/FetchAddress";
 import { FontAwesome } from "@expo/vector-icons";
+import { FormatDistance } from "../components/FormatDistance";
 
 const typeLabels = {
   INDIVIDUAL_BASIC_COST: "Particulier",
@@ -27,33 +28,6 @@ const priceGrids = {
   PUBLIC_ESTABLISHMENT: { 3: 350, 4: 420, 5: 500 },
   LIBERAL_PRO: { 3: 500, 4: 600, 5: 700 },
 };
-
-// const initialArtworks = [
-//   {
-//     id: 1,
-//     image:
-//       "https://serv.theartlinker.com/assets/uploads/4b6ace0e5126088a7ffa1c6469a7a1347bfdadc741063f3d3be4cf1a20952ab7.jpg",
-//     title: "Titre de l’œuvre",
-//     artist: "Nom artiste",
-//     distance: "3 km",
-//   },
-//   {
-//     id: 2,
-//     image:
-//       "https://serv.theartlinker.com/assets/uploads/9a8782e8241b8e257a5ccf7e4dc483e30571aa3c54a3b28fb9894ac63235c27b.jpg",
-//     title: "Titre de l’œuvre trop long pour être affiché",
-//     artist: "Nom artiste",
-//     distance: "3 km",
-//   },
-//   {
-//     id: 3,
-//     image:
-//       "https://serv.theartlinker.com/assets/uploads/71a331c7b6f42cca763454e7b4163d976351f19f35ff1c7279c8a5156694628d.jpg",
-//     title: "Titre de l’œuvre",
-//     artist: "Nom artiste",
-//     distance: "3 km",
-//   },
-// ];
 
 export default function CartScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription) || {};
@@ -219,9 +193,10 @@ export default function CartScreen({ navigation }) {
                 {art.artist}
               </Text>
               <View style={styles.cardDistanceRow}>
-                <Image source={markerImage} style={styles.cardDistanceIcon} />
+                <FontAwesome name="location-arrow" size={15} />
                 <Text style={styles.cardDistanceText}>
-                  Distance : {art.distance}
+                  {" "}
+                  Distance : {FormatDistance(art.distance)}
                 </Text>
               </View>
             </View>

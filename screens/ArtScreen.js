@@ -42,6 +42,10 @@ export default function ArtScreen({ navigation, route }) {
   const isButtonDisabled =
     !artitemData?.disponibility || !user?.token || isAlreadyInCart; // le bouton est désactivé si l'oeuvre n'est pas disponible, si l'utilisateur n'est pas connecté ou si l'oeuvre est déjà dans le panier
 
+  useEffect(() => {
+    setArtitemData(route.params?.artitemData);
+  }, [route.params?.artitemData]); // Met à jour artitemData si les paramètres de la route changent (quand on revient sur cette page depuis la Map)
+
   //BOUTON EMPRUNTER
   const handleLoanButtonPress = () => {
     if (artitemData.disponibility && user.token && !isAlreadyInCart) {
@@ -72,16 +76,25 @@ export default function ArtScreen({ navigation, route }) {
       artitemData.imgMain,
       ...(artitemData.imgList || []),
     ];
+    const objCombinedImages = combinedImages.map((img, index) => {
+      return {
+        id: `img-${index}`,
+        uri: img,
+      };
+    });
     // On vérifie si artitemData.imgList existe avant de l'utiliser et on le combine avec imgMain
-    setArtitemAllImages(combinedImages);
+    setArtitemAllImages(objCombinedImages);
   }, [artitemData]);
 
   //CAROUSEL imgList de l'oeuvre
   const renderArtitemAllImages = ({ item }) => {
-    if (!item) return null;
+    if (!item?.uri) return null;
     return (
       <View style={styles.slideArtitemAllImages}>
-        <Image source={{ uri: item }} style={styles.imageArtitemAllImages} />
+        <Image
+          source={{ uri: item.uri }}
+          style={styles.imageArtitemAllImages}
+        />
       </View>
     );
   };
@@ -139,7 +152,7 @@ export default function ArtScreen({ navigation, route }) {
   const renderItemsAuthor = ({ item }) => {
     if (!item) return null;
     return (
-      <View style={styles.slideItemsAuthor}>
+      <View key={item._id} style={styles.slideItemsAuthor}>
         <TouchableOpacity
           style={styles.imageWrapperItemsAuthor}
           onPress={() => {
@@ -188,9 +201,8 @@ export default function ArtScreen({ navigation, route }) {
             renderItem={renderArtitemAllImages}
             sliderWidth={screenWidth}
             itemWidth={screenWidth * 0.75}
-            layout={"stack"}
-            layoutCardOffset={`18`}
-            loop={true}
+            layout="default"
+            loop={artitemAllImages.length > 2}
           />
         </View>
 
@@ -291,7 +303,7 @@ const styles = StyleSheet.create({
   // Style carousel oeuvre principale
   artitemAllImagesCarousel: {
     width: "100%",
-    height: screenHeight * 0.26,
+    height: screenHeight * 0.22,
     marginTop: 25, // à revoir et enlever dans dur dans carousel
   },
   slideArtitemAllImages: {
@@ -308,7 +320,7 @@ const styles = StyleSheet.create({
   },
   imageArtitemAllImages: {
     width: screenWidth * 0.75,
-    height: screenHeight * 0.25,
+    height: screenHeight * 0.22,
     borderRadius: 10,
   },
   // Style info oeuvre principale

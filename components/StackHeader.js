@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Image } from "react-native";
 // l'affichage du header est différent entre les écrans TabNavigation et StackNavigation
 // height et margin ci-dessous représentent les valuers par défaut utilisées dans la StackNavigation
 // pour les écrans TabNavigation, on peut passer des props height et margin différentes
-export const StackHeader = ({ navigation, height = 60, margin = 10 }) => ({
+export const StackHeader = ({ navigation, height = 50, margin = 10 }) => ({
   headerShown: true,
   headerTitle: "",
   headerStyle: {
@@ -33,11 +33,11 @@ export const StackHeader = ({ navigation, height = 60, margin = 10 }) => ({
       >
         <Image
           source={require("../assets/logo-picto.png")}
-          style={{ width: "50", height: "50" }}
+          style={{ width: "40", height: "40" }}
         />
         <Image
           source={require("../assets/logo-lettres-red.png")}
-          style={{ width: "110", height: "45" }}
+          style={{ width: "85", height: "35" }}
         />
       </TouchableOpacity>
     </View>

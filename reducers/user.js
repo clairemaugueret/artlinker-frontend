@@ -20,26 +20,13 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     loginAndUpdate: (state, action) => {
-      //FATOUMATA
-      // state.value.email = action.payload.email;
-      // state.value.token = action.payload.token;
-      // state.value.firstname = action.payload.firstname;
-      // state.value.lastname = action.payload.lastname;
-      // state.value.favoriteItems = action.payload.favoriteItems;
-      // state.value.hasSubcribed = action.payload.hasSubcribed;
-      // state.value.authorisedLoans = action.payload.authorisedLoans;
-      // state.value.ongoingLoans = action.payload.ongoingLoans;
-
-      //PROPOSITON CLAIRE
       Object.assign(state.value, action.payload);
       //dès qu'une propriété sera envoyée à l'inscription/la connexion, elle sera ajoutée à l'état mais si pas d'info c'est la valeur par défaut qui sera gardée
       // et du coup on peut aussi appeler cette action "loginAndUpdate" car quand on fera des changement dans le profil, on pourra aussi l'utiliser
     },
-    //CLAIRE
     addPosition: (state, action) => {
       state.value.position = action.payload;
     },
-    //CLAIRE
     logout: (state) => {
       state.value = initialState.value;
     },
