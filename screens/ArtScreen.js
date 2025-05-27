@@ -294,6 +294,7 @@ export default function ArtScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   scrollviewContainer: {
     flexGrow: 1,
+    backgroundColor: "#ffffff",
   },
   mainContainer: {
     flex: 1,
