@@ -115,7 +115,7 @@ const StackNavigator = () => {
         options={StackHeader}
       />
       <Stack.Screen
-        name="AccountSubLoans"
+        name="AccountSub"
         component={AccountSubScreen}
         options={StackHeader}
       />
@@ -196,7 +196,7 @@ export default function App() {
               name="Map"
               component={MapScreen}
               options={({ navigation }) =>
-                StackHeader({ navigation, height: 100, margin: 25 })
+                StackHeader({ navigation, height: 110, margin: 25 })
               } //déclaration du header différente par rapport à la stack car tab navigation
               // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
             />
@@ -204,7 +204,7 @@ export default function App() {
               name="Account"
               component={AccountScreen}
               options={({ navigation }) =>
-                StackHeader({ navigation, height: 100, margin: 25 })
+                StackHeader({ navigation, height: 110, margin: 25 })
               } //déclaration du header différente par rapport à la stack car tab navigation
               // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
             />
