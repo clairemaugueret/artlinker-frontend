@@ -25,6 +25,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); /
 //FATOUMATA
 export default function ArtScreen({ navigation, route }) {
   const user = useSelector((state) => state.user.value);
+  const subscription = useSelector((state) => state.subscription);
   const artworks = useSelector((state) => state.cart.artWorkInCart);
   const dispatch = useDispatch();
 
@@ -54,7 +55,7 @@ export default function ArtScreen({ navigation, route }) {
           distance: artitemData.distance,
         })
       );
-      if (user.hasSubcribed) {
+      if (user.hasSubcribed || subscription.subscriptionState) {
         // Si l'utilisateur a un abonnement, on navigue vers la page du panier
         navigation.navigate("Cart");
       } else {
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
   // Style info oeuvre principale
   artitemInfo: {
     width: "85%",
-    height: screenHeight * 0.26,
+    height: screenHeight * 0.3,
     alignItems: "flex-start",
     justifyContent: "center",
   },

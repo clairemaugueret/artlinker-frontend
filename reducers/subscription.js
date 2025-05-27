@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   type: "INDIVIDUAL_BASIC_COST",
-  count: 1, // nombre d'œuvres sélectionné par défaut
-  price: 100, // prix par défaut (correspondant à 1 oeuvre pour Particulier)
+  count: 1,
+  price: 100,
+  subscriptionState: false, // <-- nouvel état temporaire
 };
 
 const subscriptionSlice = createSlice({
@@ -19,6 +20,9 @@ const subscriptionSlice = createSlice({
     setSubscriptionPrice: (state, action) => {
       state.price = action.payload;
     },
+    setSubscriptionState: (state, action) => {
+      state.subscriptionState = action.payload;
+    },
   },
 });
 
@@ -26,5 +30,6 @@ export const {
   setSubscriptionType,
   setSubscriptionCount,
   setSubscriptionPrice,
+  setSubscriptionState,
 } = subscriptionSlice.actions;
 export default subscriptionSlice.reducer;

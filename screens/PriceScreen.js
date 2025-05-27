@@ -4,8 +4,10 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  setSubscriptionType,
   setSubscriptionCount,
   setSubscriptionPrice,
+  setSubscriptionState, // <-- exporte la nouvelle action
 } from "../reducers/subscription";
 
 const priceGrids = {
@@ -58,6 +60,7 @@ export default function PriceScreen({ navigation }) {
   const validate = () => {
     dispatch(setSubscriptionCount(count));
     dispatch(setSubscriptionPrice(price));
+    dispatch(setSubscriptionState(true));
     navigation.navigate("Stack", { screen: "Cart" });
   };
 
