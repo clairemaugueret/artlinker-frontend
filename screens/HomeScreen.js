@@ -69,6 +69,10 @@ export default function HomeScreen({ navigation }) {
             }}
           >
             <Button
+              title="Price Screen"
+              onPress={() => navigation.navigate("Stack", { screen: "Price" })}
+            />
+            <Button
               title="Cart Screen"
               onPress={() => navigation.navigate("Stack", { screen: "Cart" })}
             />

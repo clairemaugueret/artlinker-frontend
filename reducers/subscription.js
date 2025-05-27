@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   type: "INDIVIDUAL_BASIC_COST",
-  count: 1,
+  count: 0,
   price: 100,
   subscriptionState: false, // <-- nouvel état temporaire
 };

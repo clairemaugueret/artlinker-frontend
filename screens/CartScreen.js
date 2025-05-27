@@ -2,6 +2,7 @@ import { globalStyles } from "../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
 import { setSubscriptionCount } from "../reducers/subscription";
 import { removeFromCart, clearCart } from "../reducers/cart";
+import { updateOnGoingLoans } from "../reducers/user";
 import { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -39,18 +40,18 @@ export default function CartScreen({ navigation }) {
   // State local pour le prix
   const [price, setPrice] = useState(
     (priceGrids[subscription.type] || priceGrids["INDIVIDUAL_BASIC_COST"])[
-      count
+      subscription.count
     ]
   );
   // State local pour la capacité future
   const [futurBorrowCapacity, setFuturBorrowCapacity] = useState(0);
 
   // Met à jour le prix dynamiquement quand count ou type change
-  useEffect(() => {
-    const grid =
-      priceGrids[subscription.type] || priceGrids["INDIVIDUAL_BASIC_COST"];
-    setPrice(grid[count]);
-  }, [count, subscription.type]);
+  // useEffect(() => {
+  //   const grid =
+  //     priceGrids[subscription.type] || priceGrids["INDIVIDUAL_BASIC_COST"];
+  //   setPrice(grid[subscription.count]);
+  // }, [count, subscription.type]);
 
   // Met à jour futurBorrowCapacity dynamiquement
   useEffect(() => {
@@ -58,54 +59,77 @@ export default function CartScreen({ navigation }) {
     if (user.value?.hasSubcribed) {
       borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
     } else {
-      borrowCapacity = subscription.count || 1; // Utilise le count de l'abonnement si l'utilisateur n'est pas abonné
+      borrowCapacity = subscription.count || 0; // Utilise le count de l'abonnement si l'utilisateur n'est pas abonné
     }
     setFuturBorrowCapacity(borrowCapacity - count);
   }, [count, user]);
+
+  let maximum;
+  if (user.value?.hasSubcribed) {
+    maximum = user.value.authorisedLoans;
+  } else {
+    maximum = subscription.count || 0;
+  }
 
   // Calcul de la capacité d'emprunt actuelle
   let borrowCapacity;
   if (user.value?.hasSubcribed) {
     borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
   } else {
-    borrowCapacity = subscription.count;
+    borrowCapacity = subscription.count || 0;
   }
 
   // Désactive le bouton si le nombre d'œuvres dépasse la capacité
   const isDisabled = count > borrowCapacity;
   const markerImage = require("../assets/redmarker.png");
 
-  const validate = () => {
+  const validate = async () => {
     if (!user.value.hasSubcribed) {
       // Met à jour le count dans le reducer subscription
-      dispatch(setSubscriptionCount(futurBorrowCapacity));
+      dispatch(setSubscriptionCount(count));
       // Navigue vers la page Payment
-      navigation.navigate("Payment");
+      navigation.navigate("Stack", { screen: "Payment" });
     } else {
-      navigation.navigate("Payment");
+      // Pour chaque œuvre du panier, on effectue un fetch vers /createloan
+      for (const art of artworks) {
+        try {
+          const body = {
+            token: user.value.token,
+            artitemId: art.id,
+          };
 
-      // const body = {};
-      // console.log(body);
+          console.log("createloan body", {
+            token: user.value.token,
+            artitemId: art.id,
+          });
 
-      // fetch(`${fetchAddress}/URLROUTE`, {
-      //   method: "PUT",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(body),
-      // })
-      //   .then((res) => res.json())
-      //   .then((data) => {
-      //     if (data.result) {
-      //       navigation.navigate("Account");
-      //     } else {
-      //       alert(
-      //         data.error || "Erreur lors de la mise à jour de l'abonnement."
-      //       );
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     alert("Erreur réseau ou serveur.");
-      //     console.error(err);
-      //   });
+          const response = await fetch(`${fetchAddress}/artitems/createloan`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+
+          const data = await response.json();
+
+          if (!data.result) {
+            alert(
+              data.error ||
+                `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
+            );
+            return; // Arrête la boucle si une erreur survient
+          }
+        } catch (err) {
+          alert("Erreur réseau ou serveur.");
+          console.error(err);
+          return;
+        }
+      }
+      // Si tout s'est bien passé pour toutes les œuvres
+      dispatch(updateOnGoingLoans(user.value.ongoingLoans + count)); // Mise à jour du nombre d'emprunts en cours dans le store user
+
+      // Ensuite, on vide le panier et navigue vers l'écran Account
+      dispatch(clearCart());
+      navigation.navigate("Account");
     }
   };
 
@@ -168,12 +192,16 @@ export default function CartScreen({ navigation }) {
         </Text>
       </Text>
       <Text style={styles.info}>
-        Œuvres sélectionnées :{" "}
-        <Text style={{ fontWeight: "bold" }}>{count}</Text>
+        Nombre d'œuvres maximum :{" "}
+        <Text style={{ fontWeight: "bold" }}>{maximum}</Text>
       </Text>
       <Text style={styles.info}>
-        Crédit actuel:{" "}
-        <Text style={{ fontWeight: "bold" }}>{borrowCapacity}</Text>
+        Œuvre(s) en cours d'emprunt :{" "}
+        <Text style={{ fontWeight: "bold" }}>{user.value.ongoingLoans}</Text>
+      </Text>
+      <Text style={styles.info}>
+        Œuvres sélectionnées :{" "}
+        <Text style={{ fontWeight: "bold" }}>{count}</Text>
       </Text>
       <Text style={styles.info}>
         Crédit restant après emprunt:{" "}

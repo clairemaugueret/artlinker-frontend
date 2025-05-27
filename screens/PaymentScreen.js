@@ -1,6 +1,8 @@
 import { globalStyles } from "../globalStyles";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { updateOnGoingLoans } from "../reducers/user";
+import { clearCart } from "../reducers/cart";
 import { fetchAddress } from "../components/FetchAddress";
 import {
   Image,
@@ -17,38 +19,76 @@ import {
 export default function PaymentScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription) || {};
   const user = useSelector((state) => state.user) || {};
+  const artworks = useSelector((state) => state.cart.artWorkInCart) || [];
+  const dispatch = useDispatch();
+
   const [emailSignIn, setEmailSignIn] = useState("");
   const [focusedField, setFocusedField] = useState(null); // pour pouvoir gérer l'état focus des inputs afin de pouvoir changer le style quand l'input est actif/focusé
   const [expiration, setExpiration] = useState("");
   const [cvc, setCvc] = useState("");
 
-  const validate = () => {
+  const validate = async () => {
     const body = {
       token: user.value?.token,
       subscriptionType: subscription.type,
-      count: futurBorrowCapacity,
-      price,
+      count: subscription.count,
+      price: subscription.price,
     };
 
     console.log(body);
 
-    fetch(`${fetchAddress}/subscriptions/update`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.result) {
-          navigation.navigate("Stack", { screen: "Payment" });
-        } else {
-          alert(data.error || "Erreur lors de la mise à jour de l'abonnement.");
+    try {
+      const response = await fetch(`${fetchAddress}/subscriptions/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (!data.result) {
+        alert(data.error || "Erreur lors de la création de l'abonnement.");
+        return;
+      }
+
+      dispatch(clearCart());
+      navigation.navigate("Account");
+    } catch (err) {
+      alert("Erreur réseau ou serveur lors de la création de l'abonnement.");
+      console.error(err);
+      return;
+    }
+
+    for (const art of artworks) {
+      try {
+        const body = {
+          token: user.value.token,
+          artitemId: art.id,
+        };
+
+        const response = await fetch(`${fetchAddress}/artitems/createloan`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        const data = await response.json();
+
+        if (!data.result) {
+          alert(
+            data.error ||
+              `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
+          );
+          return; // Arrête la boucle si une erreur survient
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         alert("Erreur réseau ou serveur.");
         console.error(err);
-      });
+        return;
+      }
+    }
+    // Si tout s'est bien passé pour toutes les œuvres
+    dispatch(updateOnGoingLoans(artworks.length));
   };
 
   return (
@@ -104,6 +144,9 @@ export default function PaymentScreen({ navigation }) {
           secureTextEntry
         />
       </View>
+      <TouchableOpacity style={globalStyles.buttonRed} onPress={validate}>
+        <Text style={globalStyles.buttonRedText}>Payer</Text>
+      </TouchableOpacity>
     </View>
   );
 }
