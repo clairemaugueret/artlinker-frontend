@@ -12,9 +12,9 @@ export const cartSlice = createSlice({
     addToCart: (state, action) => {
       state.artWorkInCart.push({
         id: action.payload.id,
-        image: action.payload.imgMain,
+        image: action.payload.image,
         title: action.payload.title,
-        artist: action.payload.authors,
+        artist: action.payload.artist,
         distance: action.payload.distance,
       });
     },

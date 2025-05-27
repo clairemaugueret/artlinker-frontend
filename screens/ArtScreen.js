@@ -25,6 +25,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); /
 //FATOUMATA
 export default function ArtScreen({ navigation, route }) {
   const user = useSelector((state) => state.user.value);
+  const artworks = useSelector((state) => state.cart.artWorkInCart);
   const dispatch = useDispatch();
 
   //NB: on récupère les informations sur l'oeuvre principale depuis la route.params
@@ -49,7 +50,7 @@ export default function ArtScreen({ navigation, route }) {
           id: artitemData._id,
           image: artitemData.imgMain,
           title: artitemData.title,
-          artiste: artitemData.authors,
+          artist: artitemData.authors,
           distance: artitemData.distance,
         })
       );
