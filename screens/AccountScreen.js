@@ -29,14 +29,14 @@ export default function AccountScreen({ navigation }) {
           : "Not set"}
         {"\n"}Ongoing Loans: {user.ongoingLoans}
         {"\n"}Authorised Loans: {user.authorisedLoans}
-        {"\n"}Has Subscribed: {user.hasSubcribed ? "Yes" : "No"}
+        {"\n"}Has Subscribed: {user.hasSubcribed ? "True" : "False"}
       </Text>
       <Text>
         Reducer Sub:
         {"\n"}Type: {subscription.type}
         {"\n"}Count: {subscription.count}
         {"\n"}Price: {subscription.price}
-        {"\n"}State: {subscription.subscriptionState}
+        {"\n"}State: {subscription.subscriptionState ? "True" : "False"}
       </Text>
 
       <Text style={styles.title}>Account Screen</Text>
