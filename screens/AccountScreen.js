@@ -135,6 +135,7 @@ export default function AccountScreen({ navigation }) {
   const hasOngoingCart = Boolean(cart.length > 0);
 
   //GESTION DES BOUTONS
+  // Bouton mes informations personnelles
   const handleInfoScreen = () => {
     const combinedUserData = {
       _id: userData._id,
@@ -154,6 +155,73 @@ export default function AccountScreen({ navigation }) {
     });
 
     console.log("handleInfoScreen called with userData:", combinedUserData);
+  };
+
+  // Bouton mon abonnement
+  const handleSubScreen = () => {
+    const combinedUserData = {
+      _id: userData._id,
+      token: userData.token,
+      subscription: userData.subscription,
+    };
+
+    navigation.navigate("Stack", {
+      screen: "AccountSub",
+      params: { userData: combinedUserData },
+    });
+
+    console.log("handleSubScreen called with userData:", combinedUserData);
+  };
+
+  // Bouton oeuvres en cours d'emprunt
+  const handleLoansScreen = () => {
+    const combinedUserData = {
+      _id: userData._id,
+      token: userData.token,
+      ongoingLoans: userData.ongoingLoans,
+    };
+
+    navigation.navigate("Stack", {
+      screen: "AccountLoans",
+      params: { userData: combinedUserData },
+    });
+
+    console.log("handleLoansScreen called with userData:", combinedUserData);
+  };
+
+  // Bouton historiques des emprunts
+  const handleOldLoansScreen = () => {
+    const combinedUserData = {
+      _id: userData._id,
+      token: userData.token,
+      previousLoans: userData.previousLoans,
+    };
+
+    navigation.navigate("Stack", {
+      screen: "AccountOldLoans",
+      params: { userData: combinedUserData },
+    });
+
+    console.log("handleOldLoansScreen called with userData:", combinedUserData);
+  };
+
+  // Bouton mes favoris
+  const handleFavoritesScreen = () => {
+    const combinedUserData = {
+      _id: userData._id,
+      token: userData.token,
+      favoriteItems: userData.favoriteItems,
+    };
+
+    navigation.navigate("Stack", {
+      screen: "AccountFavorites",
+      params: { userData: combinedUserData },
+    });
+
+    console.log(
+      "handleFavoritesScreen called with userData:",
+      combinedUserData
+    );
   };
 
   return (
@@ -215,12 +283,7 @@ export default function AccountScreen({ navigation }) {
                 globalStyles.buttonWhite,
                 { flexDirection: "row", justifyContent: "space-between" },
               ]}
-              onPress={() =>
-                navigation.navigate("Stack", {
-                  screen: "AccountSub",
-                  params: { userData: userData },
-                })
-              }
+              onPress={() => handleSubScreen()}
             >
               <Text style={globalStyles.buttonWhiteText}>Mon abonnement</Text>
               <FontAwesome
@@ -234,12 +297,7 @@ export default function AccountScreen({ navigation }) {
                 globalStyles.buttonWhite,
                 { flexDirection: "row", justifyContent: "space-between" },
               ]}
-              onPress={() =>
-                navigation.navigate("Stack", {
-                  screen: "AccountLoans",
-                  params: { userData: userData },
-                })
-              }
+              onPress={() => handleLoansScreen()}
             >
               <Text style={globalStyles.buttonWhiteText}>
                 Œuvres en cours d'emprunt
@@ -255,12 +313,7 @@ export default function AccountScreen({ navigation }) {
                 globalStyles.buttonWhite,
                 { flexDirection: "row", justifyContent: "space-between" },
               ]}
-              onPress={() =>
-                navigation.navigate("Stack", {
-                  screen: "AccountOldLoans",
-                  params: { userData: userData },
-                })
-              }
+              onPress={() => handleOldLoansScreen()}
             >
               <Text style={globalStyles.buttonWhiteText}>
                 Historique des œuvres empruntées
@@ -276,12 +329,7 @@ export default function AccountScreen({ navigation }) {
                 globalStyles.buttonWhite,
                 { flexDirection: "row", justifyContent: "space-between" },
               ]}
-              onPress={() =>
-                navigation.navigate("Stack", {
-                  screen: "AccountFavorites",
-                  params: { userData: userData },
-                })
-              }
+              onPress={() => handleFavoritesScreen()}
             >
               <Text style={globalStyles.buttonWhiteText}>Mes favoris</Text>
               <FontAwesome
