@@ -44,9 +44,9 @@ export default function ArtScreen({ navigation, route }) {
       dispatch(
         addToCart({
           id: artitemData._id,
-          imgMain: artitemData.imgMain,
+          image: artitemData.imgMain,
           title: artitemData.title,
-          authors: artitemData.authors,
+          artiste: artitemData.authors,
           distance: artitemData.distance,
         })
       );
