@@ -10,12 +10,35 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AccountScreen({ navigation }) {
+  const user = useSelector((state) => state.user.value);
+  const subscription = useSelector((state) => state.subscription);
   return (
     <View style={styles.container}>
+      <Text>
+        Reducer User:
+        {"\n"}Email: {user.email}
+        {"\n"}Name: {user.firstname} {user.lastname}
+        {"\n"}Token: {user.token}
+        {"\n"}Position:{" "}
+        {user.position
+          ? user.position.latitude + ", " + user.position.longitude
+          : "Not set"}
+        {"\n"}Ongoing Loans: {user.ongoingLoans}
+        {"\n"}Authorised Loans: {user.authorisedLoans}
+        {"\n"}Has Subscribed: {user.hasSubcribed ? "Yes" : "No"}
+      </Text>
+      <Text>
+        Reducer Sub:
+        {"\n"}Type: {subscription.type}
+        {"\n"}Count: {subscription.count}
+        {"\n"}Price: {subscription.price}
+        {"\n"}State: {subscription.subscriptionState}
+      </Text>
+
       <Text style={styles.title}>Account Screen</Text>
       <TouchableOpacity onPress={() => AsyncStorage.clear()}>
         <Text>Vider le storage</Text>
@@ -54,7 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",
-    gap: 30,
+    gap: 20,
   },
   image: {
     width: "100%",
