@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { globalStyles } from "../globalStyles";
 import {
   Image,
@@ -8,68 +8,75 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { fetchAddress } from "../components/FetchAddress";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "react-native-snap-carousel";
-import { useDispatch } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../reducers/cart";
+
 import { FormatDistance } from "../components/FormatDistance";
+const { getDistanceInKm } = require("../components/getDistanceInKm");
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
 //FATOUMATA
 export default function ArtScreen({ navigation, route }) {
-  const [works, setWorks] = useState([]);
-  const [artitemData, setArtitemData] = useState(route.params?.artitemData); // navigation est toujours disponible;
+  const user = useSelector((state) => state.user.value);
   const dispatch = useDispatch();
-  //GET Works by the Same Author
-  useEffect(() => {
-    console.log("artitemData", artitemData);
-    if (artitemData && artitemData.authors && artitemData.authors.length > 0) {
-      const author = Array.isArray(artitemData.authors)
-        ? artitemData.authors[0]
-        : artitemData.authors;
 
-      fetch(`${fetchAddress}/artItems/${author}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.result) {
-            console.log("data from back", data);
-            setWorks(data.worksList);
-          } else {
-            setWorks([]);
-          }
-        });
+  //NB: on récupère les informations sur l'oeuvre principale depuis la route.params
+  const [works, setWorks] = useState([]);
+  const [artitemData, setArtitemData] = useState(route.params?.artitemData); // navigation est toujours disponible (à revoir car pas sûre qu'on l'utilise)
+  const [artitemAllImages, setArtitemAllImages] = useState([]);
+  const carouselAllImagesRef = useRef(null); //référence pour le carrousel de l'oeuvre principale
+  const carouselItemsAuthorRef = useRef(null); //référence pour le carrousel des autres oeuvres de l'artiste
+  const [activeItemsAuthorSlide, setActiveItemsAuthorSlide] = useState(0); //slide actif du carrousel autres oeuvres de l'artiste (pour la pagination)
+
+  const isButtonDisabled = !artitemData?.disponibility || !user?.token;
+
+  //BOUTON EMPRUNTER
+  const handleLoanButtonPress = () => {
+    if (artitemData.disponibility && user.token) {
+      // double vérification avec isButtonDisable: les actions de validation ne se font que si l'oeuvre est disponible et que si l'utilisateur est inscrit/connecté
+      dispatch(
+        addToCart({
+          id: artitemData._id,
+          image: artitemData.imgMain,
+          title: artitemData.title,
+          artiste: artitemData.authors,
+          distance: artitemData.distance,
+        })
+      );
+      if (user.hasSubcribed) {
+        // Si l'utilisateur a un abonnement, on navigue vers la page du panier
+        navigation.navigate("Cart");
+      } else {
+        // Si l'utilisateur n'a pas d'abonnement, on navigue vers la page de choix d'abonnement
+        navigation.navigate("Sub");
+      }
     }
-  }, [artitemData]);
-
-  // Filtrer l'œuvre principale du carrousel
-  const worksCarousel = works.filter((work) => work._id !== artitemData._id);
-
-  //CAROUSEL imgList de l'oeuvre
-  const renderImageItem = ({ item }) => {
-    return (
-      <View style={styles.slide}>
-        <Image source={{ uri: item }} style={styles.imageSlide2} />
-      </View>
-    );
   };
 
-  //CAROUSEL autres oeuvres de l'artiste
-  const renderItem = ({ item }) => {
-    // if (worksCarousel.length === 0) {
-    //   return; // Si aucun travail n'est disponible, ne rien afficher
-    // }
+  //LIGNE DE CODE POUR L'OEUVRE PRINCIPALE
+  //À l'initialisation, on récupère toutes les images de l'oeuvre principale dans un seul et même tableau
+  useEffect(() => {
+    const combinedImages = [
+      artitemData.imgMain,
+      ...(artitemData.imgList || []),
+    ];
+    // On vérifie si artitemData.imgList existe avant de l'utiliser et on le combine avec imgMain
+    setArtitemAllImages(combinedImages);
+  }, [artitemData]);
+
+  //CAROUSEL imgList de l'oeuvre
+  const renderArtitemAllImages = ({ item }) => {
+    if (!item) return null;
     return (
-      <View style={styles.slide}>
-        <TouchableOpacity
-          onPress={() => navigation.replace("Art", { artitemData: item })}
-        >
-          <Image source={{ uri: item.imgMain }} style={styles.imageSlide} />
-          <View style={styles.textOverlay}>
-            <Text style={globalStyles.overlayText}>{item.title}</Text>
-          </View>
-        </TouchableOpacity>
+      <View style={styles.slideArtitemAllImages}>
+        <Image source={{ uri: item }} style={styles.imageArtitemAllImages} />
       </View>
     );
   };
@@ -80,7 +87,7 @@ export default function ArtScreen({ navigation, route }) {
       <Text
         style={[
           globalStyles.p,
-          { color: disponibility ? "#609E72" : "#D27E75" },
+          disponibility ? globalStyles.darkgreen : globalStyles.darkred,
         ]}
       >
         {disponibility
@@ -98,139 +105,250 @@ export default function ArtScreen({ navigation, route }) {
     return date.toLocaleDateString("fr-FR");
   }
 
+  //LIGNES DE CODE POUR LES AUTRES OEUVRES DE L'ARTISTE
+  //GET Artitems by the Same Author (only first author)
+  useEffect(() => {
+    setActiveItemsAuthorSlide(0); // Réinitialiser le slide actif à 0 lors du changement de l'oeuvre principale
+
+    if (artitemData && artitemData.authors && artitemData.authors.length > 0) {
+      const author = Array.isArray(artitemData.authors)
+        ? artitemData.authors[0] // on prend le premier auteur si c'est un tableau
+        : artitemData.authors;
+
+      fetch(`${fetchAddress}/artItems/${author}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.result) {
+            setWorks(data.worksList);
+          } else {
+            setWorks([]);
+          }
+        });
+    }
+  }, [artitemData]);
+
+  // Filtrer l'œuvre principale pour l'enlever du carrousel des autres oeuvres de cet artiste
+  const worksCarousel = works.filter((work) => work._id !== artitemData._id);
+
+  //CAROUSEL autres oeuvres de l'artiste
+  const renderItemsAuthor = ({ item }) => {
+    if (!item) return null;
+    return (
+      <View style={styles.slideItemsAuthor}>
+        <TouchableOpacity
+          style={styles.imageWrapperItemsAuthor}
+          onPress={() => {
+            // Comme la distance initiale est envoyée depuis la MapScreen mais uniquement pour l'oeuvre principale
+            // on doit recalculer la distance de l'oeuvre cliquée par rapport à la position enregistrée dans le store Redux
+            const distance = getDistanceInKm(
+              user.position.latitude,
+              user.position.longitude,
+              item.artothequePlace.latitude,
+              item.artothequePlace.longitude
+            );
+
+            navigation.push("Art", {
+              artitemData: {
+                ...item,
+                distance,
+              },
+            });
+          }}
+        >
+          <Image
+            source={{ uri: item.imgMain }}
+            style={styles.imageItemsAuthor}
+          />
+          <View style={styles.overlayImageItemsAuthor}>
+            <Text style={[globalStyles.p, { textAlign: "left" }]}>
+              {item.title}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  //JSX de ArtScreen
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <ScrollView
-        style={styles.scrollviewContainer}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <Carousel
-          data={artitemData.imgList}
-          renderItem={renderImageItem}
-          sliderWidth={370} // largeur du carrousel
-          itemWidth={320} // largeur d'un slide
-          layout="default"
-          layoutCardOffset={9} // pour un effet de profondeur
-          style={styles.oeuvres}
-        />
-        {/* <Image source={{ uri: artitemData.imgMain }} style={styles.image} /> */}
-        <View style={styles.cart}>
+    <ScrollView
+      style={styles.scrollviewContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View style={styles.mainContainer}>
+        <View style={styles.artitemAllImagesCarousel}>
+          <Carousel
+            ref={carouselAllImagesRef}
+            data={artitemAllImages}
+            renderItem={renderArtitemAllImages}
+            sliderWidth={screenWidth}
+            itemWidth={screenWidth * 0.75}
+            layout={"stack"}
+            layoutCardOffset={`18`}
+            loop={false}
+          />
+        </View>
+
+        <View style={styles.artitemInfo}>
           <Text style={globalStyles.h3}>{artitemData.title}</Text>
           <Text style={globalStyles.h4}>{artitemData.authors.join(", ")}</Text>
           <Text style={globalStyles.p}>{artitemData.dimensions}</Text>
-          <View style={globalStyles.row}>
-            <Text style={[globalStyles.p, { marginLeft: 5 }]}>
-              <FontAwesome name="location-arrow" size={20} /> Distance:{" "}
-              {FormatDistance(artitemData.distance)}
-            </Text>
-          </View>
-
-          {/* <Text style={styles.title}>{artitemData.info}</Text> */}
+          <Text style={[globalStyles.p, { marginLeft: 5 }]}>
+            <FontAwesome name="location-arrow" size={20} /> Distance:{" "}
+            {FormatDistance(artitemData.distance)}
+          </Text>
           <Text>{renderAvailability(artitemData.disponibility)}</Text>
-          {artitemData.disponibility && (
-            <TouchableOpacity
-              style={[globalStyles.buttonRed, { width: "100%", marginTop: 15 }]}
-              onPress={() => {
-                dispatch(
-                  addToCart({
-                    id: artitemData._id,
-                    imgMain: artitemData.imgMain,
-                    title: artitemData.title,
-                    authors: artitemData.authors,
-                    distance: artitemData.distance,
-                  })
-                );
-                navigation.navigate("Sub", { artitemData });
-              }}
+          <TouchableOpacity
+            style={[
+              globalStyles.buttonRed,
+              { width: "100%", marginTop: 15 },
+              isButtonDisabled && { opacity: 0.4 }, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
+            ]}
+            onPress={() => handleLoanButtonPress()}
+            disabled={isButtonDisabled} // désactive le bouton si l'oeuvre n'est pas disponible ou si l'utilisateur n'est pas connecté
+          >
+            <Text
+              style={[
+                globalStyles.buttonRedText,
+                isButtonDisabled && globalStyles.darkgray, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
+              ]}
             >
-              <Text style={globalStyles.buttonRedText}>Emprunter</Text>
-            </TouchableOpacity>
-          )}
+              Emprunter
+            </Text>
+          </TouchableOpacity>
+          {artitemData?.disponibility &&
+            !user?.token && ( // si oeuvre dispo mais user pas inscrit/connecté, on affiche message pour lui demander de se inscrire ou se connecter
+              <Text
+                style={[
+                  globalStyles.p,
+                  globalStyles.darkred,
+                  { fontSize: 14, textAlign: "center" },
+                ]}
+              >
+                Veuillez vous inscrire / connecter pour emprunter.
+              </Text>
+            )}
         </View>
-        <ScrollView style={styles.scrollviewContainer}>
-          <Text style={globalStyles.h3}>Autres œuvres de l’artiste :</Text>
+        <View style={styles.itemsAuthorCarousel}>
+          <Text style={[globalStyles.h3, { textAlign: "center" }]}>
+            Autres œuvres de l'artiste :
+          </Text>
           <Carousel
+            ref={carouselItemsAuthorRef}
             data={worksCarousel}
-            renderItem={renderItem}
-            sliderWidth={350} // largeur du carrousel
-            itemWidth={250} // largeur d'un slide
+            renderItem={renderItemsAuthor}
+            sliderWidth={screenWidth}
+            itemWidth={screenWidth * 0.5}
             layout="default"
-            layoutCardOffset={9} // pour un effet de profondeur
+            loop={worksCarousel.length > 2}
           />
-        </ScrollView>
-      </ScrollView>
-    </SafeAreaView>
+          {/* Pagination du carrousel */}
+          <View style={styles.paginationContainer}>
+            {worksCarousel.map((_, index) => (
+              <View
+                key={`dot-${index}`}
+                style={[
+                  styles.dotStyle,
+                  index === activeItemsAuthorSlide ? styles.activeDot : null,
+                ]}
+              />
+            ))}
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
   scrollviewContainer: {
     flexGrow: 1,
-    marginTop: 20,
-    marginLeft: 15,
   },
-  cart: {
-    marginTop: 10,
-    marginLeft: 20,
-    marginRight: 35,
-    alignItems: "flex-start",
-    padding: 5,
-    backgroundColor: "#f0f0f0",
-  },
-  image: {
-    alignItems: "center",
-    resizeMode: "cover",
-    height: 300,
-    width: "100%",
-    marginTop: 5,
-    marginLeft: 25,
-    borderRadius: 15,
-  },
-  oeuvres: {
-    width: "100%",
-    height: "40%",
-    backgroundColor: "#f0f0f0",
-  },
-  title: {
-    color: "red",
-  },
-  titleSlide: {
-    color: "red",
-  },
-  slide: {
+  mainContainer: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-
-    padding: 15,
   },
-  imageSlide: {
-    width: 250,
-    height: 180,
+  // Style carousel oeuvre principale
+  artitemAllImagesCarousel: {
+    width: "100%",
+    height: screenHeight * 0.26,
+    marginTop: 25, // à revoir et enlever dans dur dans carousel
+  },
+  slideArtitemAllImages: {
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 10,
-    marginBottom: 10,
-    resizeMode: "cover", // pour que l'image remplisse tout le conteneur
+    backgroundColor: "white", // pour mieux voir l'ombre
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
   },
-  textOverlay: {
+  imageArtitemAllImages: {
+    width: screenWidth * 0.75,
+    height: screenHeight * 0.25,
+    borderRadius: 10,
+  },
+  // Style info oeuvre principale
+  artitemInfo: {
+    width: "85%",
+    height: screenHeight * 0.26,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  // Style carousel autres oeuvres de l'artiste
+  itemsAuthorCarousel: {
+    width: "100%",
+    height: screenHeight * 0.21,
+    gap: 5,
+  },
+  slideItemsAuthor: {
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    backgroundColor: "white", // pour mieux voir l'ombre
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
+  },
+  imageWrapperItemsAuthor: {
+    position: "relative",
+  },
+  imageItemsAuthor: {
+    width: screenWidth * 0.5,
+    height: screenHeight * 0.14,
+    borderRadius: 10,
+  },
+  overlayImageItemsAuthor: {
     position: "absolute",
-    bottom: 15,
-    left: 5,
-    backgroundColor: "rgba(250, 250, 250, 0.5)", // fond semi-transparent
+    bottom: 10,
+    left: 10,
+    backgroundColor: "rgba(250, 250, 250, 0.8)",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 6,
+    borderColor: "white", //nécessaire que le shadow soit visible
+    borderWidth: 1, //nécessaire que le shadow soit visible
   },
-  imageSlide2: {
-    width: 340,
-    height: 250,
-    borderRadius: 10,
-    marginBottom: 10,
-    resizeMode: "cover",
+  //Style communs aux deux carrousels
+  paginationContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
   },
-  formattedDistance: {
-    fontSize: 16,
-    color: "#333",
+  dotStyle: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "grey",
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    backgroundColor: "#B85449",
   },
 });
