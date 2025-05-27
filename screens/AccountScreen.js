@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAddress } from "../components/FetchAddress";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logout } from "../reducers/user";
@@ -108,6 +109,7 @@ export default function AccountScreen({ navigation }) {
 
   const dispatch = useDispatch();
   const [isConnected, setIsConnected] = useState(false);
+
   const handleLogout = () => {
     AsyncStorage.clear();
     dispatch(logout());
@@ -116,6 +118,7 @@ export default function AccountScreen({ navigation }) {
     navigation.navigate("Stack", { screen: "Home" });
   };
 
+  //FETCH DE TOUTES LES DONNEES UTILISATEURS
   useEffect(() => {
     if (user.token) {
       setIsConnected(true);
@@ -128,6 +131,31 @@ export default function AccountScreen({ navigation }) {
     }
   }, [user.token]);
 
+  //VERIFICATION SI PANIER EN COURS
+  const hasOngoingCart = Boolean(cart.length > 0);
+
+  //GESTION DES BOUTONS
+  const handleInfoScreen = () => {
+    const combinedUserData = {
+      _id: userData._id,
+      firstname: userData.firstname,
+      lastname: userData.lastname,
+      email: userData.email,
+      password: userData.password,
+      token: userData.token,
+      phone: userData.phone,
+      address: userData.address,
+      avatar: userData.avatar,
+    };
+
+    navigation.navigate("Stack", {
+      screen: "AccountInfo",
+      params: { userData: combinedUserData },
+    });
+
+    console.log("handleInfoScreen called with userData:", combinedUserData);
+  };
+
   return (
     <View style={styles.mainContainer}>
       <ScrollView
@@ -136,26 +164,57 @@ export default function AccountScreen({ navigation }) {
       >
         <View style={styles.scrollviewAlignment}>
           <View style={styles.headerUserInfo}>
-            <Text>headerUserInfo</Text>
+            <Image
+              source={
+                userData?.avatar // vérification si l'avatar existe sinon image par défaut
+                  ? { uri: userData.avatar }
+                  : require("../assets/user-default-picture.png")
+              }
+              style={styles.userImage}
+            />
+            <Text style={[globalStyles.h1, { marginBottom: 0 }]}>
+              <Text style={globalStyles.darkred}>{userData?.firstname}</Text>
+              {"\n"}
+              {userData?.lastname}
+            </Text>
           </View>
           <View style={styles.buttonsUserInfo}>
             <TouchableOpacity
-              style={globalStyles.buttonWhite}
+              style={[
+                globalStyles.buttonRed,
+                { marginBottom: 0, marginTop: 0, paddingVertical: 12 },
+                !hasOngoingCart && { opacity: 0.5 },
+              ]}
               onPress={() =>
                 navigation.navigate("Stack", {
-                  screen: "AccountInfo",
-                  params: { userData: userData },
+                  screen: "Cart",
                 })
               }
+              disabled={!hasOngoingCart} // désactive le bouton si pas de panier
             >
-              <Text
-                style={[globalStyles.buttonWhiteText, { textAlign: "left" }]}
-              >
-                Mes informations personnelles
-              </Text>
+              <Text style={globalStyles.buttonRedText}>Voir mon panier</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={globalStyles.buttonWhite}
+              style={[
+                globalStyles.buttonWhite,
+                { flexDirection: "row", justifyContent: "space-between" },
+              ]}
+              onPress={() => handleInfoScreen()}
+            >
+              <Text style={globalStyles.buttonWhiteText}>
+                Mes informations personnelles
+              </Text>
+              <FontAwesome
+                name="angle-right"
+                size={30}
+                style={globalStyles.darkgreen}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                globalStyles.buttonWhite,
+                { flexDirection: "row", justifyContent: "space-between" },
+              ]}
               onPress={() =>
                 navigation.navigate("Stack", {
                   screen: "AccountSub",
@@ -163,14 +222,18 @@ export default function AccountScreen({ navigation }) {
                 })
               }
             >
-              <Text
-                style={[globalStyles.buttonWhiteText, { textAlign: "left" }]}
-              >
-                Mon abonnement
-              </Text>
+              <Text style={globalStyles.buttonWhiteText}>Mon abonnement</Text>
+              <FontAwesome
+                name="angle-right"
+                size={30}
+                style={globalStyles.darkgreen}
+              />
             </TouchableOpacity>
             <TouchableOpacity
-              style={globalStyles.buttonWhite}
+              style={[
+                globalStyles.buttonWhite,
+                { flexDirection: "row", justifyContent: "space-between" },
+              ]}
               onPress={() =>
                 navigation.navigate("Stack", {
                   screen: "AccountLoans",
@@ -178,14 +241,20 @@ export default function AccountScreen({ navigation }) {
                 })
               }
             >
-              <Text
-                style={[globalStyles.buttonWhiteText, { textAlign: "left" }]}
-              >
+              <Text style={globalStyles.buttonWhiteText}>
                 Œuvres en cours d'emprunt
               </Text>
+              <FontAwesome
+                name="angle-right"
+                size={30}
+                style={globalStyles.darkgreen}
+              />
             </TouchableOpacity>
             <TouchableOpacity
-              style={globalStyles.buttonWhite}
+              style={[
+                globalStyles.buttonWhite,
+                { flexDirection: "row", justifyContent: "space-between" },
+              ]}
               onPress={() =>
                 navigation.navigate("Stack", {
                   screen: "AccountOldLoans",
@@ -193,14 +262,20 @@ export default function AccountScreen({ navigation }) {
                 })
               }
             >
-              <Text
-                style={[globalStyles.buttonWhiteText, { textAlign: "left" }]}
-              >
-                Historiques des oeuvres empruntées
+              <Text style={globalStyles.buttonWhiteText}>
+                Historique des œuvres empruntées
               </Text>
+              <FontAwesome
+                name="angle-right"
+                size={30}
+                style={globalStyles.darkgreen}
+              />
             </TouchableOpacity>
             <TouchableOpacity
-              style={globalStyles.buttonWhite}
+              style={[
+                globalStyles.buttonWhite,
+                { flexDirection: "row", justifyContent: "space-between" },
+              ]}
               onPress={() =>
                 navigation.navigate("Stack", {
                   screen: "AccountFavorites",
@@ -208,11 +283,12 @@ export default function AccountScreen({ navigation }) {
                 })
               }
             >
-              <Text
-                style={[globalStyles.buttonWhiteText, { textAlign: "left" }]}
-              >
-                Mes favoris
-              </Text>
+              <Text style={globalStyles.buttonWhiteText}>Mes favoris</Text>
+              <FontAwesome
+                name="angle-right"
+                size={30}
+                style={globalStyles.darkgreen}
+              />
             </TouchableOpacity>
           </View>
           <View style={styles.documentsUserInfo}>
@@ -225,7 +301,7 @@ export default function AccountScreen({ navigation }) {
           style={globalStyles.buttonRed}
           onPress={() => handleLogout()}
         >
-          <Text style={globalStyles.buttonRedText}>Déconnexion</Text>
+          <Text style={globalStyles.buttonRedText}>Me déconnecter</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -248,12 +324,27 @@ const styles = StyleSheet.create({
   headerUserInfo: {
     width: "100%",
     height: screenHeight * 0.15,
-    backgroundColor: "red",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  userImage: {
+    width: screenWidth * 0.25,
+    height: screenWidth * 0.25,
+    borderRadius: screenWidth * 0.15, // pour un cercle
+    borderColor: "white",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
   },
   buttonsUserInfo: {
     width: "100%",
     // height: screenHeight * 0.4, à revoir
     gap: 15,
+    padding: 10,
   },
   documentsUserInfo: {
     width: "100%",
@@ -263,6 +354,6 @@ const styles = StyleSheet.create({
   loginBtnContainer: {
     marginTop: 10,
     marginBottom: -10,
-    marginHorizontal: 30,
+    marginHorizontal: 50,
   },
 });
