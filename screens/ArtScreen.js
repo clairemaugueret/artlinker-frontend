@@ -35,23 +35,28 @@ export default function ArtScreen({ navigation, route }) {
   const carouselItemsAuthorRef = useRef(null); //référence pour le carrousel des autres oeuvres de l'artiste
   const [activeItemsAuthorSlide, setActiveItemsAuthorSlide] = useState(0); //slide actif du carrousel autres oeuvres de l'artiste (pour la pagination)
 
+  const isButtonDisabled = !artitemData?.disponibility || !user?.token;
+
   //BOUTON EMPRUNTER
-  handleLoanButtonPress = () => {
-    dispatch(
-      addToCart({
-        id: artitemData._id,
-        imgMain: artitemData.imgMain,
-        title: artitemData.title,
-        authors: artitemData.authors,
-        distance: artitemData.distance,
-      })
-    );
-    if (user.hasSubcribed) {
-      // Si l'utilisateur a un abonnement, on navigue vers la page du panier
-      navigation.navigate("Cart");
-    } else {
-      // Si l'utilisateur n'a pas d'abonnement, on navigue vers la page de choix d'abonnement
-      navigation.navigate("Sub");
+  const handleLoanButtonPress = () => {
+    if (artitemData.disponibility && user.token) {
+      // double vérification avec isButtonDisable: les actions de validation ne se font que si l'oeuvre est disponible et que si l'utilisateur est inscrit/connecté
+      dispatch(
+        addToCart({
+          id: artitemData._id,
+          imgMain: artitemData.imgMain,
+          title: artitemData.title,
+          authors: artitemData.authors,
+          distance: artitemData.distance,
+        })
+      );
+      if (user.hasSubcribed) {
+        // Si l'utilisateur a un abonnement, on navigue vers la page du panier
+        navigation.navigate("Cart");
+      } else {
+        // Si l'utilisateur n'a pas d'abonnement, on navigue vers la page de choix d'abonnement
+        navigation.navigate("Sub");
+      }
     }
   };
 
@@ -197,30 +202,35 @@ export default function ArtScreen({ navigation, route }) {
             style={[
               globalStyles.buttonRed,
               { width: "100%", marginTop: 15 },
-              !artitemData.disponibility && { opacity: 0.4 },
+              isButtonDisabled && { opacity: 0.4 }, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
             ]}
-            onPress={() => {
-              artitemData.disponibility && handleLoanButtonPress();
-            }}
+            onPress={() => handleLoanButtonPress()}
+            disabled={isButtonDisabled} // désactive le bouton si l'oeuvre n'est pas disponible ou si l'utilisateur n'est pas connecté
           >
             <Text
               style={[
                 globalStyles.buttonRedText,
-                !artitemData.disponibility && globalStyles.darkgray,
+                isButtonDisabled && globalStyles.darkgray, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
               ]}
             >
               Emprunter
             </Text>
           </TouchableOpacity>
+          {artitemData?.disponibility &&
+            !user?.token && ( // si oeuvre dispo mais user pas inscrit/connecté, on affiche message pour lui demander de se inscrire ou se connecter
+              <Text
+                style={[
+                  globalStyles.p,
+                  globalStyles.darkred,
+                  { fontSize: 14, textAlign: "center" },
+                ]}
+              >
+                Veuillez vous inscrire / connecter pour emprunter.
+              </Text>
+            )}
         </View>
         <View style={styles.itemsAuthorCarousel}>
-          <Text
-            style={[
-              globalStyles.h3,
-              globalStyles.darkred,
-              { textAlign: "center" },
-            ]}
-          >
+          <Text style={[globalStyles.h3, { textAlign: "center" }]}>
             Autres œuvres de l'artiste :
           </Text>
           <Carousel
@@ -285,7 +295,7 @@ const styles = StyleSheet.create({
   // Style info oeuvre principale
   artitemInfo: {
     width: "85%",
-    height: screenHeight * 0.25,
+    height: screenHeight * 0.26,
     alignItems: "flex-start",
     justifyContent: "center",
   },

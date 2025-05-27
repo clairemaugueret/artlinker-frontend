@@ -78,14 +78,6 @@ export default function HomeScreen({ navigation }) {
                 navigation.navigate("Stack", { screen: "Payment" })
               }
             />
-            <Button
-              title="Price Screen"
-              onPress={() => navigation.navigate("Stack", { screen: "Price" })}
-            />
-            <Button
-              title="Sub Screen"
-              onPress={() => navigation.navigate("Stack", { screen: "Sub" })}
-            />
           </View>
           <Image
             source={require("../assets/logo-picto.png")}
