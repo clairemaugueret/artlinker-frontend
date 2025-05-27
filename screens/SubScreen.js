@@ -443,7 +443,7 @@ export default function SubScreen({ navigation }) {
             onPress={toggleTarifsNormal}
           >
             <FontAwesome
-              name={!showTarifsNormal ? "angle-left" : "angle-down"}
+              name={!showTarifsNormal ? "angle-right" : "angle-down"}
               size={32}
               color={darkred}
             />
@@ -490,7 +490,7 @@ export default function SubScreen({ navigation }) {
             onPress={toggleTarifsSpecial}
           >
             <FontAwesome
-              name={!showTarifsSpecial ? "angle-left" : "angle-down"}
+              name={!showTarifsSpecial ? "angle-right" : "angle-down"}
               size={32}
               color={darkred}
             />
@@ -537,7 +537,7 @@ export default function SubScreen({ navigation }) {
             onPress={toggleTarifsPublic}
           >
             <FontAwesome
-              name={!showTarifsPublic ? "angle-left" : "angle-down"}
+              name={!showTarifsPublic ? "angle-right" : "angle-down"}
               size={32}
               color={darkred}
             />
@@ -587,7 +587,7 @@ export default function SubScreen({ navigation }) {
             onPress={toggleTarifsBusiness}
           >
             <FontAwesome
-              name={!showTarifsBusiness ? "angle-left" : "angle-down"}
+              name={!showTarifsBusiness ? "angle-right" : "angle-down"}
               size={32}
               color={darkred}
             />
