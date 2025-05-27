@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   // Style carousel oeuvre principale
   artitemAllImagesCarousel: {
     width: "100%",
-    height: screenHeight * 0.26,
+    height: screenHeight * 0.22,
     marginTop: 25, // à revoir et enlever dans dur dans carousel
   },
   slideArtitemAllImages: {
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   },
   imageArtitemAllImages: {
     width: screenWidth * 0.75,
-    height: screenHeight * 0.25,
+    height: screenHeight * 0.22,
     borderRadius: 10,
   },
   // Style info oeuvre principale
