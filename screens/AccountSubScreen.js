@@ -16,7 +16,7 @@ import { globalStyles } from "../globalStyles";
 
 export default function AccountSubScreen({ navigation, route }) {
   const [subscription, setSubscription] = useState(
-    route?.params?.subscription || null
+    route?.params?.userData.subscription || null
   );
 
   return (
