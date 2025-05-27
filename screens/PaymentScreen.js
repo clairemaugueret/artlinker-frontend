@@ -1,6 +1,8 @@
 import { globalStyles } from "../globalStyles";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { updateOnGoingLoans } from "../reducers/user";
+import { clearCart } from "../reducers/cart";
 import { fetchAddress } from "../components/FetchAddress";
 import {
   Image,
@@ -18,6 +20,7 @@ export default function PaymentScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription) || {};
   const user = useSelector((state) => state.user) || {};
   const artworks = useSelector((state) => state.cart.artWorkInCart) || [];
+  const dispatch = useDispatch();
 
   const [emailSignIn, setEmailSignIn] = useState("");
   const [focusedField, setFocusedField] = useState(null); // pour pouvoir gérer l'état focus des inputs afin de pouvoir changer le style quand l'input est actif/focusé
@@ -25,6 +28,37 @@ export default function PaymentScreen({ navigation }) {
   const [cvc, setCvc] = useState("");
 
   const validate = async () => {
+    const body = {
+      token: user.value?.token,
+      subscriptionType: subscription.type,
+      count: subscription.count,
+      price: subscription.price,
+    };
+
+    console.log(body);
+
+    try {
+      const response = await fetch(`${fetchAddress}/subscriptions/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (!data.result) {
+        alert(data.error || "Erreur lors de la création de l'abonnement.");
+        return;
+      }
+
+      dispatch(clearCart());
+      navigation.navigate("Account");
+    } catch (err) {
+      alert("Erreur réseau ou serveur lors de la création de l'abonnement.");
+      console.error(err);
+      return;
+    }
+
     for (const art of artworks) {
       try {
         const body = {
@@ -54,37 +88,7 @@ export default function PaymentScreen({ navigation }) {
       }
     }
     // Si tout s'est bien passé pour toutes les œuvres
-    dispatch(setSubscriptionCount(futurBorrowCapacity));
-
-    const body = {
-      token: user.value?.token,
-      subscriptionType: subscription.type,
-      count: futurBorrowCapacity,
-      price,
-    };
-
-    try {
-      const response = await fetch(`${fetchAddress}/subscriptions/create`, {
-        method: "POST", // <-- POST ici
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-
-      if (!data.result) {
-        alert(data.error || "Erreur lors de la création de l'abonnement.");
-        return;
-      }
-
-      // Success: tu peux naviguer ou vider le panier ici si besoin
-      dispatch(clearCart());
-      navigation.navigate("Account");
-    } catch (err) {
-      alert("Erreur réseau ou serveur lors de la création de l'abonnement.");
-      console.error(err);
-      return;
-    }
+    dispatch(updateOnGoingLoans(artworks.length));
   };
 
   return (

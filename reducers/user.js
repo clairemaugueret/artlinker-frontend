@@ -27,11 +27,15 @@ export const userSlice = createSlice({
     addPosition: (state, action) => {
       state.value.position = action.payload;
     },
+    updateOnGoingLoans: (state, action) => {
+      state.value.ongoingLoans = action.payload;
+    },
     logout: (state) => {
       state.value = initialState.value;
     },
   },
 });
 
-export const { loginAndUpdate, addPosition, logout } = userSlice.actions;
+export const { loginAndUpdate, addPosition, logout, updateOnGoingLoans } =
+  userSlice.actions;
 export default userSlice.reducer;
