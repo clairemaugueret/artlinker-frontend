@@ -108,7 +108,7 @@ export const globalStyles = StyleSheet.create({
       ios: "Dosis-SemiBold",
     }),
     fontSize: 42,
-    lineHeight: 42,
+    lineHeight: 52,
     marginBottom: 10,
     color: DARK_GRAY,
   },

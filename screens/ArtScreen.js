@@ -224,14 +224,7 @@ export default function ArtScreen({ navigation, route }) {
             onPress={() => handleLoanButtonPress()}
             disabled={isButtonDisabled} // désactive le bouton si l'oeuvre n'est pas disponible ou si l'utilisateur n'est pas connecté
           >
-            <Text
-              style={[
-                globalStyles.buttonRedText,
-                isButtonDisabled && globalStyles.darkgray, // si oeuvre pas dispo ou user pas inscrit/connecté, on rend le bouton moins opaque
-              ]}
-            >
-              Emprunter
-            </Text>
+            <Text style={globalStyles.buttonRedText}>Emprunter</Text>
           </TouchableOpacity>
           {isAlreadyInCart && ( // si oeuvre déjà dans la panier, on affiche un message
             <Text
@@ -294,6 +287,7 @@ export default function ArtScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   scrollviewContainer: {
     flexGrow: 1,
+    backgroundColor: "#ffffff",
   },
   mainContainer: {
     flex: 1,

@@ -25,7 +25,7 @@ export const cartSlice = createSlice({
       );
     },
     clearCart: (state) => {
-      state.artWorkInCart = [];
+      state.artWorkInCart = initialState.artWorkInCart; // Réinitialise le panier
     },
   },
 });
