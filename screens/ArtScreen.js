@@ -234,13 +234,16 @@ export default function ArtScreen({ navigation, route }) {
           {artitemData?.disponibility &&
             !user?.token && ( // si oeuvre dispo mais user pas inscrit/connecté, on affiche message pour lui demander de se inscrire ou se connecter
               <Text
-                style={[
-                  globalStyles.p,
-                  globalStyles.darkred,
-                  { fontSize: 14, textAlign: "center" },
-                ]}
+                style={[globalStyles.p, { fontSize: 14, textAlign: "center" }]}
               >
-                Veuillez vous inscrire / connecter pour emprunter.
+                Veuillez vous{" "}
+                <Text
+                  style={globalStyles.darkred}
+                  onPress={() => navigation.navigate("Connection")}
+                >
+                  inscrire / connecter
+                </Text>{" "}
+                pour emprunter.
               </Text>
             )}
         </View>
