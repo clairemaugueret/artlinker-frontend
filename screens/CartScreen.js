@@ -101,37 +101,79 @@ export default function CartScreen({ navigation }) {
   const isDisabled = count > borrowCapacity;
   const markerImage = require("../assets/redmarker.png");
 
-  const validate = () => {
+  const validate = async () => {
     if (!user.value.hasSubcribed) {
       // Met à jour le count dans le reducer subscription
       dispatch(setSubscriptionCount(futurBorrowCapacity));
       // Navigue vers la page Payment
-      navigation.navigate("Payment");
+      navigation.navigate("Stack", { screen: "Payment" });
     } else {
-      navigation.navigate("Payment");
+      // Pour chaque œuvre du panier, on effectue un fetch vers /createloan
+      for (const art of artworks) {
+        try {
+          const body = {
+            token: user.value.token,
+            artitemId: art.id,
+          };
 
-      // const body = {};
-      // console.log(body);
+          const response = await fetch(`${fetchAddress}/artitems/createloan`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
 
-      // fetch(`${fetchAddress}/URLROUTE`, {
-      //   method: "PUT",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(body),
-      // })
-      //   .then((res) => res.json())
-      //   .then((data) => {
-      //     if (data.result) {
-      //       navigation.navigate("Account");
-      //     } else {
-      //       alert(
-      //         data.error || "Erreur lors de la mise à jour de l'abonnement."
-      //       );
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     alert("Erreur réseau ou serveur.");
-      //     console.error(err);
-      //   });
+          const data = await response.json();
+
+          if (!data.result) {
+            alert(
+              data.error ||
+                `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
+            );
+            return; // Arrête la boucle si une erreur survient
+          }
+        } catch (err) {
+          alert("Erreur réseau ou serveur.");
+          console.error(err);
+          return;
+        }
+      }
+      // Si tout s'est bien passé pour toutes les œuvres
+      dispatch(setSubscriptionCount(futurBorrowCapacity));
+      // Mise à jour de l'abonnement
+      try {
+        const updateBody = {
+          token: user.value.token,
+          count: futurBorrowCapacity,
+        };
+
+        const updateResponse = await fetch(
+          `${fetchAddress}/subscriptions/update`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updateBody),
+          }
+        );
+
+        const updateData = await updateResponse.json();
+
+        if (!updateData.result) {
+          alert(
+            updateData.error || "Erreur lors de la mise à jour de l'abonnement."
+          );
+          return;
+        }
+      } catch (err) {
+        alert(
+          "Erreur réseau ou serveur lors de la mise à jour de l'abonnement."
+        );
+        console.error(err);
+        return;
+      }
+
+      // Ensuite, on vide le panier et on navigue
+      dispatch(clearCart());
+      navigation.navigate("Account");
     }
   };
 
