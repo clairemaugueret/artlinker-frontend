@@ -353,6 +353,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderColor: "white", //nécessaire que le shadow soit visible
     borderWidth: 1, //nécessaire que le shadow soit visible
+    width: "90%",
   },
   //Style communs aux deux carrousels
   paginationContainer: {
