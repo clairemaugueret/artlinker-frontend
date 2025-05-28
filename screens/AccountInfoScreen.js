@@ -14,6 +14,7 @@ import {
 import { fetchAddress } from "../components/FetchAddress";
 import * as ImagePicker from "expo-image-picker";
 
+//FATOUMATA
 export default function AccountInfoScreen({ navigation, route }) {
   const userData = route.params?.userData || {};
   const [firstname, setFirstname] = useState(userData.firstname || "");
@@ -31,6 +32,7 @@ export default function AccountInfoScreen({ navigation, route }) {
   // Utilise ImagePicker pour choisir une image depuis la galerie ou prendre une photo
   // Envoie l'image au backend pour mise à jour
   const handleAvatarChange = async () => {
+    console.log("handleAvatarChange called");
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
@@ -50,14 +52,20 @@ export default function AccountInfoScreen({ navigation, route }) {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const base64Img = `data:image/jpeg;base64,${result.assets[0].base64}`;
+      const formData = new FormData();
+      formData.append("avatar", {
+        uri: base64Img,
+        name: `avatar-${Date.now()}.jpg`, // Nom de fichier unique
+        type: "image/jpeg",
+      });
+      formData.append("token", userData.token);
       // Envoie au backend
       const response = await fetch(`${fetchAddress}/users/updateAvatar`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token: userData.token,
-          avatar: base64Img,
-        }),
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
       });
       const data = await response.json();
       if (data.result) {
@@ -110,36 +118,19 @@ export default function AccountInfoScreen({ navigation, route }) {
         <View style={styles.infoContainer}>
           {/* Avatar + nom/prénom */}
           <View style={styles.idContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                if (isEditing) {
-                  handleAvatarChange();
-                }
-              }}
-            >
+            <TouchableOpacity onPress={() => handleAvatarChange()}>
               <Image
                 source={
                   avatar
                     ? { uri: avatar }
                     : require("../assets/user-default-picture.png")
                 }
-                style={styles.profileImage}
+                style={styles.userImage}
               />
             </TouchableOpacity>
             <View style={styles.nameBlock}>
               {isEditing ? (
                 <>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      focusedField === "lastname" && styles.inputIsFocused,
-                    ]}
-                    value={lastname}
-                    onChangeText={setLastname}
-                    placeholder="Nom"
-                    onFocus={() => setFocusedField("lastname")}
-                    onBlur={() => setFocusedField(null)}
-                  />
                   <TextInput
                     style={[
                       styles.input,
@@ -149,6 +140,17 @@ export default function AccountInfoScreen({ navigation, route }) {
                     onChangeText={setFirstname}
                     placeholder="Prénom"
                     onFocus={() => setFocusedField("firstname")}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                  <TextInput
+                    style={[
+                      styles.input,
+                      focusedField === "lastname" && styles.inputIsFocused,
+                    ]}
+                    value={lastname}
+                    onChangeText={setLastname}
+                    placeholder="Nom"
+                    onFocus={() => setFocusedField("lastname")}
                     onBlur={() => setFocusedField(null)}
                   />
                 </>
@@ -297,14 +299,18 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   idContainer: {
-    flexDirection: "row",
-    alignItems: "center",
     width: "100%",
+    flexDirection: "row",
+    alignItems: "space-between",
+    alignItems: "center",
+    paddingTop: 20,
+
     marginBottom: 20,
   },
-  profileImage: {
-    width: 90,
-    height: 90,
+  userImage: {
+    width: 100,
+    height: 100,
+    marginRight: 100,
     borderRadius: 45,
     marginRight: 20,
   },
