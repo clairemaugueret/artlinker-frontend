@@ -11,17 +11,45 @@ import {
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker"; //module expo pour permettre à l'utilisateur de choisir un fichier dans son téléphone
 import { globalStyles } from "../globalStyles";
-import { fetchAddress } from "../components/FetchAddress";
+import { fetchAddress } from "./FetchAddress";
 import { isStrictValidISODate } from "./StrictValidISODate";
 
-export default function IdentityCardModal({ isOpen, onClose, userToken }) {
+//FONCTION POUR AJOUTER 3 MOIS A LA DATE D'EMISSION DU DOC - POUR CONNAITRE SON EXPIRATION DATE
+function addMonthsToDate(dateString, monthsToAdd = 3) {
+  // On ajoute 3 mois par défaut car un justificatif doit dater de moins de 3 mois
+
+  const date = new Date(dateString);
+
+  // Si la date est invalide (ex: mauvaise chaîne), retourne null
+  if (isNaN(date)) return null;
+
+  // Copie de la date d'origine pour la modifier sans altérer l'originale
+  const newDate = new Date(date);
+
+  // Ajoute le nombre de mois voulu à la date
+  newDate.setMonth(newDate.getMonth() + monthsToAdd);
+
+  // Certains jours en fin de mois peuvent causer un dépassement de mois
+  // Exemple : 31 janvier + 1 mois → 3 mars (car février n'a pas 31 jours)
+  // Ce test permet de détecter ce cas
+  if (newDate.getDate() !== date.getDate()) {
+    // Si les jours ne correspondent plus, on force le jour à 0
+    // => cela revient au dernier jour du mois précédent
+    newDate.setDate(0);
+  }
+
+  // Retourne la nouvelle date au format ISO (YYYY-MM-DD), sans l'heure
+  return newDate.toISOString().split("T")[0];
+}
+
+export default function ProofResidencyModal({ isOpen, onClose, userToken }) {
   // Composant reçoit en props :
   // isOpen : booléen qui contrôle l'affichage du modal
   // onClose : fonction pour fermer le modal
   // userToken : token utilisateur pour authentifier la requête d'upload
 
   const [file, setFile] = useState(null); // Etat local pour stocker le fichier sélectionné (null au départ)
-  const [expirationDate, setExpirationDate] = useState("");
+  const [issueDate, setIssueDate] = useState("");
   const [uploading, setUploading] = useState(false); // Etat pour indiquer si un upload est en cours (pour afficher un loader
   const [successMessage, setSuccessMessage] = useState(""); // Etat pour afficher un message de succès après upload
   const [errorMessage, setErrorMessage] = useState(""); // Etat pour afficher un message d'erreur si problème
@@ -41,17 +69,25 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
 
   //ENVOI DU DOC AVEC FETCH
   const handleUpload = async () => {
-    if (!file || !expirationDate) {
+    if (!file || !issueDate) {
       setErrorMessage("Veuillez ajouter un fichier et une date.");
       return; // Si pas de fichier ou pas de date d'expiration renseignée, on affiche un message d'erreur
     }
 
-    const isValidDate = isStrictValidISODate(expirationDate);
+    const isValidIssueDate = isStrictValidISODate(issueDate);
 
-    if (!isValidDate) {
+    if (!isValidIssueDate) {
       setErrorMessage(
         `Date invalide, utilisez le format suivant : AAAA-MM-JJ\n(année-mois-jour)`
       );
+      return;
+    }
+
+    const expirationDate = addMonthsToDate(issueDate);
+    const isValidExpirationDate = isStrictValidISODate(expirationDate);
+
+    if (!isValidExpirationDate) {
+      setErrorMessage("Date invalide");
       return;
     }
 
@@ -62,14 +98,14 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
     formData.append("userDocument", {
       // "userDocument" est le nom de la propriété qu'on va récupérer dans le backend
       uri: file.uri,
-      name: "identityCard",
+      name: "proofOfResidency",
       type: file.mimeType || "application/pdf", // Type MIME du fichier (ex: image/jpeg, application/pdf) ou application/pdf par défaut
     });
     formData.append("expirationDate", expirationDate);
     formData.append("userToken", userToken);
 
     try {
-      const response = await fetch(`${fetchAddress}/users/addidentitycard`, {
+      const response = await fetch(`${fetchAddress}/users/addproofresidency`, {
         method: "PUT",
         body: formData, // Corps de la requête : le FormData contenant fichier + infos
         headers: {
@@ -84,7 +120,7 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
         setTimeout(() => {
           setErrorMessage("");
           setSuccessMessage("");
-          setExpirationDate("");
+          setIssueDate("");
           setFile(null);
           onClose();
         }, 2000); // Après 2 secondes, on efface le message et on ferme la modale
@@ -102,7 +138,7 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
   const handleClose = () => {
     setErrorMessage("");
     setSuccessMessage("");
-    setExpirationDate("");
+    setIssueDate("");
     setFile(null);
     onClose();
   };
@@ -112,7 +148,7 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           <Text style={[globalStyles.h4, { textAlign: "center" }]}>
-            Ajouter une{" "}
+            Ajouter un{" "}
             <Text
               style={[
                 globalStyles.nunitoSemiBold,
@@ -120,15 +156,18 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
                 { fontSize: 22 },
               ]}
             >
-              pièce d'identité
+              justificatif de domicile
+            </Text>{" "}
+            <Text style={[globalStyles.p, { fontSize: 16 }]}>
+              (de moins de 3 mois)
             </Text>
           </Text>
 
           <TextInput
             style={styles.input}
-            placeholder="Date d'expiration (ex. 2025-05-28)"
-            value={expirationDate}
-            onChangeText={setExpirationDate}
+            placeholder="Date d'émission (ex. 2025-05-28)"
+            value={issueDate}
+            onChangeText={setIssueDate}
           />
 
           <TouchableOpacity
