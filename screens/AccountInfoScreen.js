@@ -12,6 +12,7 @@ import {
   Alert,
 } from "react-native";
 import { fetchAddress } from "../components/FetchAddress";
+import * as ImagePicker from "expo-image-picker";
 
 export default function AccountInfoScreen({ navigation, route }) {
   const userData = route.params?.userData || {};
@@ -26,7 +27,49 @@ export default function AccountInfoScreen({ navigation, route }) {
   const [focusedField, setFocusedField] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  console.log("User Data from AccountScreen:", userData);
+  // Fonction pour changer l'avatar
+  // Utilise ImagePicker pour choisir une image depuis la galerie ou prendre une photo
+  // Envoie l'image au backend pour mise à jour
+  const handleAvatarChange = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      Alert.alert(
+        "Permission refusée",
+        "Autorisez l'accès à la galerie pour choisir une image."
+      );
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+      base64: true, // Convertit l'image en string
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const base64Img = `data:image/jpeg;base64,${result.assets[0].base64}`;
+      // Envoie au backend
+      const response = await fetch(`${fetchAddress}/users/updateAvatar`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: userData.token,
+          avatar: base64Img,
+        }),
+      });
+      const data = await response.json();
+      if (data.result) {
+        setAvatar(data.userInfo.avatar); // Met à jour l'affichage local
+        Alert.alert("Succès", "Avatar modifié !");
+      } else {
+        Alert.alert("Erreur", data.error || "Impossible de modifier l'avatar");
+      }
+    }
+  };
+
+  //console.log("User Data from AccountScreen:", userData);
 
   const handleSave = async () => {
     setLoading(true);
@@ -39,9 +82,8 @@ export default function AccountInfoScreen({ navigation, route }) {
         lastname,
         phone,
         address,
-        avatar,
         password: password ? password : undefined,
-        email, // si tu veux permettre la modification de l'email
+        email,
       }),
     });
     const data = await response.json();
@@ -71,26 +113,16 @@ export default function AccountInfoScreen({ navigation, route }) {
             <TouchableOpacity
               onPress={() => {
                 if (isEditing) {
-                  Alert.prompt(
-                    "Modifier l'avatar",
-                    "Entrez l'URL de votre nouvelle photo de profil :",
-                    [
-                      { text: "Annuler", style: "cancel" },
-                      {
-                        text: "OK",
-                        onPress: (url) => {
-                          if (url) setAvatar(url);
-                        },
-                      },
-                    ],
-                    "plain-text",
-                    avatar
-                  );
+                  handleAvatarChange();
                 }
               }}
             >
               <Image
-                source={{ uri: avatar || "https://via.placeholder.com/150" }}
+                source={
+                  avatar
+                    ? { uri: avatar }
+                    : require("../assets/user-default-picture.png")
+                }
                 style={styles.profileImage}
               />
             </TouchableOpacity>
@@ -202,19 +234,46 @@ export default function AccountInfoScreen({ navigation, route }) {
           )}
 
           {/* Bouton */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={isEditing ? handleSave : () => setIsEditing(true)}
-            disabled={loading}
-          >
-            <Text style={styles.buttonText}>
-              {loading
-                ? "Enregistrement..."
-                : isEditing
-                ? "Enregistrer"
-                : "Modifier mes informations"}
-            </Text>
-          </TouchableOpacity>
+          {isEditing ? (
+            <View style={{ flexDirection: "row", width: "100%", gap: 10 }}>
+              <TouchableOpacity
+                style={[styles.button, { flex: 1, backgroundColor: "#aaa" }]}
+                onPress={() => {
+                  Alert.alert(
+                    "Annuler les modifications",
+                    "Voulez-vous abandonner vos modifications ?",
+                    [
+                      { text: "Non", style: "cancel" },
+                      {
+                        text: "Oui",
+                        style: "destructive",
+                        onPress: () => setIsEditing(false),
+                      },
+                    ]
+                  );
+                }}
+                disabled={loading}
+              >
+                <Text style={styles.buttonText}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, { flex: 1 }]}
+                onPress={handleSave}
+                disabled={loading}
+              >
+                <Text style={styles.buttonText}>
+                  {loading ? "Enregistrement..." : "Enregistrer"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setIsEditing(true)}
+            >
+              <Text style={styles.buttonText}>Modifier mes informations</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
