@@ -313,9 +313,11 @@ export default function MapScreen({ navigation }) {
             marginTop: "15%",
             paddingHorizontal: 20,
             alignItems: "center",
+            justifyContent: "center",
+            height: 150,
           }}
         >
-          <Text style={[globalStyles.h1, { textAlign: "center" }]}>
+          <Text style={[globalStyles.h3, { textAlign: "center" }]}>
             <Text style={globalStyles.darkred}>A</Text>UCUNE OEUVRE À PROXIMITÉ
           </Text>
           <Text style={globalStyles.p}>
@@ -324,7 +326,7 @@ export default function MapScreen({ navigation }) {
         </View>
       ) : (
         <>
-          <Text style={[globalStyles.h4, { textAlign: "center" }]}>
+          <Text style={[globalStyles.h3, { textAlign: "center" }]}>
             {carouselTitle}
           </Text>
 

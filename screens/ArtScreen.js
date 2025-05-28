@@ -20,6 +20,8 @@ import { addToCart } from "../reducers/cart";
 import { FormatDistance } from "../components/FormatDistance";
 const { getDistanceInKm } = require("../components/getDistanceInKm");
 
+import { FormatDate } from "../components/FormatDate";
+
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
 //FATOUMATA
@@ -110,17 +112,11 @@ export default function ArtScreen({ navigation, route }) {
       >
         {disponibility
           ? "Disponible"
-          : `Indisponible (Retour le: ${formatDate(
+          : `Indisponible ( Retour le : ${FormatDate(
               artitemData.expectedReturnDate
             )} )`}
       </Text>
     );
-  }
-
-  function formatDate(dateString) {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("fr-FR");
   }
 
   //LIGNES DE CODE POUR LES AUTRES OEUVRES DE L'ARTISTE
@@ -208,9 +204,16 @@ export default function ArtScreen({ navigation, route }) {
 
         <View style={styles.artitemInfo}>
           <Text style={globalStyles.h3}>{artitemData.title}</Text>
-          <Text style={globalStyles.h4}>{artitemData.authors.join(", ")}</Text>
-          <Text style={globalStyles.p}>{artitemData.dimensions}</Text>
-          <Text style={[globalStyles.p, { marginLeft: 5 }]}>
+          <Text style={[globalStyles.h4, { marginTop: -3 }]}>
+            {artitemData.authors.join(", ")}
+          </Text>
+          <Text style={[globalStyles.p, { marginTop: 3, marginBottom: 5 }]}>
+            {artitemData.dimensions}
+          </Text>
+          <Text style={[globalStyles.p, globalStyles.nunitoBold]}>
+            {artitemData.artothequePlace.name}
+          </Text>
+          <Text style={[globalStyles.p, { marginLeft: 2, marginBottom: 5 }]}>
             <FontAwesome name="location-arrow" size={20} /> Distance:{" "}
             {FormatDistance(artitemData.distance)}
           </Text>
@@ -257,27 +260,44 @@ export default function ArtScreen({ navigation, route }) {
           <Text style={[globalStyles.h3, { textAlign: "center" }]}>
             Autres œuvres de l'artiste :
           </Text>
-          <Carousel
-            ref={carouselItemsAuthorRef}
-            data={worksCarousel}
-            renderItem={renderItemsAuthor}
-            sliderWidth={screenWidth}
-            itemWidth={screenWidth * 0.5}
-            layout="default"
-            loop={worksCarousel.length > 2}
-          />
-          {/* Pagination du carrousel */}
-          <View style={styles.paginationContainer}>
-            {worksCarousel.map((_, index) => (
-              <View
-                key={`dot-${index}`}
-                style={[
-                  styles.dotStyle,
-                  index === activeItemsAuthorSlide ? styles.activeDot : null,
-                ]}
+          {worksCarousel.length > 0 ? (
+            <>
+              <Carousel
+                ref={carouselItemsAuthorRef}
+                data={worksCarousel}
+                renderItem={renderItemsAuthor}
+                sliderWidth={screenWidth}
+                itemWidth={screenWidth * 0.5}
+                layout="default"
+                loop={worksCarousel.length > 2}
               />
-            ))}
-          </View>
+              {/* Pagination du carrousel */}
+              <View style={styles.paginationContainer}>
+                {worksCarousel.map((_, index) => (
+                  <View
+                    key={`dot-${index}`}
+                    style={[
+                      styles.dotStyle,
+                      index === activeItemsAuthorSlide
+                        ? styles.activeDot
+                        : null,
+                    ]}
+                  />
+                ))}
+              </View>
+            </>
+          ) : (
+            <Text
+              style={[
+                globalStyles.p,
+                globalStyles.darkred,
+                { textAlign: "center", margin: 20 },
+              ]}
+            >
+              Aucune autre œuvre de cet artiste n’est disponible dans
+              l’artothèque.
+            </Text>
+          )}
         </View>
       </View>
     </ScrollView>
@@ -297,7 +317,7 @@ const styles = StyleSheet.create({
   // Style carousel oeuvre principale
   artitemAllImagesCarousel: {
     width: "100%",
-    height: screenHeight * 0.22,
+    height: screenHeight * 0.23,
     marginTop: 25, // à revoir et enlever dans dur dans carousel
   },
   slideArtitemAllImages: {
@@ -320,7 +340,8 @@ const styles = StyleSheet.create({
   // Style info oeuvre principale
   artitemInfo: {
     width: "85%",
-    height: screenHeight * 0.3,
+    marginTop: 10,
+    marginBottom: 10,
     alignItems: "flex-start",
     justifyContent: "center",
   },
