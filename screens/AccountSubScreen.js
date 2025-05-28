@@ -19,6 +19,13 @@ export default function AccountSubScreen({ navigation, route }) {
     route?.params?.userData.subscription || null
   );
 
+  const typeLabels = {
+    INDIVIDUAL_BASIC_COST: "Particulier",
+    INDIVIDUAL_REDUCT_COST: "Particulier (tarif réduit)",
+    PUBLIC_ESTABLISHMENT: "Etablissement public",
+    LIBERAL_PRO: "Entreprise",
+  };
+
   return (
     <View style={styles.container}>
       <Text style={[globalStyles.h1, { textAlign: "center" }]}>
@@ -28,7 +35,9 @@ export default function AccountSubScreen({ navigation, route }) {
         <>
           <Text style={globalStyles.lightred}>
             Type :{" "}
-            <Text style={globalStyles.p}>{subscription.subscriptionType}</Text>
+            <Text style={globalStyles.p}>
+              {typeLabels[subscription.subscriptiontype]}
+            </Text>
           </Text>
           <Text style={globalStyles.lightred}>
             Nombre d'œuvres :{" "}
@@ -61,7 +70,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
-    alignContent: "center",
-    justifyContent: "flex-start",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
