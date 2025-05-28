@@ -22,6 +22,8 @@ import { clearCart } from "../reducers/cart";
 
 import { FormatDate } from "../components/FormatDate";
 
+import IdentityCardModal from "../components/IdentityCardModal";
+
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
 export default function AccountScreen({ navigation }) {
@@ -149,6 +151,8 @@ export default function AccountScreen({ navigation }) {
   const hasValidCertificate =
     userData?.civilLiabilityCertificate &&
     new Date(userData?.civilLiabilityCertificate.expirationDate) > new Date();
+
+  const [showIdentityModal, setShowIdentityModal] = useState(false);
 
   return (
     <View style={styles.mainContainer}>
@@ -324,11 +328,13 @@ export default function AccountScreen({ navigation }) {
                 <Text style={[globalStyles.h3, { textAlign: "center" }]}>
                   Documents de garantie
                 </Text>
+                {/* Bouton Piece Identité */}
                 <TouchableOpacity
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
                   ]}
+                  onPress={() => setShowIdentityModal(true)}
                 >
                   <Text
                     style={[
@@ -367,6 +373,12 @@ export default function AccountScreen({ navigation }) {
                     Veuillez ajouter le document manquant.
                   </Text>
                 )}
+                <IdentityCardModal
+                  isOpen={showIdentityModal}
+                  onClose={() => setShowIdentityModal(false)}
+                  userToken={userData?.token} // on passe le token pour la modale
+                />
+                {/* Bouton Justificatif Domicile */}
                 <TouchableOpacity
                   style={[
                     globalStyles.buttonWhite,
@@ -412,6 +424,7 @@ export default function AccountScreen({ navigation }) {
                     Veuillez ajouter le document manquant.
                   </Text>
                 )}
+                {/* Bouton Responsabilité Civile */}
                 <TouchableOpacity
                   style={[
                     globalStyles.buttonWhite,
