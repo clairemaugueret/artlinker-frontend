@@ -19,6 +19,7 @@ import PaymentScreen from "./screens/PaymentScreen";
 import PriceScreen from "./screens/PriceScreen";
 import SubScreen from "./screens/SubScreen";
 import { StackHeader } from "./components/StackHeader";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -124,6 +125,7 @@ const StackNavigator = () => {
 };
 
 export default function App() {
+  //RAPH : IMPORT POLICES
   const [fontsLoaded] = useFonts({
     // Dosis
     Dosis_400Regular,
@@ -144,6 +146,21 @@ export default function App() {
     return null; // ou <View><ActivityIndicator /></View>
   }
 
+  //RAPH : IMPORT STRIPE
+
+  const [publishableKey, setPublishableKey] = useState("");
+
+  const fetchPublishableKey = async () => {
+    const key = await fetchKey(); // fetch key from your server here
+    setPublishableKey(key);
+  };
+
+  useEffect(() => {
+    fetchPublishableKey();
+  }, []);
+
+  //FIN RAPH IMPORT STRIPE
+
   return (
     <Provider store={store}>
       <PersistGate
@@ -157,59 +174,72 @@ export default function App() {
           </View>
         }
       >
-        <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ color }) => {
-                if (route.name === "Map") {
-                  return (
-                    <FontAwesome name="map-marker" size={45} color={color} />
-                  );
-                } else if (route.name === "Account") {
-                  return (
-                    <FontAwesome name="user-circle-o" size={40} color={color} />
-                  );
-                }
-                return null; // Du coup si route = "Stack", alors bouton caché mais bouton existant et actif
-              },
-              tabBarButton: (props) =>
-                route.name === "Stack" ? null : <TouchableOpacity {...props} />, // En complément de tabBarIcon, si route = "Stack" alors bouton désactivé, sinon on peut cliquer sur les autres boutons existants
-              tabBarActiveTintColor: "#B85449",
-              tabBarInactiveTintColor: "#393837",
-              headerShown: false,
-              tabBarShowLabel: false,
-              tabBarStyle: {
-                backgroundColor: "#f5f5f5",
-                borderTopWidth: 1,
-                borderTopColor: "#ccc",
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
+        {" "}
+        <StripeProvider
+          publishableKey={publishableKey}
+          merchantIdentifier="merchant.identifier" // required for Apple Pay
+          urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+        >
+          <NavigationContainer>
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ color }) => {
+                  if (route.name === "Map") {
+                    return (
+                      <FontAwesome name="map-marker" size={45} color={color} />
+                    );
+                  } else if (route.name === "Account") {
+                    return (
+                      <FontAwesome
+                        name="user-circle-o"
+                        size={40}
+                        color={color}
+                      />
+                    );
+                  }
+                  return null; // Du coup si route = "Stack", alors bouton caché mais bouton existant et actif
                 },
-                height: 110,
-              },
-            })}
-          >
-            <Tab.Screen name="Stack" component={StackNavigator} />
-            <Tab.Screen
-              name="Map"
-              component={MapScreen}
-              options={({ navigation }) =>
-                StackHeader({ navigation, height: 110, margin: 25 })
-              } //déclaration du header différente par rapport à la stack car tab navigation
-              // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
-            />
-            <Tab.Screen
-              name="Account"
-              component={AccountScreen}
-              options={({ navigation }) =>
-                StackHeader({ navigation, height: 110, margin: 25 })
-              } //déclaration du header différente par rapport à la stack car tab navigation
-              // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
+                tabBarButton: (props) =>
+                  route.name === "Stack" ? null : (
+                    <TouchableOpacity {...props} />
+                  ), // En complément de tabBarIcon, si route = "Stack" alors bouton désactivé, sinon on peut cliquer sur les autres boutons existants
+                tabBarActiveTintColor: "#B85449",
+                tabBarInactiveTintColor: "#393837",
+                headerShown: false,
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                  backgroundColor: "#f5f5f5",
+                  borderTopWidth: 1,
+                  borderTopColor: "#ccc",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  height: 110,
+                },
+              })}
+            >
+              <Tab.Screen name="Stack" component={StackNavigator} />
+              <Tab.Screen
+                name="Map"
+                component={MapScreen}
+                options={({ navigation }) =>
+                  StackHeader({ navigation, height: 110, margin: 25 })
+                } //déclaration du header différente par rapport à la stack car tab navigation
+                // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
+              />
+              <Tab.Screen
+                name="Account"
+                component={AccountScreen}
+                options={({ navigation }) =>
+                  StackHeader({ navigation, height: 110, margin: 25 })
+                } //déclaration du header différente par rapport à la stack car tab navigation
+                // affichage différent du header sur les écrans TabNavigation par rapport aux écrans StackNavigation donc on passe en props une height et une margin spécifiques
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </StripeProvider>
       </PersistGate>
     </Provider>
   );
