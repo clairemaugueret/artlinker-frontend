@@ -53,6 +53,7 @@ export default function AccountScreen({ navigation }) {
         fetch(`${fetchAddress}/users/${user.token}`)
           .then((response) => response.json())
           .then((data) => {
+            // console.log("User data fetched:", data);
             setUserData(data.userData);
           });
       }
@@ -65,6 +66,7 @@ export default function AccountScreen({ navigation }) {
   //GESTION DES BOUTONS
   // Bouton mes informations personnelles
   const handleInfoScreen = () => {
+    //console.log("handleInfoScreen called with userData:", userData);
     const combinedUserData = {
       _id: userData._id,
       firstname: userData.firstname,
