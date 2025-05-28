@@ -20,6 +20,10 @@ import { logout } from "../reducers/user";
 import { clearSubscription } from "../reducers/subscription";
 import { clearCart } from "../reducers/cart";
 
+import { FormatDate } from "../components/FormatDate";
+
+import IdentityCardModal from "../components/IdentityCardModal";
+
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
 export default function AccountScreen({ navigation }) {
@@ -135,17 +139,43 @@ export default function AccountScreen({ navigation }) {
     });
   };
 
+  //POUR LES DOCUMENTS
+  const hasValidId =
+    userData?.identityCard &&
+    new Date(userData?.identityCard.expirationDate) > new Date();
+
+  const hasValidProofResidency =
+    userData?.proofOfResidency &&
+    new Date(userData?.proofOfResidency.expirationDate) > new Date();
+
+  const hasValidCertificate =
+    userData?.civilLiabilityCertificate &&
+    new Date(userData?.civilLiabilityCertificate.expirationDate) > new Date();
+
+  const [showIdentityModal, setShowIdentityModal] = useState(false);
+
   return (
     <View style={styles.mainContainer}>
       {!isConnected ? (
-        <TouchableOpacity
-          style={globalStyles.buttonRed}
-          onPress={() => navigation.navigate("Stack", { screen: "Connection" })}
-        >
-          <Text style={globalStyles.buttonRedText}>
-            Se connecter / Créer un compte
+        // Si pas connecté alors pas d'affichage autre que bouton connexion/inscription
+        <View>
+          <Text
+            style={[globalStyles.h1, { textAlign: "center", marginBottom: 20 }]}
+          >
+            <Text style={globalStyles.darkred}>C</Text>
+            onnectez-vous pour accéder à votre profil.
           </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={globalStyles.buttonRed}
+            onPress={() =>
+              navigation.navigate("Stack", { screen: "Connection" })
+            }
+          >
+            <Text style={globalStyles.buttonRedText}>
+              Se connecter / Créer un compte
+            </Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <>
           <ScrollView
@@ -195,13 +225,18 @@ export default function AccountScreen({ navigation }) {
                   ]}
                   onPress={() => handleInfoScreen()}
                 >
-                  <Text style={globalStyles.buttonWhiteText}>
+                  <Text
+                    style={[
+                      globalStyles.buttonWhiteText,
+                      { marginLeft: -5, marginRight: 10 },
+                    ]}
+                  >
                     Mes informations personnelles
                   </Text>
                   <FontAwesome
-                    name="angle-right"
-                    size={30}
-                    style={globalStyles.darkgreen}
+                    name="chevron-right"
+                    size={20}
+                    style={globalStyles.darkgray}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -211,13 +246,18 @@ export default function AccountScreen({ navigation }) {
                   ]}
                   onPress={() => handleSubScreen()}
                 >
-                  <Text style={globalStyles.buttonWhiteText}>
+                  <Text
+                    style={[
+                      globalStyles.buttonWhiteText,
+                      { marginLeft: -5, marginRight: 10 },
+                    ]}
+                  >
                     Mon abonnement
                   </Text>
                   <FontAwesome
-                    name="angle-right"
-                    size={30}
-                    style={globalStyles.darkgreen}
+                    name="chevron-right"
+                    size={20}
+                    style={globalStyles.darkgray}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -227,13 +267,18 @@ export default function AccountScreen({ navigation }) {
                   ]}
                   onPress={() => handleLoansScreen()}
                 >
-                  <Text style={globalStyles.buttonWhiteText}>
+                  <Text
+                    style={[
+                      globalStyles.buttonWhiteText,
+                      { marginLeft: -5, marginRight: 10 },
+                    ]}
+                  >
                     Œuvres en cours d'emprunt
                   </Text>
                   <FontAwesome
-                    name="angle-right"
-                    size={30}
-                    style={globalStyles.darkgreen}
+                    name="chevron-right"
+                    size={20}
+                    style={globalStyles.darkgray}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -243,13 +288,18 @@ export default function AccountScreen({ navigation }) {
                   ]}
                   onPress={() => handleOldLoansScreen()}
                 >
-                  <Text style={globalStyles.buttonWhiteText}>
+                  <Text
+                    style={[
+                      globalStyles.buttonWhiteText,
+                      { marginLeft: -5, marginRight: 10 },
+                    ]}
+                  >
                     Historique des œuvres empruntées
                   </Text>
                   <FontAwesome
-                    name="angle-right"
-                    size={30}
-                    style={globalStyles.darkgreen}
+                    name="chevron-right"
+                    size={20}
+                    style={globalStyles.darkgray}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -259,11 +309,18 @@ export default function AccountScreen({ navigation }) {
                   ]}
                   onPress={() => handleFavoritesScreen()}
                 >
-                  <Text style={globalStyles.buttonWhiteText}>Mes favoris</Text>
+                  <Text
+                    style={[
+                      globalStyles.buttonWhiteText,
+                      { marginLeft: -5, marginRight: 10 },
+                    ]}
+                  >
+                    Mes favoris
+                  </Text>
                   <FontAwesome
-                    name="angle-right"
-                    size={30}
-                    style={globalStyles.darkgreen}
+                    name="chevron-right"
+                    size={20}
+                    style={globalStyles.darkgray}
                   />
                 </TouchableOpacity>
               </View>
@@ -271,51 +328,148 @@ export default function AccountScreen({ navigation }) {
                 <Text style={[globalStyles.h3, { textAlign: "center" }]}>
                   Documents de garantie
                 </Text>
+                {/* Bouton Piece Identité */}
                 <TouchableOpacity
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
                   ]}
+                  onPress={() => setShowIdentityModal(true)}
                 >
-                  <Text style={globalStyles.buttonWhiteText}>
+                  <Text
+                    style={[
+                      globalStyles.buttonWhiteText,
+                      { marginLeft: -5, marginRight: 10 },
+                    ]}
+                  >
                     Pièce d'identité
                   </Text>
                   <FontAwesome
-                    name="angle-right"
-                    size={30}
-                    style={globalStyles.darkgreen}
+                    name={hasValidId ? "check" : "plus"}
+                    size={20}
+                    style={
+                      hasValidId ? globalStyles.darkgreen : globalStyles.darkred
+                    }
                   />
                 </TouchableOpacity>
+                {hasValidId ? (
+                  <Text
+                    style={[
+                      globalStyles.p,
+                      { marginTop: -10, marginLeft: 5, fontSize: 15 },
+                    ]}
+                  >
+                    Document valide jusqu'au :{" "}
+                    {FormatDate(userData.identityCard.expirationDate)}
+                  </Text>
+                ) : (
+                  <Text
+                    style={[
+                      globalStyles.p,
+                      globalStyles.darkred,
+                      { marginTop: -10, marginLeft: 5, fontSize: 15 },
+                    ]}
+                  >
+                    Veuillez ajouter le document manquant.
+                  </Text>
+                )}
+                <IdentityCardModal
+                  isOpen={showIdentityModal}
+                  onClose={() => setShowIdentityModal(false)}
+                  userToken={userData?.token} // on passe le token pour la modale
+                />
+                {/* Bouton Justificatif Domicile */}
                 <TouchableOpacity
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
                   ]}
                 >
-                  <Text style={globalStyles.buttonWhiteText}>
+                  <Text
+                    style={[
+                      globalStyles.buttonWhiteText,
+                      { marginLeft: -5, marginRight: 10 },
+                    ]}
+                  >
                     Justificatif de domicile
                   </Text>
                   <FontAwesome
-                    name="angle-right"
-                    size={30}
-                    style={globalStyles.darkgreen}
+                    name={hasValidProofResidency ? "check" : "plus"}
+                    size={20}
+                    style={
+                      hasValidProofResidency
+                        ? globalStyles.darkgreen
+                        : globalStyles.darkred
+                    }
                   />
                 </TouchableOpacity>
+                {hasValidProofResidency ? (
+                  <Text
+                    style={[
+                      globalStyles.p,
+                      { marginTop: -10, marginLeft: 5, fontSize: 15 },
+                    ]}
+                  >
+                    Valide jusqu'au :{" "}
+                    {FormatDate(userData.identityCard.expirationDate)}
+                  </Text>
+                ) : (
+                  <Text
+                    style={[
+                      globalStyles.p,
+                      globalStyles.darkred,
+                      { marginTop: -10, marginLeft: 5, fontSize: 15 },
+                    ]}
+                  >
+                    Veuillez ajouter le document manquant.
+                  </Text>
+                )}
+                {/* Bouton Responsabilité Civile */}
                 <TouchableOpacity
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
                   ]}
                 >
-                  <Text style={globalStyles.buttonWhiteText}>
+                  <Text
+                    style={[
+                      globalStyles.buttonWhiteText,
+                      { marginLeft: -5, marginRight: 10 },
+                    ]}
+                  >
                     Attestation de Responsabilité Civile
                   </Text>
                   <FontAwesome
-                    name="angle-right"
-                    size={30}
-                    style={globalStyles.darkgreen}
+                    name={hasValidCertificate ? "check" : "plus"}
+                    size={20}
+                    style={
+                      hasValidCertificate
+                        ? globalStyles.darkgreen
+                        : globalStyles.darkred
+                    }
                   />
                 </TouchableOpacity>
+                {hasValidCertificate ? (
+                  <Text
+                    style={[
+                      globalStyles.p,
+                      { marginTop: -10, marginLeft: 5, fontSize: 15 },
+                    ]}
+                  >
+                    Valide jusqu'au :{" "}
+                    {FormatDate(userData.identityCard.expirationDate)}
+                  </Text>
+                ) : (
+                  <Text
+                    style={[
+                      globalStyles.p,
+                      globalStyles.darkred,
+                      { marginTop: -10, marginLeft: 5, fontSize: 15 },
+                    ]}
+                  >
+                    Veuillez ajouter le document manquant.
+                  </Text>
+                )}
               </View>
             </View>
           </ScrollView>
