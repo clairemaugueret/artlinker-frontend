@@ -23,6 +23,8 @@ import { clearCart } from "../reducers/cart";
 import { FormatDate } from "../components/FormatDate";
 
 import IdentityCardModal from "../components/IdentityCardModal";
+import ProofResidencyModal from "../components/ProofResidencyModal";
+import CertificateModal from "../components/CertificateModal";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
@@ -36,14 +38,9 @@ export default function AccountScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
   const isConnected = Boolean(user.token);
 
-  //GESTION DE LA DECONNEXION
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(clearSubscription());
-    dispatch(clearCart());
-    AsyncStorage.clear();
-    navigation.navigate("Stack", { screen: "Home" });
-  };
+  const [showIdentityModal, setShowIdentityModal] = useState(false);
+  const [showProofResidencyModal, setShowProofResidencyModal] = useState(false);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
 
   //FETCH DE TOUTES LES DONNEES UTILISATEURS
   useEffect(() => {
@@ -58,10 +55,37 @@ export default function AccountScreen({ navigation }) {
           });
       }
     }
-  }, [isFocused]);
+  }, [
+    isFocused,
+    showIdentityModal,
+    showProofResidencyModal,
+    showCertificateModal,
+  ]);
 
   //VERIFICATION SI PANIER EN COURS
   const hasOngoingCart = Boolean(cart.length > 0);
+
+  //POUR LES DOCUMENTS
+  const hasValidId =
+    userData?.identityCard &&
+    new Date(userData?.identityCard.expirationDate) > new Date();
+
+  const hasValidProofResidency =
+    userData?.proofOfResidency &&
+    new Date(userData?.proofOfResidency.expirationDate) > new Date();
+
+  const hasValidCertificate =
+    userData?.civilLiabilityCertificate &&
+    new Date(userData?.civilLiabilityCertificate.expirationDate) > new Date();
+
+  //GESTION DE LA DECONNEXION
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(clearSubscription());
+    dispatch(clearCart());
+    AsyncStorage.clear();
+    navigation.navigate("Stack", { screen: "Home" });
+  };
 
   //GESTION DES BOUTONS
   // Bouton mes informations personnelles
@@ -140,21 +164,6 @@ export default function AccountScreen({ navigation }) {
       params: { userData: combinedUserData },
     });
   };
-
-  //POUR LES DOCUMENTS
-  const hasValidId =
-    userData?.identityCard &&
-    new Date(userData?.identityCard.expirationDate) > new Date();
-
-  const hasValidProofResidency =
-    userData?.proofOfResidency &&
-    new Date(userData?.proofOfResidency.expirationDate) > new Date();
-
-  const hasValidCertificate =
-    userData?.civilLiabilityCertificate &&
-    new Date(userData?.civilLiabilityCertificate.expirationDate) > new Date();
-
-  const [showIdentityModal, setShowIdentityModal] = useState(false);
 
   return (
     <View style={styles.mainContainer}>
@@ -386,6 +395,7 @@ export default function AccountScreen({ navigation }) {
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
                   ]}
+                  onPress={() => setShowProofResidencyModal(true)}
                 >
                   <Text
                     style={[
@@ -412,8 +422,8 @@ export default function AccountScreen({ navigation }) {
                       { marginTop: -10, marginLeft: 5, fontSize: 15 },
                     ]}
                   >
-                    Valide jusqu'au :{" "}
-                    {FormatDate(userData.identityCard.expirationDate)}
+                    Document valide jusqu'au :{" "}
+                    {FormatDate(userData.proofOfResidency.expirationDate)}
                   </Text>
                 ) : (
                   <Text
@@ -426,12 +436,18 @@ export default function AccountScreen({ navigation }) {
                     Veuillez ajouter le document manquant.
                   </Text>
                 )}
+                <ProofResidencyModal
+                  isOpen={showProofResidencyModal}
+                  onClose={() => setShowProofResidencyModal(false)}
+                  userToken={userData?.token} // on passe le token pour la modale
+                />
                 {/* Bouton Responsabilité Civile */}
                 <TouchableOpacity
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
                   ]}
+                  onPress={() => setShowCertificateModal(true)}
                 >
                   <Text
                     style={[
@@ -458,8 +474,10 @@ export default function AccountScreen({ navigation }) {
                       { marginTop: -10, marginLeft: 5, fontSize: 15 },
                     ]}
                   >
-                    Valide jusqu'au :{" "}
-                    {FormatDate(userData.identityCard.expirationDate)}
+                    Document valide jusqu'au :{" "}
+                    {FormatDate(
+                      userData.civilLiabilityCertificate.expirationDate
+                    )}
                   </Text>
                 ) : (
                   <Text
@@ -472,6 +490,11 @@ export default function AccountScreen({ navigation }) {
                     Veuillez ajouter le document manquant.
                   </Text>
                 )}
+                <CertificateModal
+                  isOpen={showCertificateModal}
+                  onClose={() => setShowCertificateModal(false)}
+                  userToken={userData?.token} // on passe le token pour la modale
+                />
               </View>
             </View>
           </ScrollView>

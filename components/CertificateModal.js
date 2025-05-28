@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker"; //module expo pour permettre à l'utilisateur de choisir un fichier dans son téléphone
 import { globalStyles } from "../globalStyles";
-import { fetchAddress } from "../components/FetchAddress";
+import { fetchAddress } from "./FetchAddress";
 import { isStrictValidISODate } from "./StrictValidISODate";
 
-export default function IdentityCardModal({ isOpen, onClose, userToken }) {
+export default function CertificateModal({ isOpen, onClose, userToken }) {
   // Composant reçoit en props :
   // isOpen : booléen qui contrôle l'affichage du modal
   // onClose : fonction pour fermer le modal
@@ -62,14 +62,14 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
     formData.append("userDocument", {
       // "userDocument" est le nom de la propriété qu'on va récupérer dans le backend
       uri: file.uri,
-      name: "identityCard",
+      name: "civilLiabilityCertificate",
       type: file.mimeType || "application/pdf", // Type MIME du fichier (ex: image/jpeg, application/pdf) ou application/pdf par défaut
     });
     formData.append("expirationDate", expirationDate);
     formData.append("userToken", userToken);
 
     try {
-      const response = await fetch(`${fetchAddress}/users/addidentitycard`, {
+      const response = await fetch(`${fetchAddress}/users/addcertificate`, {
         method: "PUT",
         body: formData, // Corps de la requête : le FormData contenant fichier + infos
         headers: {
@@ -112,7 +112,7 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           <Text style={[globalStyles.h4, { textAlign: "center" }]}>
-            Ajouter une{" "}
+            Ajouter une attestation de{" "}
             <Text
               style={[
                 globalStyles.nunitoSemiBold,
@@ -120,7 +120,17 @@ export default function IdentityCardModal({ isOpen, onClose, userToken }) {
                 { fontSize: 22 },
               ]}
             >
-              pièce d'identité
+              responsabilité civile
+            </Text>{" "}
+            /{" "}
+            <Text
+              style={[
+                globalStyles.nunitoSemiBold,
+                globalStyles.darkred,
+                { fontSize: 22 },
+              ]}
+            >
+              assurance logement
             </Text>
           </Text>
 
