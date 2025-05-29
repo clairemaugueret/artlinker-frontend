@@ -49,7 +49,7 @@ export default function GridScreen({ navigation, route }) {
           {item.title}
         </Text>
         <Text style={[globalStyles.h4, Montserrat_300Light, { fontSize: 16 }]}>
-          {item.authors}
+          {item.authors.join(", ")}
         </Text>
         <Text style={[globalStyles.p, { fontSize: 14 }]}>
           <FontAwesome name="location-arrow" size={15} /> Distance:{" "}

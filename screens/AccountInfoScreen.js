@@ -8,7 +8,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Alert,
   Dimensions,
   ScrollView,
 } from "react-native";
@@ -18,6 +17,7 @@ import { globalStyles } from "../globalStyles";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useSelector, useDispatch } from "react-redux";
 import { loginAndUpdate } from "../reducers/user";
+import CustomModal from "../components/CustomModal";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
@@ -37,6 +37,20 @@ export default function AccountInfoScreen({ navigation, route }) {
   const [focusedField, setFocusedField] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Modale personnalisée grâce au composant CustomModal pour tous les messages d'erreur ou de succès de la page
+  // car le module "Alert" de react-native n'est pas personnalisable en style
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    buttons: [],
+  });
+  const showModal = (title, message, buttons = []) => {
+    //pour personnaliser la modale, on lui envoie les informations suivantes : le titre, le message, et les boutons
+    setModalContent({ title, message, buttons });
+    setModalVisible(true);
+  };
+
   // Fonction pour changer l'avatar
   // Utilise ImagePicker pour choisir une image depuis la galerie ou prendre une photo
   // Envoie l'image au backend pour mise à jour
@@ -44,9 +58,10 @@ export default function AccountInfoScreen({ navigation, route }) {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
-      Alert.alert(
+      showModal(
         "Permission refusée",
-        "Autorisez l'accès à la galerie pour choisir une image."
+        "Autorisez l'accès à la galerie pour choisir une image.",
+        [{ text: "OK", onPress: () => setModalVisible(false) }]
       );
       return;
     }
@@ -59,7 +74,7 @@ export default function AccountInfoScreen({ navigation, route }) {
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      const base64Img = `data:image/jpeg,base64,${result.assets[0].base64}`;
+      const base64Img = `data:image/jpeg;base64,${result.assets[0].base64}`;
       const formData = new FormData();
       formData.append("avatar", {
         uri: base64Img,
@@ -80,9 +95,13 @@ export default function AccountInfoScreen({ navigation, route }) {
 
       if (data.result) {
         setAvatar(data.userInfo.avatar); // Met à jour l'affichage local
-        Alert.alert("Succès", "Avatar modifié !");
+        showModal("Succès", "Avatar modifié !", [
+          { text: "OK", onPress: () => setModalVisible(false) },
+        ]);
       } else {
-        Alert.alert("Erreur", data.error || "Impossible de modifier l'avatar");
+        showModal("Erreur", data.error || "Impossible de modifier l'avatar.", [
+          { text: "OK", onPress: () => setModalVisible(false) },
+        ]);
       }
     }
   };
@@ -107,12 +126,15 @@ export default function AccountInfoScreen({ navigation, route }) {
 
     if (data.result) {
       dispatch(loginAndUpdate({ email, firstname, lastname }));
-      Alert.alert("Succès", data.message || "Informations modifiées !");
+      showModal("Succès", data.message || "Informations modifiées.", [
+        { text: "OK", onPress: () => setModalVisible(false) },
+      ]);
       setIsEditing(false);
     } else {
-      Alert.alert(
+      showModal(
         "Erreur",
-        data.error || data.message || "Une erreur est survenue."
+        data.error || data.message || "Une erreur est survenue.",
+        [{ text: "OK", onPress: () => setModalVisible(false) }]
       );
     }
   };
@@ -306,22 +328,29 @@ export default function AccountInfoScreen({ navigation, route }) {
                   { flex: 1, backgroundColor: "#aaa" },
                 ]}
                 onPress={() => {
-                  Alert.alert(
+                  showModal(
                     "Annuler les modifications",
                     "Voulez-vous abandonner vos modifications ?",
                     [
-                      { text: "Non", style: "cancel" },
+                      {
+                        text: "Non",
+                        onPress: () => setModalVisible(false),
+                        style: "cancel",
+                      },
                       {
                         text: "Oui",
+                        onPress: () => {
+                          setModalVisible(false);
+                          setIsEditing(false);
+                        },
                         style: "destructive",
-                        onPress: () => setIsEditing(false),
                       },
                     ]
                   );
                 }}
                 disabled={loading}
               >
-                <Text style={globalStyles.buttonWhiteText}>Annuler</Text>
+                <Text style={globalStyles.buttonRedText}>Annuler</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[globalStyles.buttonRed, { marginTop: 30 }, { flex: 1 }]}
@@ -348,6 +377,14 @@ export default function AccountInfoScreen({ navigation, route }) {
             </TouchableOpacity>
           )}
         </View>
+        {/* Modale personnalisée grâce au composant CustomModal pour tous les messages d'erreur ou de succès de la page */}
+        <CustomModal
+          visible={modalVisible}
+          title={modalContent.title}
+          message={modalContent.message}
+          buttons={modalContent.buttons}
+          onClose={() => setModalVisible(false)}
+        />
       </KeyboardAvoidingView>
     </ScrollView>
   );
