@@ -25,76 +25,79 @@ export default function AccountOldLoansScreen({ route }) {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        alignItems: "center",
-        paddingBottom: 40,
-        margin: 20,
+        flexGrow: 1,
+        backgroundColor: "white",
+        width: "100%",
       }}
     >
-      <Text
-        style={[globalStyles.h1, { textAlign: "center", marginBottom: 15 }]}
-      >
-        Historique des œuvres empruntées
-      </Text>
-      {previousLoans.length === 0 ? (
+      <View style={styles.container}>
         <Text
-          style={[
-            globalStyles.h3,
-            globalStyles.darkred,
-            { textAlign: "center", marginTop: 20 },
-          ]}
+          style={[globalStyles.h1, { textAlign: "center", marginBottom: 15 }]}
         >
-          Aucun prêt terminé
+          Historique des œuvres empruntées
         </Text>
-      ) : (
-        previousLoans.map((loan) => (
-          <View key={loan._id} style={styles.cardsContainer}>
-            <Image
-              source={{ uri: loan.artItem.imgMain }}
-              style={styles.image}
-              resizeMode="cover"
-            />
-            <View style={styles.card}>
-              <Text style={[globalStyles.h3, { marginTop: 10 }]}>
-                {loan.artItem.title}
-              </Text>
-              <Text
-                style={[
-                  globalStyles.h4,
-                  { fontSize: 20, marginTop: -5, marginBottom: 5 },
-                ]}
-              >
-                {loan.artItem.authors?.join(", ")}
-              </Text>
-              <Text style={[globalStyles.p, globalStyles.lightred]}>
-                Début d'emprunt :{" "}
-                <Text style={globalStyles.p}>
-                  {new Date(loan.startDate).toLocaleDateString()}
+        <View style={styles.shadowLine} />
+        {previousLoans.length === 0 ? (
+          <Text
+            style={[
+              globalStyles.h3,
+              globalStyles.darkred,
+              { textAlign: "center", marginTop: 20 },
+            ]}
+          >
+            Aucun prêt terminé
+          </Text>
+        ) : (
+          previousLoans.map((loan) => (
+            <View key={loan._id} style={styles.cardsContainer}>
+              <Image
+                source={{ uri: loan.artItem.imgMain }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+              <View style={styles.card}>
+                <Text style={[globalStyles.h3, { marginTop: 10 }]}>
+                  {loan.artItem.title}
                 </Text>
-              </Text>
-              <Text style={[globalStyles.p, globalStyles.lightred]}>
-                Fin d'emprunt :{" "}
-                <Text style={globalStyles.p}>
-                  {loan.endDate
-                    ? new Date(loan.endDate).toLocaleDateString()
-                    : "N/A"}
+                <Text
+                  style={[
+                    globalStyles.h4,
+                    { fontSize: 20, marginTop: -5, marginBottom: 5 },
+                  ]}
+                >
+                  {loan.artItem.authors?.join(", ")}
                 </Text>
-              </Text>
-              <Text style={[globalStyles.p, globalStyles.lightred]}>
-                Lieu :{" "}
-                <Text style={globalStyles.p}>
-                  {loan.artItem.artothequePlace?.name}
+                <Text style={[globalStyles.p, globalStyles.darkred]}>
+                  Début d'emprunt :{" "}
+                  <Text style={globalStyles.p}>
+                    {new Date(loan.startDate).toLocaleDateString()}
+                  </Text>
                 </Text>
-              </Text>
-              <Text style={[globalStyles.p, globalStyles.lightred]}>
-                Statut :{" "}
-                <Text style={globalStyles.p}>
-                  {statusLabels[loan.requestStatus] || loan.requestStatus}
+                <Text style={[globalStyles.p, globalStyles.darkred]}>
+                  Fin d'emprunt :{" "}
+                  <Text style={globalStyles.p}>
+                    {loan.endDate
+                      ? new Date(loan.endDate).toLocaleDateString()
+                      : "N/A"}
+                  </Text>
                 </Text>
-              </Text>
+                <Text style={[globalStyles.p, globalStyles.darkred]}>
+                  Lieu :{" "}
+                  <Text style={globalStyles.p}>
+                    {loan.artItem.artothequePlace?.name}
+                  </Text>
+                </Text>
+                <Text style={[globalStyles.p, globalStyles.darkred]}>
+                  Statut :{" "}
+                  <Text style={globalStyles.p}>
+                    {statusLabels[loan.requestStatus] || loan.requestStatus}
+                  </Text>
+                </Text>
+              </View>
             </View>
-          </View>
-        ))
-      )}
+          ))
+        )}
+      </View>
     </ScrollView>
   );
 }
@@ -102,9 +105,26 @@ export default function AccountOldLoansScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: "100%",
     backgroundColor: "#ffffff",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    paddingBottom: 40,
+    marginTop: 20,
+    marginHorizontal: 25,
+  },
+  shadowLine: {
+    backgroundColor: "transparent",
+    borderColor: "white",
+    borderWidth: 0.2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
+    marginBottom: 20,
+    width: "70%",
+    marginHorizontal: "15%",
   },
   image: {
     width: "100%",
@@ -123,7 +143,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     marginBottom: 32,
-    backgroundColor: "#fff",
+    backgroundColor: "#fdfdfd",
     borderRadius: 10,
     padding: 10,
     elevation: 2,

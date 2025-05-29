@@ -314,7 +314,8 @@ export default function AccountScreen({ navigation }) {
                     style={globalStyles.darkgray}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* Bouton favoris pour plus tard */}
+                {/* <TouchableOpacity
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -334,7 +335,7 @@ export default function AccountScreen({ navigation }) {
                     size={20}
                     style={globalStyles.darkgray}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               <View style={styles.documentsUserInfo}>
                 <Text style={[globalStyles.h3, { textAlign: "center" }]}>

@@ -56,7 +56,7 @@ export default function CartScreen({ navigation }) {
   // Met à jour futurBorrowCapacity dynamiquement
   useEffect(() => {
     let borrowCapacity;
-    if (user.value?.hasSubcribed) {
+    if (user.value?.hasSubscribed) {
       borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
     } else {
       borrowCapacity = subscription.count || 0; // Utilise le count de l'abonnement si l'utilisateur n'est pas abonné
@@ -65,7 +65,7 @@ export default function CartScreen({ navigation }) {
   }, [count, user]);
 
   let maximum;
-  if (user.value?.hasSubcribed) {
+  if (user.value?.hasSubscribed) {
     maximum = user.value.authorisedLoans;
   } else {
     maximum = subscription.count || 0;
@@ -73,7 +73,7 @@ export default function CartScreen({ navigation }) {
 
   // Calcul de la capacité d'emprunt actuelle
   let borrowCapacity;
-  if (user.value?.hasSubcribed) {
+  if (user.value?.hasSubscribed) {
     borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
   } else {
     borrowCapacity = subscription.count || 0;
@@ -84,7 +84,7 @@ export default function CartScreen({ navigation }) {
   const markerImage = require("../assets/redmarker.png");
 
   const validate = async () => {
-    if (!user.value.hasSubcribed) {
+    if (!user.value.hasSubscribed) {
       // Met à jour le count dans le reducer subscription
       dispatch(setSubscriptionCount(count));
       // Navigue vers la page Payment
@@ -202,7 +202,7 @@ export default function CartScreen({ navigation }) {
         Crédit restant après emprunt:{" "}
         <Text style={{ fontWeight: "bold" }}>{futurBorrowCapacity}</Text>
       </Text>
-      {!user.value?.hasSubcribed && (
+      {!user.value?.hasSubscribed && (
         <Text style={styles.info}>
           Prix total : <Text style={{ fontWeight: "bold" }}>{price} €</Text>
         </Text>
