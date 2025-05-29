@@ -61,7 +61,7 @@ export default function ArtScreen({ navigation, route }) {
           distance: artitemData.distance,
         })
       );
-      if (user.hasSubcribed || subscription.subscriptionState) {
+      if (user.hasSubscribed || subscription.subscriptionState) {
         // Si l'utilisateur a un abonnement, on navigue vers la page du panier
         navigation.navigate("Cart");
       } else {
