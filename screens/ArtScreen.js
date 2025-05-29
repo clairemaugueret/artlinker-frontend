@@ -186,7 +186,7 @@ export default function ArtScreen({ navigation, route }) {
   //JSX de ArtScreen
   return (
     <ScrollView
-      style={styles.scrollviewContainer}
+      contentContainerStyle={styles.scrollviewContainer}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.mainContainer}>
@@ -308,16 +308,16 @@ const styles = StyleSheet.create({
   scrollviewContainer: {
     flexGrow: 1,
     backgroundColor: "#ffffff",
+    paddingBottom: 50,
   },
   mainContainer: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
   },
   // Style carousel oeuvre principale
   artitemAllImagesCarousel: {
     width: "100%",
-    height: screenHeight * 0.23,
+    height: screenHeight * 0.3,
     marginTop: 25, // à revoir et enlever dans dur dans carousel
   },
   slideArtitemAllImages: {
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   },
   imageArtitemAllImages: {
     width: screenWidth * 0.75,
-    height: screenHeight * 0.22,
+    height: screenHeight * 0.3,
     borderRadius: 10,
   },
   // Style info oeuvre principale
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   // Style carousel autres oeuvres de l'artiste
   itemsAuthorCarousel: {
     width: "100%",
-    height: screenHeight * 0.21,
+    height: screenHeight * 0.32,
     gap: 5,
   },
   slideItemsAuthor: {
@@ -367,9 +367,10 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   imageItemsAuthor: {
-    width: screenWidth * 0.5,
-    height: screenHeight * 0.14,
+    width: screenWidth * 0.8,
+    height: screenHeight * 0.22,
     borderRadius: 10,
+    // pour que l'image remplisse bien l'espace
   },
   overlayImageItemsAuthor: {
     position: "absolute",
