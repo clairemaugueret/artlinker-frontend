@@ -148,7 +148,9 @@ export default function App() {
 
   //RAPH : IMPORT STRIPE
 
-  const [publishableKey, setPublishableKey] = useState("");
+  const [publishableKey, setPublishableKey] = useState(
+    "pk_test_51RTf2lCNwXyXTuFi9zIm4MjghdFy8m8BMkdqyXbNwLhFXtq8VeMFWtokocQOvZxOdM5qP5G5ciM8TykSZVRWKjy500yCtV6zOR"
+  );
 
   const fetchPublishableKey = async () => {
     const key = await fetchKey(); // fetch key from your server here
@@ -177,8 +179,8 @@ export default function App() {
         {" "}
         <StripeProvider
           publishableKey={publishableKey}
-          merchantIdentifier="merchant.identifier" // required for Apple Pay
-          urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+          // merchantIdentifier="merchant.identifier" // required for Apple Pay
+          // urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
         >
           <NavigationContainer>
             <Tab.Navigator
