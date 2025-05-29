@@ -98,11 +98,6 @@ export default function CartScreen({ navigation }) {
             artitemId: art.id,
           };
 
-          console.log("createloan body", {
-            token: user.value.token,
-            artitemId: art.id,
-          });
-
           const response = await fetch(`${fetchAddress}/artitems/createloan`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

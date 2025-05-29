@@ -99,7 +99,7 @@ export default function AccountLoansScreen({ navigation, route }) {
               </Text>
               {/* Affiche ici le type d'abonnement si besoin */}
               <Text style={[globalStyles.p, globalStyles.lightred]}>
-                Début :{" "}
+                Début d'emprunt :{" "}
                 <Text style={globalStyles.p}>
                   {new Date(loan.startDate).toLocaleDateString()}
                 </Text>

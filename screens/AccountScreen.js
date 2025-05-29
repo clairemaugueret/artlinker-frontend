@@ -92,7 +92,6 @@ export default function AccountScreen({ navigation }) {
   //GESTION DES BOUTONS
   // Bouton mes informations personnelles
   const handleInfoScreen = () => {
-    //console.log("handleInfoScreen called with userData:", userData);
     const combinedUserData = {
       _id: userData._id,
       firstname: userData.firstname,
@@ -529,15 +528,17 @@ export default function AccountScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   mainContainer: {
+    width: "100%",
     flex: 1,
     backgroundColor: "#ffffff",
-    paddingLeft: 20,
-    paddingRight: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   scrollviewContainer: {
     flexGrow: 1,
+    width: "100%",
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   scrollviewAlignment: {
     alignItems: "flex-start",
