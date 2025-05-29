@@ -289,7 +289,10 @@ export default function MapScreen({ navigation }) {
           ]}
         >
           <TextInput
-            style={[globalStyles.buttonWhiteText, { textAlign: "left" }]}
+            style={[
+              globalStyles.buttonWhiteText,
+              { textAlign: "left", flex: 1, minWidth: 0 },
+            ]}
             placeholder="Rechercher..."
             value={city}
             onChangeText={(value) => setCity(value)}
@@ -301,6 +304,21 @@ export default function MapScreen({ navigation }) {
               size={27}
               style={[globalStyles.lightred, { marginBottom: 3 }]}
             />
+          </TouchableOpacity>
+          {/* BOUTON VERS GRID */}
+          <TouchableOpacity
+            style={[
+              globalStyles.buttonWhite,
+              {
+                marginLeft: 8,
+                height: 40,
+                paddingVertical: 0,
+                paddingHorizontal: 12,
+              },
+            ]}
+            onPress={() => navigation.navigate("Grid")}
+          >
+            <Text style={globalStyles.buttonWhiteText}>Grille</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -393,7 +411,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     left: 20,
-    right: 20,
+    width: screenWidth * 0.75,
     zIndex: 1,
   },
   gpsButtonOnMap: {

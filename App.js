@@ -18,6 +18,7 @@ import MapScreen from "./screens/MapScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import PriceScreen from "./screens/PriceScreen";
 import SubScreen from "./screens/SubScreen";
+import GridScreen from "./screens/GridScreen";
 import { StackHeader } from "./components/StackHeader";
 
 import { Provider } from "react-redux";
@@ -119,6 +120,7 @@ const StackNavigator = () => {
         component={AccountSubScreen}
         options={StackHeader}
       />
+      <Stack.Screen name="Grid" component={GridScreen} options={StackHeader} />
     </Stack.Navigator>
   );
 };
