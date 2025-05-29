@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { fetchAddress } from "../components/FetchAddress";
 import * as ImagePicker from "expo-image-picker";
+import { globalStyles } from "../globalStyles";
 
 //FATOUMATA
 export default function AccountInfoScreen({ navigation, route }) {
@@ -133,8 +134,9 @@ export default function AccountInfoScreen({ navigation, route }) {
                 <>
                   <TextInput
                     style={[
-                      styles.input,
-                      focusedField === "firstname" && styles.inputIsFocused,
+                      globalStyles.input,
+                      focusedField === "firstname" &&
+                        globalStyles.inputIsFocused,
                     ]}
                     value={firstname}
                     onChangeText={setFirstname}
@@ -144,8 +146,10 @@ export default function AccountInfoScreen({ navigation, route }) {
                   />
                   <TextInput
                     style={[
-                      styles.input,
-                      focusedField === "lastname" && styles.inputIsFocused,
+                      globalStyles.input,
+                      focusedField === "lastname" &&
+                        globalStyles.inputIsFocused,
+                      { marginTop: 10 },
                     ]}
                     value={lastname}
                     onChangeText={setLastname}
@@ -156,8 +160,10 @@ export default function AccountInfoScreen({ navigation, route }) {
                 </>
               ) : (
                 <>
-                  <Text style={styles.nameText}>{lastname}</Text>
-                  <Text style={styles.firstnameText}>{firstname}</Text>
+                  <Text style={[globalStyles.h1, globalStyles.darkred]}>
+                    {firstname}
+                  </Text>
+                  <Text style={globalStyles.h1}>{lastname}</Text>
                 </>
               )}
             </View>
@@ -167,8 +173,9 @@ export default function AccountInfoScreen({ navigation, route }) {
           {isEditing ? (
             <TextInput
               style={[
-                styles.input,
-                focusedField === "email" && styles.inputIsFocused,
+                globalStyles.input,
+                { marginTop: 10 },
+                focusedField === "firstname" && globalStyles.inputIsFocused,
               ]}
               value={email}
               onChangeText={setEmail}
@@ -179,15 +186,22 @@ export default function AccountInfoScreen({ navigation, route }) {
               autoCapitalize="none"
             />
           ) : (
-            <Text style={styles.valueText}>Email : {email}</Text>
+            <Text style={[globalStyles.h3, { marginTop: 20 }]}>
+              <Text style={{ fontWeight: "bold" }}>Email :</Text>
+              <Text> </Text>
+              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+                {email}
+              </Text>
+            </Text>
           )}
 
           {/* Téléphone */}
           {isEditing ? (
             <TextInput
               style={[
-                styles.input,
-                focusedField === "phone" && styles.inputIsFocused,
+                globalStyles.input,
+                { marginTop: 20 },
+                focusedField === "firstname" && globalStyles.inputIsFocused,
               ]}
               value={phone}
               onChangeText={setPhone}
@@ -197,15 +211,22 @@ export default function AccountInfoScreen({ navigation, route }) {
               onBlur={() => setFocusedField(null)}
             />
           ) : (
-            <Text style={styles.valueText}>Téléphone : {phone}</Text>
+            <Text style={[globalStyles.h4, { marginTop: 10 }]}>
+              <Text style={{ fontWeight: "bold" }}>Téléphone :</Text>
+              <Text> </Text>
+              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+                {phone}
+              </Text>
+            </Text>
           )}
 
           {/* Adresse */}
           {isEditing ? (
             <TextInput
               style={[
-                styles.input,
-                focusedField === "address" && styles.inputIsFocused,
+                globalStyles.input,
+                { marginTop: 20 },
+                focusedField === "firstname" && globalStyles.inputIsFocused,
               ]}
               value={address}
               onChangeText={setAddress}
@@ -214,15 +235,22 @@ export default function AccountInfoScreen({ navigation, route }) {
               onBlur={() => setFocusedField(null)}
             />
           ) : (
-            <Text style={styles.valueText}>Adresse : {address}</Text>
+            <Text style={globalStyles.h3}>
+              <Text style={{ fontWeight: "bold" }}>Adresse :</Text>
+              {"\n"}
+              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+                {address}
+              </Text>
+            </Text>
           )}
 
           {/* Mot de passe */}
           {isEditing ? (
             <TextInput
               style={[
-                styles.input,
-                focusedField === "password" && styles.inputIsFocused,
+                globalStyles.input,
+                { marginTop: 20 },
+                focusedField === "firstname" && globalStyles.inputIsFocused,
               ]}
               value={password}
               onChangeText={setPassword}
@@ -232,14 +260,24 @@ export default function AccountInfoScreen({ navigation, route }) {
               onBlur={() => setFocusedField(null)}
             />
           ) : (
-            <Text style={styles.valueText}>Mot de passe : ******</Text>
+            <Text style={[globalStyles.h3, { marginTop: 10 }]}>
+              <Text style={{ fontWeight: "bold" }}>Mot de passe :</Text>
+              <Text> </Text>
+              <Text style={[globalStyles.h3, { letterSpacing: 3 }]}>
+                ******
+              </Text>
+            </Text>
           )}
 
           {/* Bouton */}
           {isEditing ? (
             <View style={{ flexDirection: "row", width: "100%", gap: 10 }}>
               <TouchableOpacity
-                style={[styles.button, { flex: 1, backgroundColor: "#aaa" }]}
+                style={[
+                  globalStyles.buttonRed,
+                  { marginTop: 30 },
+                  { flex: 1, backgroundColor: "#aaa" },
+                ]}
                 onPress={() => {
                   Alert.alert(
                     "Annuler les modifications",
@@ -256,24 +294,30 @@ export default function AccountInfoScreen({ navigation, route }) {
                 }}
                 disabled={loading}
               >
-                <Text style={styles.buttonText}>Annuler</Text>
+                <Text style={globalStyles.buttonWhiteText}>Annuler</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.button, { flex: 1 }]}
+                style={[globalStyles.buttonRed, { marginTop: 30 }, { flex: 1 }]}
                 onPress={handleSave}
                 disabled={loading}
               >
-                <Text style={styles.buttonText}>
+                <Text style={[globalStyles.buttonRedText]}>
                   {loading ? "Enregistrement..." : "Enregistrer"}
                 </Text>
               </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity
-              style={styles.button}
+              style={[
+                globalStyles.buttonRed,
+                { alignSelf: "center" },
+                { marginTop: 30 },
+              ]}
               onPress={() => setIsEditing(true)}
             >
-              <Text style={styles.buttonText}>Modifier mes informations</Text>
+              <Text style={globalStyles.buttonRedText}>
+                Modifier mes informations
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -291,7 +335,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoContainer: {
-    alignItems: "flex-start",
+    alignItems: "flex-Space",
     width: "90%",
     alignSelf: "center",
     marginTop: 20,
@@ -301,10 +345,8 @@ const styles = StyleSheet.create({
   idContainer: {
     width: "100%",
     flexDirection: "row",
-    alignItems: "space-between",
     alignItems: "center",
     paddingTop: 20,
-
     marginBottom: 20,
   },
   userImage: {
@@ -312,46 +354,16 @@ const styles = StyleSheet.create({
     height: 100,
     marginRight: 100,
     borderRadius: 45,
-    marginRight: 20,
+    marginRight: 50,
+    marginLeft: 40,
   },
   nameBlock: {
     flex: 1,
     justifyContent: "center",
   },
-  nameText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  firstnameText: {
-    fontSize: 18,
-    color: "#555",
-  },
-  valueText: {
-    fontSize: 16,
-    color: "#222",
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 10,
-    width: "100%",
-  },
+
   inputIsFocused: {
     borderColor: "#B85449",
     backgroundColor: "#fff8f6",
   },
-  button: {
-    backgroundColor: "#B85449",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 20,
-    width: "100%",
-  },
-  buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
 });
