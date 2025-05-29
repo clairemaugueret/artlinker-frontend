@@ -189,7 +189,9 @@ export default function AccountInfoScreen({ navigation, route }) {
             <Text style={[globalStyles.h3, { marginTop: 20 }]}>
               <Text style={{ fontWeight: "bold" }}>Email :</Text>
               <Text> </Text>
-              <Text style={globalStyles.h3}>{email}</Text>
+              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+                {email}
+              </Text>
             </Text>
           )}
 
@@ -212,7 +214,9 @@ export default function AccountInfoScreen({ navigation, route }) {
             <Text style={[globalStyles.h4, { marginTop: 10 }]}>
               <Text style={{ fontWeight: "bold" }}>Téléphone :</Text>
               <Text> </Text>
-              <Text style={globalStyles.h3}>{phone}</Text>
+              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+                {phone}
+              </Text>
             </Text>
           )}
 
@@ -234,7 +238,9 @@ export default function AccountInfoScreen({ navigation, route }) {
             <Text style={globalStyles.h3}>
               <Text style={{ fontWeight: "bold" }}>Adresse :</Text>
               {"\n"}
-              <Text style={globalStyles.h3}>{address}</Text>
+              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+                {address}
+              </Text>
             </Text>
           )}
 
