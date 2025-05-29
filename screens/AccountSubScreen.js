@@ -10,14 +10,16 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useDispatch } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 import { globalStyles } from "../globalStyles";
 
 export default function AccountSubScreen({ navigation, route }) {
   const [subscription, setSubscription] = useState(
     route?.params?.userData.subscription || null
   );
+  const userReduxSubInfo = useSelector((state) => state.user.value);
+  const loansCredit =
+    userReduxSubInfo.authorisedLoans - userReduxSubInfo.ongoingLoans;
 
   const typeLabels = {
     INDIVIDUAL_BASIC_COST: "Particulier",
@@ -28,39 +30,57 @@ export default function AccountSubScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={[globalStyles.h1, { textAlign: "center" }]}>
+      <Text style={[globalStyles.h1, { textAlign: "center", marginTop: 20 }]}>
         Mon abonnement
       </Text>
       {subscription ? (
-        <>
-          <Text style={globalStyles.lightred}>
-            Type :{" "}
-            <Text style={globalStyles.p}>
-              {typeLabels[subscription.subscriptionType]}
-            </Text>
+        <View style={styles.subInfoContainer}>
+          <Text style={[globalStyles.p, { marginTop: 20 }]}>
+            <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>
+              Type :
+            </Text>{" "}
+            {typeLabels[subscription.subscriptionType]}
           </Text>
-          <Text style={globalStyles.lightred}>
-            Nombre d'œuvres :{" "}
-            <Text style={globalStyles.p}>{subscription.worksCount}</Text>
+          <Text style={globalStyles.p}>
+            <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>
+              Prix :
+            </Text>{" "}
+            {subscription.price} € / an
           </Text>
-          <Text style={globalStyles.lightred}>
-            Prix : <Text style={globalStyles.p}>{subscription.price} €</Text>
+          <Text style={[globalStyles.p, { marginTop: 20 }]}>
+            <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>
+              Nombre d'emprunts autorisés :
+            </Text>{" "}
+            {subscription.worksCount} œuvre
+            {subscription.worksCount > 1 ? "s" : ""} tous les 3 mois
           </Text>
-          <Text style={globalStyles.lightred}>
-            Début :{" "}
-            <Text style={globalStyles.p}>
-              {new Date(subscription.createdAt).toLocaleDateString()}
-            </Text>
+          <Text style={globalStyles.p}>
+            <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>
+              Crédit d'emprunts restant :
+            </Text>{" "}
+            {loansCredit > 0
+              ? `${loansCredit} emprunt${loansCredit > 1 ? "s" : ""} restant${
+                  loansCredit > 1 ? "s" : ""
+                }`
+              : "Capacité d'emprunt maximum atteinte"}
           </Text>
-          <Text style={globalStyles.lightred}>
-            Fin :{" "}
-            <Text style={globalStyles.p}>
-              {new Date(subscription.calculatedEndDate).toLocaleDateString()}
-            </Text>
+          <Text style={[globalStyles.p, { marginTop: 20 }]}>
+            <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>
+              Date de souscription :
+            </Text>{" "}
+            {new Date(subscription.createdAt).toLocaleDateString()}
           </Text>
-        </>
+          <Text style={globalStyles.p}>
+            <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>
+              Date de fin d'abonnement :
+            </Text>{" "}
+            {new Date(subscription.calculatedEndDate).toLocaleDateString()}
+          </Text>
+        </View>
       ) : (
-        <Text style={globalStyles.lightred}>Aucun abonnement</Text>
+        <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>
+          Aucun abonnement
+        </Text>
       )}
     </View>
   );
@@ -71,6 +91,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+  },
+  subInfoContainer: {
+    width: "85%",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    gap: 10,
   },
 });
