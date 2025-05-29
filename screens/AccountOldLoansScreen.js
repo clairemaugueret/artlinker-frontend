@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   shadowLine: {
     backgroundColor: "transparent",
-    borderColor: "white",
+    borderColor: "transparent",
     borderWidth: 0.2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     height: 250,
     resizeMode: "cover",
     borderRadius: 10,
-    borderColor: "white", //nécessaire que le shadow soit visible
+    borderColor: "transparent", //nécessaire que le shadow soit visible
     borderWidth: 1, //nécessaire que le shadow soit visible
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },

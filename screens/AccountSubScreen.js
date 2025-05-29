@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   shadowLine: {
     backgroundColor: "transparent",
-    borderColor: "white",
+    borderColor: "transparent",
     borderWidth: 0.3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },

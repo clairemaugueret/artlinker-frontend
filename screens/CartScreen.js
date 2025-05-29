@@ -274,6 +274,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginBottom: 5,
     position: "relative",
+    borderColor: "transparent", //nécessaire que le shadow soit visible
+    borderWidth: 1, //nécessaire que le shadow soit visible
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
   },
   cardImage: {
     width: "100%",

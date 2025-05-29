@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
   },
   shadowLine: {
     backgroundColor: "transparent",
-    borderColor: "white",
+    borderColor: "transparent",
     borderWidth: 0.2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     width: screenWidth * 0.25,
     height: screenWidth * 0.25,
     borderRadius: screenWidth * 0.15, // pour un cercle
-    borderColor: "white",
+    borderColor: "transparent",
     borderWidth: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },

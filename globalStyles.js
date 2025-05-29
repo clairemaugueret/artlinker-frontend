@@ -230,7 +230,7 @@ export const globalStyles = StyleSheet.create({
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
-    borderColor: "white", //nécessaire que le shadow soit visible
+    borderColor: "transparent", //nécessaire que le shadow soit visible
     borderWidth: 1, //nécessaire que le shadow soit visible
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },

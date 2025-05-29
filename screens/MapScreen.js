@@ -327,7 +327,7 @@ export default function MapScreen({ navigation }) {
               globalStyles.buttonRed,
               {
                 marginLeft: 8,
-                height: 40,
+                height: 50,
                 paddingVertical: 0,
                 paddingHorizontal: 12,
                 minWidth: 70,
