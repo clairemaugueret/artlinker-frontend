@@ -121,6 +121,17 @@ export default function MapScreen({ navigation }) {
       });
   };
 
+  //thomas
+  //boutton vers grid et infos
+  const handleGridButton = () => {
+    navigation.navigate("Grid", {
+      screen: "Grid",
+      params: {
+        artData: artitemsFiltered, // on passe les données des oeuvres filtrées pour le grid
+      },
+    });
+  };
+
   // Récupère les données des lieux à afficher autour de la position courante
   useEffect(() => {
     if (currentPosition) {
@@ -316,7 +327,7 @@ export default function MapScreen({ navigation }) {
                 paddingHorizontal: 12,
               },
             ]}
-            onPress={() => navigation.navigate("Grid")}
+            onPress={() => handleGridButton()}
           >
             <Text style={globalStyles.buttonWhiteText}>Grille</Text>
           </TouchableOpacity>
@@ -411,7 +422,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     left: 20,
-    width: screenWidth * 0.75,
+    right: 20,
     zIndex: 1,
   },
   gpsButtonOnMap: {
