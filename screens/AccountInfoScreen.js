@@ -8,9 +8,9 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
   Dimensions,
+  ScrollView,
 } from "react-native";
 import { fetchAddress } from "../components/FetchAddress";
 import * as ImagePicker from "expo-image-picker";
@@ -118,7 +118,7 @@ export default function AccountInfoScreen({ navigation, route }) {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <ScrollView style={styles.mainContainer}>
       <KeyboardAvoidingView
         style={styles.keyboardviewContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -143,12 +143,12 @@ export default function AccountInfoScreen({ navigation, route }) {
                   }
                   style={styles.userImage}
                 />
+                <FontAwesome
+                  name="pencil"
+                  size={18}
+                  style={styles.editPictureIcon}
+                />
               </TouchableOpacity>
-              <FontAwesome
-                name="pencil"
-                size={18}
-                style={styles.editPictureIcon}
-              />
             </View>
             <View style={styles.nameBlock}>
               {isEditing ? (
@@ -349,13 +349,13 @@ export default function AccountInfoScreen({ navigation, route }) {
           )}
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#fff",
   },
   keyboardviewContainer: {

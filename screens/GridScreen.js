@@ -23,7 +23,6 @@ const OUTER_MARGIN = 18; // marge extérieure gauche/droite
 const ITEM_WIDTH =
   (Dimensions.get("window").width - OUTER_MARGIN * 2 - ITEM_MARGIN) / 2;
 export default function GridScreen({ navigation, route }) {
-  console.log("recu:", route.params.artData);
   // On récupère les données passées en paramètre
   const artworks = route.params?.artData || [];
 

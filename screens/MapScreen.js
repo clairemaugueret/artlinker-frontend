@@ -230,7 +230,6 @@ export default function MapScreen({ navigation }) {
   //thomas
   //boutton vers grid et infos
   const handleGridButton = () => {
-    console.log(artitemsFiltered);
     if (artitemsFiltered.length === 0) {
       return; // Si pas d'oeuvres, on ne fait rien
     }
