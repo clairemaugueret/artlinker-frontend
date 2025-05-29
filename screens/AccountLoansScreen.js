@@ -9,22 +9,31 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { globalStyles } from "../globalStyles";
-import { ScrollView } from "react-native";
 
 export default function AccountLoansScreen({ route }) {
   // On récupère les prêts en cours depuis les params
   const ongoingLoans = route?.params?.userData?.ongoingLoans || [];
-  const subscription = route?.params?.userData?.subscription || null;
 
-  const typeLabels = {
-    INDIVIDUAL_BASIC_COST: "Particulier",
-    INDIVIDUAL_REDUCT_COST: "Particulier (tarif réduit)",
-    PUBLIC_ESTABLISHMENT: "Etablissement public",
-    LIBERAL_PRO: "Entreprise",
+  const statusLabels = {
+    INIT_DEMAND_DISPO: "Demande d'emprunt en attente de confirmation",
+    PROPOSAL_OTHER_ARTITEM: "Œuvre non disponible",
+    WAITING_ABONNEMENT: "En attente de souscription à un abonnement",
+    WAITING_ABONNEMENT_DOCUMENTS: "En attente des documents de garantie",
+    WAITING_ABONNEMENT_CREDIT:
+      "Crédit d'emprunt insuffisant, modification d'abonnement nécessaire",
+    READY_LOAN: "Rendez-vous à prévoir pour effectuer l'emprunt",
+    CONDITION_REPORT_DONE: "Etat des lieux d'emprunt en attente",
+    LOAN_ONGOING: "Emprunt en cours",
+    RETURN_ASKED: "Retour demandé par l'artiste",
+    RETURN_TIME: "Durée de l'emprunt terminée",
+    RETURN_TIME_URGENT: "Délai de retour dépassé",
+    RETURN_CONDITION_REPORT: "Etat des lieux retour en attente",
+    LOAN_DONE: "Emprunt terminé",
   };
 
   return (
@@ -52,14 +61,7 @@ export default function AccountLoansScreen({ route }) {
               <Text style={globalStyles.p}>
                 {loan.artItem.authors?.join(", ")}
               </Text>
-              <Text style={globalStyles.lightred}>
-                Type :{" "}
-                <Text style={globalStyles.p}>
-                  {subscription && subscription.subscriptionType
-                    ? typeLabels[subscription.subscriptionType]
-                    : "N/A"}
-                </Text>
-              </Text>
+              {/* Affiche ici le type d'abonnement si besoin */}
               <Text style={globalStyles.lightred}>
                 Début :{" "}
                 <Text style={globalStyles.p}>
@@ -80,6 +82,12 @@ export default function AccountLoansScreen({ route }) {
                 Lieu :{" "}
                 <Text style={globalStyles.p}>
                   {loan.artItem.artothequePlace?.name}
+                </Text>
+              </Text>
+              <Text style={globalStyles.lightred}>
+                Statut :{" "}
+                <Text style={globalStyles.p}>
+                  {statusLabels[loan.requestStatus] || loan.requestStatus}
                 </Text>
               </Text>
             </View>
