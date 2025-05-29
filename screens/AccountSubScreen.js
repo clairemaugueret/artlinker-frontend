@@ -45,7 +45,7 @@ export default function AccountSubScreen({ navigation, route }) {
             <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>
               Prix :
             </Text>{" "}
-            {subscription.price} €
+            {subscription.price} € / an
           </Text>
           <Text style={[globalStyles.p, { marginTop: 20 }]}>
             <Text style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}>

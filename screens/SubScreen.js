@@ -111,18 +111,27 @@ export default function SubScreen({ navigation }) {
         </View>
 
         {showTarifsNormal && (
-          <View style={{ marginTop: -35 }}>
+          <View style={{ width: "95%", marginTop: -35, gap: 8 }}>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>100 € =</Text> 1 œuvre tous
-              les 3 mois (soit 4 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>100 € / an =</Text> 1 œuvre
+              tous les 3 mois{"\n"}{" "}
+              <Text style={{ fontSize: 16 }}>
+                (soit 4 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>180 € =</Text> 2 œuvres tous
-              les 3 mois (soit 8 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>180 € / an =</Text> 2 œuvres
+              tous les 3 mois{"\n"}{" "}
+              <Text style={{ fontSize: 16 }}>
+                (soit 8 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>250 € =</Text> 3 œuvres tous
-              les 3 mois (soit 12 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>250 € / an =</Text> 3 œuvres
+              tous les 3 mois{"\n"}{" "}
+              <Text style={{ fontSize: 16 }}>
+                (soit 12 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <TouchableOpacity
               style={globalStyles.buttonRed}
@@ -158,18 +167,27 @@ export default function SubScreen({ navigation }) {
         </View>
 
         {showTarifsSpecial && (
-          <View style={{ marginTop: -35 }}>
+          <View style={{ width: "95%", marginTop: -35, gap: 8 }}>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>75 € =</Text> 1 œuvre tous les
-              3 mois (soit 4 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>75 € / an =</Text> 1 œuvre
+              tous les 3 mois{"\n"}{" "}
+              <Text style={{ fontSize: 16 }}>
+                (soit 4 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>130 € =</Text> 2 œuvres tous
-              les 3 mois (soit 8 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>130 € / an =</Text> 2 œuvres
+              tous les 3 mois{"\n"}{" "}
+              <Text style={{ fontSize: 16 }}>
+                (soit 8 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>180 € =</Text> 3 œuvres tous
-              les 3 mois (soit 12 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>180 € / an =</Text> 3 œuvres
+              tous les 3 mois{"\n"}{" "}
+              <Text style={{ fontSize: 16 }}>
+                (soit 12 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <TouchableOpacity
               style={globalStyles.buttonRed}
@@ -205,21 +223,30 @@ export default function SubScreen({ navigation }) {
         </View>
 
         {showTarifsPublic && (
-          <View style={{ marginTop: -35 }}>
+          <View style={{ width: "95%", marginTop: -35, gap: 8 }}>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>350 € =</Text> 3 œuvre tous
-              les 3 mois (soit 12 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>350 € / an =</Text> 3 œuvre
+              tous les 3 mois{"\n"}
+              <Text style={{ fontSize: 16 }}>
+                (soit 12 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>420 € =</Text> 4 œuvres tous
-              les 3 mois (soit 16 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>420 € / an =</Text> 4 œuvres
+              tous les 3 mois{"\n"}
+              <Text style={{ fontSize: 16 }}>
+                (soit 16 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>500 € =</Text> 5 œuvres tous
-              les 3 mois (soit 20 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>500 € / an =</Text> 5 œuvres
+              tous les 3 mois{"\n"}
+              <Text style={{ fontSize: 16 }}>
+                (soit 20 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={[globalStyles.p, globalStyles.lightred]}>
-              +100 € / œuvre supplémentaire
+              +100 € / an / œuvre supplémentaire
             </Text>
             <TouchableOpacity
               style={globalStyles.buttonRed}
@@ -255,21 +282,30 @@ export default function SubScreen({ navigation }) {
         </View>
 
         {showTarifsBusiness && (
-          <View style={{ marginTop: -35 }}>
+          <View style={{ width: "95%", marginTop: -35, gap: 8 }}>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>500 € =</Text> 3 œuvre tous
-              les 3 mois (soit 12 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>500 € / an =</Text> 3 œuvre
+              tous les 3 mois{"\n"}
+              <Text style={{ fontSize: 16 }}>
+                (soit 12 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>600 € =</Text> 4 œuvres tous
-              les 3 mois (soit 16 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>600 € / an =</Text> 4 œuvres
+              tous les 3 mois{"\n"}
+              <Text style={{ fontSize: 16 }}>
+                (soit 16 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>700 € =</Text> 5 œuvres tous
-              les 3 mois (soit 20 œuvres différentes dans l'année)
+              <Text style={globalStyles.lightred}>700 € / an =</Text> 5 œuvres
+              tous les 3 mois{"\n"}
+              <Text style={{ fontSize: 16 }}>
+                (soit 20 œuvres différentes dans l'année)
+              </Text>
             </Text>
             <Text style={[globalStyles.p, globalStyles.lightred]}>
-              +130 € / œuvre supplémentaire
+              +130 € / an / œuvre supplémentaire
             </Text>
             <TouchableOpacity
               style={globalStyles.buttonRed}

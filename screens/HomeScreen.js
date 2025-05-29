@@ -69,6 +69,10 @@ export default function HomeScreen({ navigation }) {
             }}
           >
             <Button
+              title="Sub Screen"
+              onPress={() => navigation.navigate("Stack", { screen: "Sub" })}
+            />
+            <Button
               title="Price Screen"
               onPress={() => navigation.navigate("Stack", { screen: "Price" })}
             />
@@ -167,16 +171,16 @@ export default function HomeScreen({ navigation }) {
             {showTarifsNormal && (
               <View>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>100 € =</Text> 1 œuvre
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>100 € / an =</Text> 1
+                  œuvre tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>180 € =</Text> 2 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>180 € / an =</Text> 2
+                  œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>250 € =</Text> 3 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>250 € / an =</Text> 3
+                  œuvres tous les 3 mois
                 </Text>
               </View>
             )}
@@ -201,16 +205,16 @@ export default function HomeScreen({ navigation }) {
             {showTarifsSpecial && (
               <View>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>75 € =</Text> 1 œuvre tous
-                  les 3 mois
-                </Text>
-                <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>130 € =</Text> 2 œuvres
+                  <Text style={globalStyles.lightred}>75 € / an =</Text> 1 œuvre
                   tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>180 € =</Text> 3 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>130 € / an =</Text> 2
+                  œuvres tous les 3 mois
+                </Text>
+                <Text style={globalStyles.p}>
+                  <Text style={globalStyles.lightred}>180 € / an =</Text> 3
+                  œuvres tous les 3 mois
                 </Text>
               </View>
             )}
@@ -235,19 +239,19 @@ export default function HomeScreen({ navigation }) {
             {showTarifsPublic && (
               <View>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>350 € =</Text> 3 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>350 € / an =</Text> 3
+                  œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>420 € =</Text> 4 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>420 € / an =</Text> 4
+                  œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>500 € =</Text> 5 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>500 € / an =</Text> 5
+                  œuvres tous les 3 mois
                 </Text>
                 <Text style={[globalStyles.p]}>
-                  +100 € / œuvre supplémentaire
+                  +100 € / an / œuvre supplémentaire
                 </Text>
               </View>
             )}
@@ -271,19 +275,19 @@ export default function HomeScreen({ navigation }) {
             {showTarifsBusiness && (
               <View>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>500 € =</Text> 3 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>500 € / an =</Text> 3
+                  œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>600 € =</Text> 4 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>600 € / an =</Text> 4
+                  œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>700 € =</Text> 5 œuvres
-                  tous les 3 mois
+                  <Text style={globalStyles.lightred}>700 € / an =</Text> 5
+                  œuvres tous les 3 mois
                 </Text>
                 <Text style={[globalStyles.p]}>
-                  +130 € / œuvre supplémentaire
+                  +130 € / an / œuvre supplémentaire
                 </Text>
               </View>
             )}
