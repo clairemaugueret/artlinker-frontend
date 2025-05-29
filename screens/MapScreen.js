@@ -334,7 +334,7 @@ export default function MapScreen({ navigation }) {
                 minWidth: 70,
               },
             ]}
-            onPress={() => navigation.navigate("Grid")}
+            onPress={() => handleGridButton()}
           >
             <Text style={globalStyles.buttonRedText}>Grille</Text>
           </TouchableOpacity>
