@@ -16,15 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 export default function GridScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>GridScreen</Text>
+      <Text style={styles.title}>List Screen</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#ffffff",
-  },
-});
