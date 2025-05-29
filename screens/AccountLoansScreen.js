@@ -67,7 +67,6 @@ export default function AccountLoansScreen({ navigation, route }) {
       >
         Œuvres en cours d'emprunt
       </Text>
-
       {ongoingLoans.length === 0 ? (
         <Text
           style={[
@@ -152,6 +151,7 @@ export default function AccountLoansScreen({ navigation, route }) {
           </View>
         ))
       )}
+      {/* Modal de notification de fin d'emprunt */}
       <Modal transparent={true} visible={showModal} animationType="fade">
         <View style={styles.endLoanModalView}>
           <View style={styles.endLoanModalContainer}>
@@ -160,7 +160,7 @@ export default function AccountLoansScreen({ navigation, route }) {
               style={[globalStyles.buttonRed, { marginTop: 20 }]}
               onPress={() => {
                 setShowModal(false);
-                navigation.navigate("Stack", { screen: "AccountOldLoans" });
+                navigation.navigate("Account");
               }}
             >
               <Text style={globalStyles.buttonRedText}>OK</Text>

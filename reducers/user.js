@@ -12,6 +12,7 @@ const initialState = {
     authorisedLoans: 0,
     ongoingLoans: 0,
     position: null,
+    reminderEndLoan: [],
   },
 };
 
@@ -34,6 +35,9 @@ export const userSlice = createSlice({
       state.value.hasSubcribed = true;
       state.value.ongoingLoans = action.payload;
     },
+    setReminderEndLoan: (state, action) => {
+      action.payload.forEach((item) => state.value.reminderEndLoan.push(item));
+    },
     logout: (state) => {
       state.value = initialState.value;
     },
@@ -46,5 +50,6 @@ export const {
   logout,
   updateOnGoingLoans,
   updateSubscription,
+  setReminderEndLoan,
 } = userSlice.actions;
 export default userSlice.reducer;
