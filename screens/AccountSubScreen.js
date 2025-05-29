@@ -36,7 +36,7 @@ export default function AccountSubScreen({ navigation, route }) {
           <Text style={globalStyles.lightred}>
             Type :{" "}
             <Text style={globalStyles.p}>
-              {typeLabels[subscription.subscriptiontype]}
+              {typeLabels[subscription.subscriptionType]}
             </Text>
           </Text>
           <Text style={globalStyles.lightred}>

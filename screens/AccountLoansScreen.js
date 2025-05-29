@@ -18,6 +18,14 @@ import { ScrollView } from "react-native";
 export default function AccountLoansScreen({ route }) {
   // On récupère les prêts en cours depuis les params
   const ongoingLoans = route?.params?.userData?.ongoingLoans || [];
+  const subscription = route?.params?.userData?.subscription || null;
+
+  const typeLabels = {
+    INDIVIDUAL_BASIC_COST: "Particulier",
+    INDIVIDUAL_REDUCT_COST: "Particulier (tarif réduit)",
+    PUBLIC_ESTABLISHMENT: "Etablissement public",
+    LIBERAL_PRO: "Entreprise",
+  };
 
   return (
     <ScrollView
@@ -45,6 +53,14 @@ export default function AccountLoansScreen({ route }) {
                 {loan.artItem.authors?.join(", ")}
               </Text>
               <Text style={globalStyles.lightred}>
+                Type :{" "}
+                <Text style={globalStyles.p}>
+                  {subscription && subscription.subscriptionType
+                    ? typeLabels[subscription.subscriptionType]
+                    : "N/A"}
+                </Text>
+              </Text>
+              <Text style={globalStyles.lightred}>
                 Début :{" "}
                 <Text style={globalStyles.p}>
                   {new Date(loan.startDate).toLocaleDateString()}
@@ -66,10 +82,6 @@ export default function AccountLoansScreen({ route }) {
                   {loan.artItem.artothequePlace?.name}
                 </Text>
               </Text>
-              <Text style={globalStyles.lightred}>
-                Statut :{" "}
-                <Text style={globalStyles.p}>{loan.requestStatus}</Text>
-              </Text>
             </View>
           </View>
         ))
@@ -87,7 +99,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 140,
+    height: 250,
     resizeMode: "cover",
   },
   cardsContainer: {
