@@ -32,7 +32,7 @@ export const userSlice = createSlice({
     },
     updateSubscription: (state, action) => {
       state.value.hasSubcribed = true;
-      state.value.authorisedLoans = action.payload;
+      state.value.ongoingLoans = action.payload;
     },
     logout: (state) => {
       state.value = initialState.value;
