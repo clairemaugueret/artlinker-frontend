@@ -15,7 +15,12 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useStripe } from "@stripe/stripe-react-native";
+import { useStripe, PaymentSheetError } from "@stripe/stripe-react-native";
+import {
+  initPaymentSheet,
+  presentPaymentSheet,
+} from "@stripe/stripe-react-native";
+
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
@@ -33,11 +38,6 @@ export default function PaymentScreen({ navigation }) {
   const artworks = useSelector((state) => state.cart.artWorkInCart) || [];
   const dispatch = useDispatch();
 
-  // const [emailSignIn, setEmailSignIn] = useState("");
-  // const [focusedField, setFocusedField] = useState(null); // pour pouvoir gérer l'état focus des inputs afin de pouvoir changer le style quand l'input est actif/focusé
-  // const [expiration, setExpiration] = useState("");
-  // const [cvc, setCvc] = useState("");
-
   const validate = async () => {
     try {
       // 1. Créer le Customer
@@ -46,41 +46,32 @@ export default function PaymentScreen({ navigation }) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: user.email }),
+          body: JSON.stringify({
+            email: "raphael.bergere@hotmail.fr",
+            name: "Raph",
+          }),
         }
       );
       if (createCustomer.status === 200) {
         const customer = await createCustomer.json();
         console.log(customer);
-      }
-
-      // 2. Créer l'abonnement
-      const createSubscription = await fetch(
-        `${fetchAddress}/create-subscription`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            priceId: priceId,
-            customerId: customerId,
-          }),
-        }
-      );
-      if (createSubscription.status === 200) {
-        const customer = await createSubscription.json();
-        console.log(customer);
-      }
-
-      // 3. Confirmer le paiement
-      if (clientSecret) {
-        const { error } = await stripe.confirmPayment(clientSecret, {
-          paymentMethodType: "Card",
-        });
-        if (error) {
-          console.error("Payment failed:", error);
-        } else {
-          console.log("Payment succeeded!");
-          // Gérer le succès (par exemple, naviguer vers une page de confirmation)
+        // 2. Créer l'abonnement
+        const createSubscription = await fetch(
+          `${fetchAddress}/payments/create-subscription`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              priceId: "price_1RU845CRuiuQazlKpm5ElDGr",
+              customerId: customer.customerId,
+            }),
+          }
+        );
+        if (createSubscription.status === 200) {
+          const subscription = await createSubscription.json();
+          console.log(subscription);
+          setClientSecret(subscription.clientSecret);
+          console.log("ClientSecret mis à jour:", subscription.clientSecret);
         }
       }
     } catch (error) {
@@ -88,122 +79,118 @@ export default function PaymentScreen({ navigation }) {
     }
 
     // CREATION DE L'ABONNEMENT (A METTRE SI LE PAIEMENT EST VALIDE)
-    const body = {
-      token: user.value?.token,
-      subscriptionType: subscriptionInfos.type,
-      count: subscriptionInfos.count,
-      price: subscriptionInfos.price,
-    };
-    try {
-      const response = await fetch(`${fetchAddress}/subscriptions/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+    // const body = {
+    //   token: user.value?.token,
+    //   subscriptionType: subscriptionInfos.type,
+    //   count: subscriptionInfos.count,
+    //   price: subscriptionInfos.price,
+    // };
+    // try {
+    //   const response = await fetch(`${fetchAddress}/subscriptions/create`, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(body),
+    //   });
 
-      const data = await response.json();
+    //   const data = await response.json();
 
-      if (!data.result) {
-        alert(data.error || "Erreur lors de la création de l'abonnement.");
-        return;
-      }
-    } catch (err) {
-      alert("Erreur réseau ou serveur lors de la création de l'abonnement.");
-      console.error(err);
-      return;
-    }
+    //   if (!data.result) {
+    //     alert(data.error || "Erreur lors de la création de l'abonnement.");
+    //     return;
+    //   }
+    // } catch (err) {
+    //   alert("Erreur réseau ou serveur lors de la création de l'abonnement.");
+    //   console.error(err);
+    //   return;
+    // }
 
     // BOUCLE DE CREATION DES EMPRUNTS (A METTRE TOUT A LA FIN DU PROCESSUS)
-    for (const art of artworks) {
-      try {
-        const body = {
-          token: user.value.token,
-          artitemId: art.id,
-        };
+    // for (const art of artworks) {
+    //   try {
+    //     const body = {
+    //       token: user.value.token,
+    //       artitemId: art.id,
+    //     };
 
-        const response = await fetch(`${fetchAddress}/artitems/createloan`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
+    //     const response = await fetch(`${fetchAddress}/artitems/createloan`, {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify(body),
+    //     });
 
-        const data = await response.json();
+    //     const data = await response.json();
 
-        if (!data.result) {
-          alert(
-            data.error ||
-              `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
-          );
-          return; // Arrête la boucle si une erreur survient
-        }
-      } catch (err) {
-        alert("Erreur réseau ou serveur.");
-        console.error(err);
-        return;
-      }
-    }
-    // Si tout s'est bien passé pour toutes les œuvres
-    dispatch(updateOnGoingLoans(artworks.length));
-    dispatch(clearCart());
-    navigation.navigate("Account");
+    //     if (!data.result) {
+    //       alert(
+    //         data.error ||
+    //           `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
+    //       );
+    //       return; // Arrête la boucle si une erreur survient
+    //     }
+    //   } catch (err) {
+    //     alert("Erreur réseau ou serveur.");
+    //     console.error(err);
+    //     return;
+    //   }
+    // }
+    // // Si tout s'est bien passé pour toutes les œuvres
+    // dispatch(updateOnGoingLoans(artworks.length));
+    // dispatch(clearCart());
+    // navigation.navigate("Account");
   };
+
+  function SubscribeView({ clientSecret }) {
+    const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+    useEffect(() => {
+      const initializePaymentSheet = async () => {
+        if (!clientSecret) return;
+        const { error } = await initPaymentSheet({
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: "Artlinker",
+          returnURL: "stripe-example://payment-sheet",
+          allowsDelayedPaymentMethods: true,
+        });
+        if (error) {
+          console.error(
+            "Erreur lors de l'initialisation du PaymentSheet :",
+            error
+          );
+        }
+      };
+      initializePaymentSheet();
+    }, [clientSecret, initPaymentSheet]);
+
+    return (
+      <View style={{ marginTop: 30 }}>
+        <Button
+          title="Entrer mes informations de paiement"
+          onPress={async () => {
+            const { error } = await presentPaymentSheet();
+            if (error) {
+              if (error.code === PaymentSheetError.Failed) {
+                alert("Le paiement a échoué.");
+              } else if (error.code === PaymentSheetError.Canceled) {
+                alert("Paiement annulé.");
+              }
+            } else {
+              alert("Paiement réussi !");
+              // Ici tu peux déclencher la suite de ton process (vider le panier, navigation, etc.)
+            }
+          }}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={[globalStyles.h2, { textAlign: "center" }]}>Paiement</Text>
-      <Text style={[globalStyles.h3, { textAlign: "center" }]}>
-        (A remplacer par Stripe)
-      </Text>
-      <TextInput
-        onChangeText={(value) => setEmailSignIn(value)}
-        value={emailSignIn}
-        onFocus={() => setFocusedField("emailSignIn")}
-        onBlur={() => setFocusedField(false)}
-        style={[
-          globalStyles.input,
-          focusedField === "emailSignIn" && globalStyles.inputIsFocused,
-        ]}
-        placeholder="Card Number"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        textContenType="emailAddress"
-      />
-      <View style={styles.inline}>
-        <TextInput
-          onChangeText={setExpiration}
-          value={expiration}
-          onFocus={() => setFocusedField("expiration")}
-          onBlur={() => setFocusedField(false)}
-          style={[
-            globalStyles.input,
-            focusedField === "expiration" && globalStyles.inputIsFocused,
-            styles.inputHalf, // <-- Place ce style EN DERNIER
-          ]}
-          placeholder="MM/AA"
-          keyboardType="numeric"
-          maxLength={5}
-          autoCapitalize="none"
-        />
-        <TextInput
-          onChangeText={setCvc}
-          value={cvc}
-          onFocus={() => setFocusedField("cvc")}
-          onBlur={() => setFocusedField(false)}
-          style={[
-            globalStyles.input,
-            focusedField === "cvc" && globalStyles.inputIsFocused,
-            styles.inputHalf, // <-- Place ce style EN DERNIER
-          ]}
-          placeholder="CVC"
-          keyboardType="numeric"
-          maxLength={4}
-          autoCapitalize="none"
-          secureTextEntry
-        />
-      </View>
-      <TouchableOpacity style={globalStyles.buttonRed} onPress={validate}>
-        <Text style={globalStyles.buttonRedText}>Payer</Text>
-      </TouchableOpacity>
+      {!clientSecret && (
+        <TouchableOpacity style={globalStyles.buttonRed} onPress={validate}>
+          <Text style={globalStyles.buttonRedText}>Payer</Text>
+        </TouchableOpacity>
+      )}
+      {clientSecret && <SubscribeView clientSecret={clientSecret} />}
     </View>
   );
 }

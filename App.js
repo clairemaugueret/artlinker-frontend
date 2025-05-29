@@ -1,4 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
+import { useState, useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -125,6 +126,23 @@ const StackNavigator = () => {
 };
 
 export default function App() {
+  //RAPH : IMPORT STRIPE
+
+  const [publishableKey, setPublishableKey] = useState(
+    "pk_test_51RTf2lCNwXyXTuFi9zIm4MjghdFy8m8BMkdqyXbNwLhFXtq8VeMFWtokocQOvZxOdM5qP5G5ciM8TykSZVRWKjy500yCtV6zOR"
+  );
+
+  const fetchPublishableKey = async () => {
+    const key = await fetchKey(); // fetch key from your server here
+    setPublishableKey(key);
+  };
+
+  useEffect(() => {
+    fetchPublishableKey();
+  }, []);
+
+  //FIN RAPH IMPORT STRIPE
+
   //RAPH : IMPORT POLICES
   const [fontsLoaded] = useFonts({
     // Dosis
@@ -146,23 +164,6 @@ export default function App() {
     return null; // ou <View><ActivityIndicator /></View>
   }
 
-  //RAPH : IMPORT STRIPE
-
-  const [publishableKey, setPublishableKey] = useState(
-    "pk_test_51RTf2lCNwXyXTuFi9zIm4MjghdFy8m8BMkdqyXbNwLhFXtq8VeMFWtokocQOvZxOdM5qP5G5ciM8TykSZVRWKjy500yCtV6zOR"
-  );
-
-  const fetchPublishableKey = async () => {
-    const key = await fetchKey(); // fetch key from your server here
-    setPublishableKey(key);
-  };
-
-  useEffect(() => {
-    fetchPublishableKey();
-  }, []);
-
-  //FIN RAPH IMPORT STRIPE
-
   return (
     <Provider store={store}>
       <PersistGate
@@ -176,7 +177,6 @@ export default function App() {
           </View>
         }
       >
-        {" "}
         <StripeProvider
           publishableKey={publishableKey}
           // merchantIdentifier="merchant.identifier" // required for Apple Pay
