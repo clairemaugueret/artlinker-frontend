@@ -33,7 +33,6 @@ export default function AccountInfoScreen({ navigation, route }) {
   // Utilise ImagePicker pour choisir une image depuis la galerie ou prendre une photo
   // Envoie l'image au backend pour mise à jour
   const handleAvatarChange = async () => {
-    console.log("handleAvatarChange called");
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
@@ -77,8 +76,6 @@ export default function AccountInfoScreen({ navigation, route }) {
       }
     }
   };
-
-  //console.log("User Data from AccountScreen:", userData);
 
   const handleSave = async () => {
     setLoading(true);

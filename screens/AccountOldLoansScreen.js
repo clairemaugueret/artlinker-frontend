@@ -1,9 +1,23 @@
 import { Image, StyleSheet, View, Text, ScrollView } from "react-native";
+import { globalStyles } from "../globalStyles";
 
 export default function AccountOldLoansScreen({ route }) {
   const previousLoans = route?.params?.userData?.previousLoans || [];
 
   const statusLabels = {
+    INIT_DEMAND_DISPO: "Demande d'emprunt en attente de confirmation",
+    PROPOSAL_OTHER_ARTITEM: "Œuvre non disponible",
+    WAITING_ABONNEMENT: "En attente de souscription à un abonnement",
+    WAITING_ABONNEMENT_DOCUMENTS: "En attente des documents de garantie",
+    WAITING_ABONNEMENT_CREDIT:
+      "Crédit d'emprunt insuffisant, modification d'abonnement nécessaire",
+    READY_LOAN: "Rendez-vous à prévoir pour effectuer l'emprunt",
+    CONDITION_REPORT_DONE: "Etat des lieux d'emprunt en attente",
+    LOAN_ONGOING: "Emprunt en cours",
+    RETURN_ASKED: "Retour demandé par l'artiste",
+    RETURN_TIME: "Durée de l'emprunt terminée",
+    RETURN_TIME_URGENT: "Délai de retour dépassé",
+    RETURN_CONDITION_REPORT: "Etat des lieux retour en attente",
     LOAN_DONE: "Emprunt terminé",
   };
 
@@ -16,9 +30,21 @@ export default function AccountOldLoansScreen({ route }) {
         margin: 20,
       }}
     >
-      <Text style={styles.title}>Historique des œuvres empruntées</Text>
+      <Text
+        style={[globalStyles.h1, { textAlign: "center", marginBottom: 15 }]}
+      >
+        Historique des œuvres empruntées
+      </Text>
       {previousLoans.length === 0 ? (
-        <Text style={styles.title}>Aucun prêt terminé</Text>
+        <Text
+          style={[
+            globalStyles.h3,
+            globalStyles.darkred,
+            { textAlign: "center", marginTop: 20 },
+          ]}
+        >
+          Aucun prêt terminé
+        </Text>
       ) : (
         previousLoans.map((loan) => (
           <View key={loan._id} style={styles.cardsContainer}>
@@ -28,33 +54,40 @@ export default function AccountOldLoansScreen({ route }) {
               resizeMode="cover"
             />
             <View style={styles.card}>
-              <Text style={styles.artTitle}>{loan.artItem.title}</Text>
-              <Text style={styles.artAuthor}>
+              <Text style={[globalStyles.h3, { marginTop: 10 }]}>
+                {loan.artItem.title}
+              </Text>
+              <Text
+                style={[
+                  globalStyles.h4,
+                  { fontSize: 20, marginTop: -5, marginBottom: 5 },
+                ]}
+              >
                 {loan.artItem.authors?.join(", ")}
               </Text>
-              <Text style={styles.label}>
-                Début :{" "}
-                <Text style={styles.value}>
+              <Text style={[globalStyles.p, globalStyles.lightred]}>
+                Début d'emprunt :{" "}
+                <Text style={globalStyles.p}>
                   {new Date(loan.startDate).toLocaleDateString()}
                 </Text>
               </Text>
-              <Text style={styles.label}>
-                Fin :{" "}
-                <Text style={styles.value}>
+              <Text style={[globalStyles.p, globalStyles.lightred]}>
+                Fin d'emprunt :{" "}
+                <Text style={globalStyles.p}>
                   {loan.endDate
                     ? new Date(loan.endDate).toLocaleDateString()
                     : "N/A"}
                 </Text>
               </Text>
-              <Text style={styles.label}>
+              <Text style={[globalStyles.p, globalStyles.lightred]}>
                 Lieu :{" "}
-                <Text style={styles.value}>
+                <Text style={globalStyles.p}>
                   {loan.artItem.artothequePlace?.name}
                 </Text>
               </Text>
-              <Text style={styles.label}>
+              <Text style={[globalStyles.p, globalStyles.lightred]}>
                 Statut :{" "}
-                <Text style={styles.value}>
+                <Text style={globalStyles.p}>
                   {statusLabels[loan.requestStatus] || loan.requestStatus}
                 </Text>
               </Text>
@@ -78,11 +111,17 @@ const styles = StyleSheet.create({
     height: 250,
     resizeMode: "cover",
     borderRadius: 10,
-    marginBottom: 12,
+    borderColor: "white", //nécessaire que le shadow soit visible
+    borderWidth: 1, //nécessaire que le shadow soit visible
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
   },
   cardsContainer: {
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 32,
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -92,32 +131,5 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    width: "100%",
-  },
-  title: {
-    width: "80%",
-    fontSize: 28,
-    fontWeight: "600",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  artTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  artAuthor: {
-    fontSize: 15,
-    color: "#B85449",
-    marginBottom: 8,
-  },
-  label: {
-    fontSize: 14,
-    color: "#444",
-    marginTop: 2,
-  },
-  value: {
-    fontWeight: "500",
-    color: "#222",
   },
 });

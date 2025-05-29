@@ -66,7 +66,7 @@ export default function MapScreen({ navigation }) {
         Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
           setGpsPosition(location.coords); // Position GPS réelle
           setCurrentPosition(location.coords); // Position affichée (peut être modifiée par recherche)
-          dispatch(addPosition(location.coords)); // Met à jour la géolocation de l'utilisateur dans Redux persistant (tant que pas déconnecté on garde l'info)
+          dispatch(addPosition(location.coords)); // Met à jour la géolocation de l'-utilisateur dans Redux persistant (tant que pas déconnecté on garde l'info)
         });
       }
     })();

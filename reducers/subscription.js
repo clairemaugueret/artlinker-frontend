@@ -23,6 +23,12 @@ const subscriptionSlice = createSlice({
     setSubscriptionState: (state, action) => {
       state.subscriptionState = action.payload;
     },
+    clearSubscription: (state, action) => {
+      state.type = initialState.type;
+      state.count = initialState.count;
+      state.price = initialState.price;
+      state.subscriptionState = initialState.subscriptionState;
+    },
   },
 });
 
@@ -31,5 +37,6 @@ export const {
   setSubscriptionCount,
   setSubscriptionPrice,
   setSubscriptionState,
+  clearSubscription,
 } = subscriptionSlice.actions;
 export default subscriptionSlice.reducer;
