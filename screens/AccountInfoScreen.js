@@ -160,10 +160,18 @@ export default function AccountInfoScreen({ navigation, route }) {
                 </>
               ) : (
                 <>
-                  <Text style={[globalStyles.h1, globalStyles.darkred]}>
+                  <Text
+                    style={[
+                      globalStyles.h1,
+                      globalStyles.darkred,
+                      { marginBottom: 0, lineHeight: 50 },
+                    ]}
+                  >
                     {firstname}
                   </Text>
-                  <Text style={globalStyles.h1}>{lastname}</Text>
+                  <Text style={[globalStyles.h1, { marginBottom: 0 }]}>
+                    {lastname}
+                  </Text>
                 </>
               )}
             </View>
@@ -186,10 +194,10 @@ export default function AccountInfoScreen({ navigation, route }) {
               autoCapitalize="none"
             />
           ) : (
-            <Text style={[globalStyles.h3, { marginTop: 20 }]}>
+            <Text style={[globalStyles.h4, { marginTop: 20 }]}>
               <Text style={{ fontWeight: "bold" }}>Email :</Text>
               <Text> </Text>
-              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+              <Text style={[globalStyles.p, globalStyles.montserrat]}>
                 {email}
               </Text>
             </Text>
@@ -214,7 +222,7 @@ export default function AccountInfoScreen({ navigation, route }) {
             <Text style={[globalStyles.h4, { marginTop: 10 }]}>
               <Text style={{ fontWeight: "bold" }}>Téléphone :</Text>
               <Text> </Text>
-              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+              <Text style={[globalStyles.p, globalStyles.montserrat]}>
                 {phone}
               </Text>
             </Text>
@@ -235,10 +243,10 @@ export default function AccountInfoScreen({ navigation, route }) {
               onBlur={() => setFocusedField(null)}
             />
           ) : (
-            <Text style={globalStyles.h3}>
+            <Text style={globalStyles.h4}>
               <Text style={{ fontWeight: "bold" }}>Adresse :</Text>
               {"\n"}
-              <Text style={[globalStyles.h4, globalStyles.montserrat]}>
+              <Text style={[globalStyles.p, globalStyles.montserrat]}>
                 {address}
               </Text>
             </Text>
@@ -260,12 +268,10 @@ export default function AccountInfoScreen({ navigation, route }) {
               onBlur={() => setFocusedField(null)}
             />
           ) : (
-            <Text style={[globalStyles.h3, { marginTop: 10 }]}>
+            <Text style={[globalStyles.h4, { marginTop: 10 }]}>
               <Text style={{ fontWeight: "bold" }}>Mot de passe :</Text>
               <Text> </Text>
-              <Text style={[globalStyles.h3, { letterSpacing: 3 }]}>
-                ******
-              </Text>
+              <Text style={[globalStyles.p, { letterSpacing: 3 }]}>******</Text>
             </Text>
           )}
 
@@ -354,8 +360,8 @@ const styles = StyleSheet.create({
     height: 100,
     marginRight: 100,
     borderRadius: 45,
-    marginRight: 50,
-    marginLeft: 40,
+    marginRight: 20,
+    marginLeft: 0,
   },
   nameBlock: {
     flex: 1,
