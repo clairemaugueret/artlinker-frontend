@@ -267,7 +267,7 @@ export default function ArtScreen({ navigation, route }) {
                 data={worksCarousel}
                 renderItem={renderItemsAuthor}
                 sliderWidth={screenWidth}
-                itemWidth={screenWidth * 0.5}
+                itemWidth={screenWidth * 0.7}
                 layout="default"
                 loop={worksCarousel.length > 2}
               />
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   // Style carousel oeuvre principale
   artitemAllImagesCarousel: {
     width: "100%",
-    height: screenHeight * 0.3,
+    height: screenHeight * 0.31,
     marginTop: 25, // à revoir et enlever dans dur dans carousel
   },
   slideArtitemAllImages: {
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   // Style carousel autres oeuvres de l'artiste
   itemsAuthorCarousel: {
     width: "100%",
-    height: screenHeight * 0.32,
+    height: screenHeight * 0.29,
     gap: 5,
   },
   slideItemsAuthor: {
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   imageItemsAuthor: {
-    width: screenWidth * 0.8,
+    width: screenWidth * 0.7,
     height: screenHeight * 0.22,
     borderRadius: 10,
     // pour que l'image remplisse bien l'espace

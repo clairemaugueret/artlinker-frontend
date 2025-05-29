@@ -17,7 +17,11 @@ import { fetchAddress } from "../components/FetchAddress";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { logout, setReminderEndLoan } from "../reducers/user";
+import {
+  logout,
+  setReminderUpcomingEndLoan,
+  setReminderExpiredLoan,
+} from "../reducers/user";
 import { clearSubscription } from "../reducers/subscription";
 import { clearCart } from "../reducers/cart";
 
@@ -44,19 +48,77 @@ export default function AccountScreen({ navigation }) {
   const [showCertificateModal, setShowCertificateModal] = useState(false);
 
   const [showModalEndLoan, setShowModalEndLoan] = useState(false);
+  const [upcomingReturnsTitles, setUpcomingReturnsTitles] = useState([]);
+  const [expiredLoansTitles, setExpiredLoansTitles] = useState([]);
 
-  //FETCH DE TOUTES LES DONNEES UTILISATEURS
+  // FETCH DE TOUTES LES DONNEES UTILISATEUR
   useEffect(() => {
+    // Ce code se lance quand l'écran devient actif (grâce à useIsFocused)
     if (isFocused) {
-      // utilisation de isFocused pour re-mount l'écran Account à chaque fois qu'on clique dessus
+      // Si l'utilisateur est connecté
       if (isConnected) {
+        // Requête GET vers l'API pour récupérer les données de l'utilisateur connecté
         fetch(`${fetchAddress}/users/${user.token}`)
           .then((response) => response.json())
           .then((data) => {
             setUserData(data.userData);
+
+            // Définition des dates de comparaison pour rappels de fin d'emprunt
+            const today = new Date(); // aujourd'hui
+            const inTwoWeeks = new Date(); // dans 14 jours
+            inTwoWeeks.setDate(today.getDate() + 14);
+
+            // Tableaux pour stocker les titres à rappeler
+            const newUpcomingTitles = []; // pour les prêts à rendre bientôt
+            const newExpiredTitles = []; // pour les prêts expirés
+
+            // On parcourt tous les prêts en cours
+            data.userData.ongoingLoans.forEach((loan) => {
+              const title = loan.artItem.title; // titre de l'œuvre
+              const endDate = new Date(loan.artItem.expectedReturnDate); // date de retour prévue
+
+              // Si l'œuvre a déjà été rappelée (proche ou expirée = et donc titre stocké dans le reducer user), on l'ignore
+              if (
+                user.reminderUpcomingEndLoans.includes(title) ||
+                user.reminderExpiredLoans.includes(title)
+              ) {
+                return;
+              }
+
+              // Sinon, si la date de retour est passée ou aujourd’hui → prêt expiré
+              if (endDate <= today) {
+                newExpiredTitles.push(title);
+              }
+              // Sinon, si la date est dans les 14 prochains jours → prêt à rendre bientôt
+              else if (endDate <= inTwoWeeks) {
+                newUpcomingTitles.push(title);
+              }
+            });
+
+            // Si on a détecté de nouveaux prêts à rendre bientôt
+            if (newUpcomingTitles.length > 0) {
+              // On les enregistre dans le reducer pour éviter un second rappel
+              dispatch(setReminderUpcomingEndLoan(newUpcomingTitles));
+              // Et on les stocke localement pour les afficher dans la modale
+              setUpcomingReturnsTitles(newUpcomingTitles);
+            }
+
+            // Idem pour les prêts expirés
+            if (newExpiredTitles.length > 0) {
+              dispatch(setReminderExpiredLoan(newExpiredTitles));
+              setExpiredLoansTitles(newExpiredTitles);
+            }
+
+            // Si au moins un nouveau rappel a été détecté, on affiche la modale
+            if (newUpcomingTitles.length > 0 || newExpiredTitles.length > 0) {
+              setShowModalEndLoan(true);
+            }
           });
       }
     }
+    // Ce useEffect se relance quand :
+    // - l'écran est re-focus (isFocused)
+    // - une des 3 modales (pièces justificatives) est fermée ou ouverte
   }, [
     isFocused,
     showIdentityModal,
@@ -90,80 +152,57 @@ export default function AccountScreen({ navigation }) {
   };
 
   //GESTION DES BOUTONS
-  // Bouton mes informations personnelles
+  // Fonction réutilisable pour naviguer vers un écran avec des champs spécifiques de userData
+  const navigateWithUserData = (screen, fields) => {
+    if (!userData) return; // Si les données utilisateur ne sont pas disponibles, on ne fait rien
+
+    // Création d'un objet contenant uniquement les champs nécessaires de userData
+    const selectedData = fields.reduce((acc, field) => {
+      // Pour chaque champ demandé, on ajoute une propriété correspondante de userData dans l'objet acc (accumulateur)
+      acc[field] = userData[field];
+      return acc; // On retourne l'accumulateur mis à jour pour l'itération suivante
+    }, {}); // On initialise l'accumulateur comme un objet vide
+
+    // Navigation vers l'écran cible en passant les données sélectionnées en paramètres
+    navigation.navigate("Stack", {
+      screen,
+      params: { userData: selectedData },
+    });
+  };
+
+  // Bouton : Mes informations personnelles
   const handleInfoScreen = () => {
-    const combinedUserData = {
-      _id: userData._id,
-      firstname: userData.firstname,
-      lastname: userData.lastname,
-      email: userData.email,
-      password: userData.password,
-      token: userData.token,
-      phone: userData.phone,
-      address: userData.address,
-      avatar: userData.avatar,
-    };
-
-    navigation.navigate("Stack", {
-      screen: "AccountInfo",
-      params: { userData: combinedUserData },
-    });
+    navigateWithUserData("AccountInfo", [
+      "_id",
+      "firstname",
+      "lastname",
+      "email",
+      "password",
+      "token",
+      "phone",
+      "address",
+      "avatar",
+    ]);
   };
 
-  // Bouton mon abonnement
+  // Bouton : Mon abonnement
   const handleSubScreen = () => {
-    const combinedUserData = {
-      _id: userData._id,
-      token: userData.token,
-      subscription: userData.subscription,
-    };
-
-    navigation.navigate("Stack", {
-      screen: "AccountSub",
-      params: { userData: combinedUserData },
-    });
+    navigateWithUserData("AccountSub", ["_id", "token", "subscription"]);
   };
 
-  // Bouton oeuvres en cours d'emprunt
+  // Bouton : Œuvres en cours d'emprunt
   const handleLoansScreen = () => {
-    const combinedUserData = {
-      _id: userData._id,
-      token: userData.token,
-      ongoingLoans: userData.ongoingLoans,
-    };
-
-    navigation.navigate("Stack", {
-      screen: "AccountLoans",
-      params: { userData: combinedUserData },
-    });
+    navigateWithUserData("AccountLoans", ["_id", "token", "ongoingLoans"]);
   };
 
-  // Bouton historiques des emprunts
+  // Bouton : Historique des emprunts
   const handleOldLoansScreen = () => {
-    const combinedUserData = {
-      _id: userData._id,
-      token: userData.token,
-      previousLoans: userData.previousLoans,
-    };
-
-    navigation.navigate("Stack", {
-      screen: "AccountOldLoans",
-      params: { userData: combinedUserData },
-    });
+    navigateWithUserData("AccountOldLoans", ["_id", "token", "previousLoans"]);
   };
 
-  // Bouton mes favoris
+  // Bouton : Mes favoris
   const handleFavoritesScreen = () => {
-    const combinedUserData = {
-      _id: userData._id,
-      token: userData.token,
-      favoriteItems: userData.favoriteItems,
-    };
-
-    navigation.navigate("Stack", {
-      screen: "AccountFavorites",
-      params: { userData: combinedUserData },
-    });
+    navigateWithUserData("AccountFavorites", ["_id", "token", "favoriteItems"]);
   };
 
   return (
@@ -177,16 +216,18 @@ export default function AccountScreen({ navigation }) {
             <Text style={globalStyles.darkred}>C</Text>
             onnectez-vous pour accéder à votre profil.
           </Text>
-          <TouchableOpacity
-            style={globalStyles.buttonRed}
-            onPress={() =>
-              navigation.navigate("Stack", { screen: "Connection" })
-            }
-          >
-            <Text style={globalStyles.buttonRedText}>
-              Se connecter / Créer un compte
-            </Text>
-          </TouchableOpacity>
+          <View style={{ alignItems: "center" }}>
+            <TouchableOpacity
+              style={[globalStyles.buttonRed, { width: "80%" }]}
+              onPress={() =>
+                navigation.navigate("Stack", { screen: "Connection" })
+              }
+            >
+              <Text style={globalStyles.buttonRedText}>
+                Se connecter / Créer un compte
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       ) : (
         <>
@@ -514,12 +555,51 @@ export default function AccountScreen({ navigation }) {
       <Modal transparent={true} visible={showModalEndLoan} animationType="fade">
         <View style={styles.endLoanModalView}>
           <View style={styles.endLoanModalContainer}>
-            <Text style={globalStyles.p}>Retour de l'œuvre enregistré.</Text>
-            <TouchableOpacity
-              style={[globalStyles.buttonRed, { marginTop: 20 }]}
+            {upcomingReturnsTitles.length > 0 && (
+              <Text
+                style={[
+                  globalStyles.h4,
+                  { textAlign: "center", marginVertical: 5 },
+                ]}
+              >
+                Emprunt(s) à retourner d'ici 2 semaines :
+              </Text>
+            )}
+            {upcomingReturnsTitles.map((title, index) => (
+              <Text key={index} style={globalStyles.p}>
+                • {title}
+              </Text>
+            ))}
+            {expiredLoansTitles.length > 0 && (
+              <Text
+                style={[
+                  globalStyles.h4,
+                  { textAlign: "center", marginVertical: 5 },
+                ]}
+              >
+                Emprunt(s) à retourner dès maintenant :
+              </Text>
+            )}
+            {expiredLoansTitles.map((title, index) => (
+              <Text key={index} style={globalStyles.p}>
+                • {title}
+              </Text>
+            ))}
+            <View
+              style={{ marginTop: 20, width: "100%", alignItems: "center" }}
             >
-              <Text style={globalStyles.buttonRedText}>OK</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[globalStyles.buttonRed, { width: "40%" }]}
+                onPress={() => {
+                  setShowModalEndLoan(false);
+                  setUpcomingReturnsTitles([]);
+                  setExpiredLoansTitles([]);
+                  handleLoansScreen();
+                }}
+              >
+                <Text style={globalStyles.buttonRedText}>OK</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -589,10 +669,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   endLoanModalContainer: {
+    width: "90%",
     backgroundColor: "white",
     padding: 25,
     borderRadius: 10,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
 });
