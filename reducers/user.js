@@ -30,12 +30,21 @@ export const userSlice = createSlice({
     updateOnGoingLoans: (state, action) => {
       state.value.ongoingLoans = action.payload;
     },
+    updateSubscription: (state, action) => {
+      state.value.hasSubcribed = true;
+      state.value.authorisedLoans = action.payload;
+    },
     logout: (state) => {
       state.value = initialState.value;
     },
   },
 });
 
-export const { loginAndUpdate, addPosition, logout, updateOnGoingLoans } =
-  userSlice.actions;
+export const {
+  loginAndUpdate,
+  addPosition,
+  logout,
+  updateOnGoingLoans,
+  updateSubscription,
+} = userSlice.actions;
 export default userSlice.reducer;

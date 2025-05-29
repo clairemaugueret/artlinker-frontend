@@ -1,7 +1,7 @@
 import { globalStyles } from "../globalStyles";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { updateOnGoingLoans } from "../reducers/user";
+import { updateOnGoingLoans, updateSubscription } from "../reducers/user";
 import { clearCart } from "../reducers/cart";
 import { fetchAddress } from "../components/FetchAddress";
 import {
@@ -34,8 +34,6 @@ export default function PaymentScreen({ navigation }) {
       count: subscription.count,
       price: subscription.price,
     };
-
-    console.log(body);
 
     try {
       const response = await fetch(`${fetchAddress}/subscriptions/create`, {
@@ -87,8 +85,10 @@ export default function PaymentScreen({ navigation }) {
         return;
       }
     }
-    // Si tout s'est bien passé pour toutes les œuvres
+    // Si tout s'est bien passé pour toutes les œuvres, on met à jour le reducer user avec les oeuvres empruntrées
     dispatch(updateOnGoingLoans(artworks.length));
+    // Si tout s'est bien passé pour l'abonnement, on met à jour le reducer user avec le nouvel abonnement et sa capacité d'emprunt
+    dispatch(updateSubscription(subscription.count));
   };
 
   return (
