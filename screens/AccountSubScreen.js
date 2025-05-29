@@ -33,6 +33,7 @@ export default function AccountSubScreen({ navigation, route }) {
       <Text style={[globalStyles.h1, { textAlign: "center", marginTop: 20 }]}>
         Mon abonnement
       </Text>
+      <View style={styles.shadowLine} />
       {subscription ? (
         <View style={styles.subInfoContainer}>
           <Text style={[globalStyles.p, { marginTop: 20 }]}>
@@ -92,6 +93,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "flex-start",
+  },
+  shadowLine: {
+    backgroundColor: "transparent",
+    borderColor: "white",
+    borderWidth: 0.3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2, // équivalent shadowRadius mais pour Android
+    marginBottom: 20,
+    width: "70%",
+    marginHorizontal: "15%",
   },
   subInfoContainer: {
     width: "85%",

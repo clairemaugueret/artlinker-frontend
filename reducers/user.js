@@ -4,11 +4,10 @@ const initialState = {
   value: {
     email: null,
     token: null,
-    password: null,
     firstname: null,
     lastname: null,
     favoriteItems: [],
-    hasSubcribed: false,
+    hasSubscribed: false,
     authorisedLoans: 0,
     ongoingLoans: 0,
     position: null,
@@ -21,7 +20,11 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     loginAndUpdate: (state, action) => {
-      Object.assign(state.value, action.payload);
+      for (const key in action.payload) {
+        if (action.payload[key] !== undefined) {
+          state.value[key] = action.payload[key];
+        }
+      }
       //dès qu'une propriété sera envoyée à l'inscription/la connexion, elle sera ajoutée à l'état mais si pas d'info c'est la valeur par défaut qui sera gardée
       // et du coup on peut aussi appeler cette action "loginAndUpdate" car quand on fera des changement dans le profil, on pourra aussi l'utiliser
     },
@@ -32,7 +35,7 @@ export const userSlice = createSlice({
       state.value.ongoingLoans = action.payload;
     },
     updateSubscription: (state, action) => {
-      state.value.hasSubcribed = true;
+      state.value.hasSubscribed = true;
       state.value.ongoingLoans = action.payload;
     },
     setReminderEndLoan: (state, action) => {
