@@ -121,17 +121,6 @@ export default function MapScreen({ navigation }) {
       });
   };
 
-  //thomas
-  //boutton vers grid et infos
-  const handleGridButton = () => {
-    navigation.navigate("Grid", {
-      screen: "Grid",
-      params: {
-        artData: artitemsFiltered, // on passe les données des oeuvres filtrées pour le grid
-      },
-    });
-  };
-
   // Récupère les données des lieux à afficher autour de la position courante
   useEffect(() => {
     if (currentPosition) {
@@ -238,6 +227,20 @@ export default function MapScreen({ navigation }) {
       </View>
     );
   };
+  //thomas
+  //boutton vers grid et infos
+  const handleGridButton = () => {
+    console.log(artitemsFiltered);
+    if (artitemsFiltered.length === 0) {
+      return; // Si pas d'oeuvres, on ne fait rien
+    }
+    navigation.navigate("Stack", {
+      screen: "Grid",
+      params: {
+        artData: artitemsFiltered, // on passe les données des oeuvres filtrées pour le grid
+      },
+    });
+  };
 
   // RAPHAEL - Map
   // Rendu principal : carte, barre de recherche, bouton GPS
@@ -288,48 +291,52 @@ export default function MapScreen({ navigation }) {
 
       {/* Barre de recherche en haut */}
       <View style={styles.searchContainer}>
-        <View
-          style={[
-            globalStyles.input,
-            {
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: 0,
-            },
-          ]}
-        >
-          <TextInput
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          {/* Bloc recherche */}
+          <View
             style={[
-              globalStyles.buttonWhiteText,
-              { textAlign: "left", flex: 1, minWidth: 0 },
+              globalStyles.input,
+              {
+                flexDirection: "row",
+                alignItems: "center",
+                flex: 1,
+                padding: 0,
+              },
             ]}
-            placeholder="Rechercher..."
-            value={city}
-            onChangeText={(value) => setCity(value)}
-            placeholderTextColor="#888"
-          />
-          <TouchableOpacity onPress={handleSearchCity}>
-            <FontAwesome
-              name="search"
-              size={27}
-              style={[globalStyles.lightred, { marginBottom: 3 }]}
+          >
+            <TextInput
+              style={[
+                globalStyles.buttonWhiteText,
+                { textAlign: "left", flex: 1, minWidth: 0 },
+              ]}
+              placeholder="Rechercher..."
+              value={city}
+              onChangeText={(value) => setCity(value)}
+              placeholderTextColor="#888"
             />
-          </TouchableOpacity>
-          {/* BOUTON VERS GRID */}
+            <TouchableOpacity onPress={handleSearchCity}>
+              <FontAwesome
+                name="search"
+                size={27}
+                style={[globalStyles.lightred, { marginBottom: 3 }]}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* Bouton grille à côté */}
           <TouchableOpacity
             style={[
-              globalStyles.buttonWhite,
+              globalStyles.buttonRed,
               {
                 marginLeft: 8,
                 height: 40,
                 paddingVertical: 0,
                 paddingHorizontal: 12,
+                minWidth: 70,
               },
             ]}
-            onPress={() => handleGridButton()}
+            onPress={() => navigation.navigate("Grid")}
           >
-            <Text style={globalStyles.buttonWhiteText}>Grille</Text>
+            <Text style={globalStyles.buttonRedText}>Grille</Text>
           </TouchableOpacity>
         </View>
       </View>
