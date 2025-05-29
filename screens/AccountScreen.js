@@ -10,13 +10,14 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  Modal,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAddress } from "../components/FetchAddress";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { logout } from "../reducers/user";
+import { logout, setReminderEndLoan } from "../reducers/user";
 import { clearSubscription } from "../reducers/subscription";
 import { clearCart } from "../reducers/cart";
 
@@ -42,6 +43,8 @@ export default function AccountScreen({ navigation }) {
   const [showProofResidencyModal, setShowProofResidencyModal] = useState(false);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
 
+  const [showModalEndLoan, setShowModalEndLoan] = useState(false);
+
   //FETCH DE TOUTES LES DONNEES UTILISATEURS
   useEffect(() => {
     if (isFocused) {
@@ -50,7 +53,6 @@ export default function AccountScreen({ navigation }) {
         fetch(`${fetchAddress}/users/${user.token}`)
           .then((response) => response.json())
           .then((data) => {
-            // console.log("User data fetched:", data);
             setUserData(data.userData);
           });
       }
@@ -90,7 +92,6 @@ export default function AccountScreen({ navigation }) {
   //GESTION DES BOUTONS
   // Bouton mes informations personnelles
   const handleInfoScreen = () => {
-    //console.log("handleInfoScreen called with userData:", userData);
     const combinedUserData = {
       _id: userData._id,
       firstname: userData.firstname,
@@ -508,21 +509,36 @@ export default function AccountScreen({ navigation }) {
           </View>
         </>
       )}
+      {/* Modal pour notification de fin d'emprunt */}
+      <Modal transparent={true} visible={showModalEndLoan} animationType="fade">
+        <View style={styles.endLoanModalView}>
+          <View style={styles.endLoanModalContainer}>
+            <Text style={globalStyles.p}>Retour de l'œuvre enregistré.</Text>
+            <TouchableOpacity
+              style={[globalStyles.buttonRed, { marginTop: 20 }]}
+            >
+              <Text style={globalStyles.buttonRedText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
+    width: "100%",
     flex: 1,
     backgroundColor: "#ffffff",
-    paddingLeft: 20,
-    paddingRight: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   scrollviewContainer: {
     flexGrow: 1,
+    width: "100%",
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   scrollviewAlignment: {
     alignItems: "flex-start",
@@ -534,6 +550,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     paddingTop: 20,
+    paddingRight: 20,
   },
   userImage: {
     width: screenWidth * 0.25,
@@ -563,5 +580,18 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 5,
     marginHorizontal: 50,
+  },
+  endLoanModalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  endLoanModalContainer: {
+    backgroundColor: "white",
+    padding: 25,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
