@@ -297,7 +297,7 @@ export default function HomeScreen({ navigation }) {
                 />
                 <Text style={[globalStyles.h4, { marginLeft: 12 }]}>
                   <Text style={globalStyles.darkred}>P</Text>articulier (tarif
-                  spécial)
+                  réduit)
                 </Text>
               </TouchableOpacity>
             </View>

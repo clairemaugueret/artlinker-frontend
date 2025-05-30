@@ -169,7 +169,7 @@ export default function SubScreen({ navigation }) {
                 { marginLeft: 12 },
               ]}
             >
-              Particulier (tarif spécial)
+              Particulier (tarif réduit)
             </Text>
           </TouchableOpacity>
         </View>
