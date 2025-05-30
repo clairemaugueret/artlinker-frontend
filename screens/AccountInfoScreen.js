@@ -230,8 +230,7 @@ export default function AccountInfoScreen({ navigation, route }) {
             />
           ) : (
             <Text style={[globalStyles.h4, { marginTop: 20 }]}>
-              <Text style={{ fontWeight: "bold" }}>Email :</Text>
-              <Text> </Text>
+              <Text style={{ fontWeight: "bold" }}>Email : {"\n"}</Text>
               <Text style={[globalStyles.p, globalStyles.montserrat]}>
                 {email}
               </Text>
@@ -255,8 +254,7 @@ export default function AccountInfoScreen({ navigation, route }) {
             />
           ) : (
             <Text style={[globalStyles.h4, { marginTop: 10 }]}>
-              <Text style={{ fontWeight: "bold" }}>Téléphone :</Text>
-              <Text> </Text>
+              <Text style={{ fontWeight: "bold" }}>Téléphone : </Text>
               <Text style={[globalStyles.p, globalStyles.montserrat]}>
                 {phone}
               </Text>
@@ -279,7 +277,7 @@ export default function AccountInfoScreen({ navigation, route }) {
             />
           ) : (
             <Text style={globalStyles.h4}>
-              <Text style={{ fontWeight: "bold" }}>Adresse :</Text>
+              <Text style={{ fontWeight: "bold" }}>Adresse : </Text>
               {"\n"}
               <Text style={[globalStyles.p, globalStyles.montserrat]}>
                 {address}
@@ -304,8 +302,7 @@ export default function AccountInfoScreen({ navigation, route }) {
             />
           ) : (
             <Text style={[globalStyles.h4, { marginTop: 10 }]}>
-              <Text style={{ fontWeight: "bold" }}>Mot de passe :</Text>
-              <Text> </Text>
+              <Text style={{ fontWeight: "bold" }}>Mot de passe : </Text>
               <Text style={[globalStyles.p, { letterSpacing: 3 }]}>******</Text>
             </Text>
           )}
