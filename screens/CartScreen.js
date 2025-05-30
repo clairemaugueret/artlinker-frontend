@@ -86,7 +86,7 @@ export default function CartScreen({ navigation }) {
   const validate = async () => {
     if (!user.value.hasSubscribed) {
       // Met à jour le count dans le reducer subscription
-      dispatch(setSubscriptionCount(count));
+      dispatch(setSubscriptionCount(subscription.count));
       // Navigue vers la page Payment
       navigation.navigate("Stack", { screen: "Payment" });
     } else {
