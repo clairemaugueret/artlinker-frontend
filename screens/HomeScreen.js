@@ -28,6 +28,7 @@ export default function HomeScreen({ navigation }) {
   const [showTarifsSpecial, setShowTarifsSpecial] = useState(false);
   const [showTarifsPublic, setShowTarifsPublic] = useState(false);
   const [showTarifsBusiness, setShowTarifsBusiness] = useState(false);
+  const [currentScroll, setCurrentScroll] = useState(0);
   const scrollViewRef = useRef(null);
   const scrollY = useRef(new RNAnimated.Value(0)).current;
 
@@ -81,10 +82,10 @@ export default function HomeScreen({ navigation }) {
 
   const handleChevronPress = () => {
     if (scrollViewRef.current) {
-      //scrollY.setValue(0); // Remet la valeur à 0 avant chaque scroll animé
+      scrollY.setValue(currentScroll); // ← ici, on part de la position réelle
       RNAnimated.timing(scrollY, {
-        toValue: screenHeight * 0.8,
-        duration: 1200,
+        toValue: screenHeight * 0.9,
+        duration: 800,
         useNativeDriver: false,
       }).start();
     }
@@ -104,20 +105,6 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.mainContainer}>
       <SafeAreaProvider>
-        {!user.token && (
-          <View style={styles.loginBtnContainer}>
-            <TouchableOpacity
-              style={globalStyles.buttonRed}
-              onPress={() =>
-                navigation.navigate("Stack", { screen: "Connection" })
-              }
-            >
-              <Text style={globalStyles.buttonRedText}>
-                Se connecter / Créer un compte
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
         <ScrollView
           ref={scrollViewRef}
           contentContainerStyle={{
@@ -125,6 +112,10 @@ export default function HomeScreen({ navigation }) {
             ...(user.token ? { paddingTop: 70 } : {}),
           }}
           keyboardShouldPersistTaps="handled"
+          onScroll={(event) =>
+            setCurrentScroll(event.nativeEvent.contentOffset.y)
+          }
+          scrollEventThrottle={16}
         >
           {/* <View
             style={{
@@ -153,6 +144,7 @@ export default function HomeScreen({ navigation }) {
               }
             />
           </View> */}
+
           <View style={styles.introContainer}>
             <Image
               source={require("../assets/logo-picto.png")}
@@ -166,8 +158,22 @@ export default function HomeScreen({ navigation }) {
             >
               L'artothèque sociale et solidaire
             </Text>
+            {!user.token && (
+              <View style={styles.loginBtnContainer}>
+                <TouchableOpacity
+                  style={globalStyles.buttonRed}
+                  onPress={() =>
+                    navigation.navigate("Stack", { screen: "Connection" })
+                  }
+                >
+                  <Text style={globalStyles.buttonRedText}>
+                    Se connecter / Créer un compte
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
 
-            <Text style={[globalStyles.h3, { marginVertical: 10 }]}>
+            <Text style={[globalStyles.h4, { marginTop: 70 }]}>
               COMMENT ÇA MARCHE ?
             </Text>
             <TouchableOpacity activeOpacity={0.7} onPress={handleChevronPress}>
@@ -487,6 +493,20 @@ export default function HomeScreen({ navigation }) {
             {"\n"}• vous demandez à l'artiste de prolonger l'emprunt pour 3 mois
             supplémentaires (pour une durée totale de 6 mois maximum).
           </Text>
+          {!user.token && (
+            <View style={[styles.loginBtnContainer, { marginBottom: 100 }]}>
+              <TouchableOpacity
+                style={[globalStyles.buttonRed, { height: 70 }]}
+                onPress={() =>
+                  navigation.navigate("Stack", { screen: "Connection" })
+                }
+              >
+                <Text style={globalStyles.buttonRedText}>
+                  Se connecter / Créer un compte
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </ScrollView>
       </SafeAreaProvider>
     </SafeAreaView>
@@ -507,7 +527,7 @@ const styles = StyleSheet.create({
   introContainer: {
     alignItems: "center",
     paddingTop: screenHeight * 0.5 - 250,
-    height: screenHeight - 125,
+    height: screenHeight,
   },
   logo: {
     width: "100",
@@ -551,7 +571,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     marginTop: 10, // espace avec le bord bas
     alignItems: "center",
-    backgroundColor: "transparent", // pour que le fond soit transparent
-    // zIndex: 10, // optionnel si tu veux être sûr qu'il passe au-dessus
   },
 });
