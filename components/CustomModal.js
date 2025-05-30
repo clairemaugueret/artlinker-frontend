@@ -10,20 +10,24 @@ export default function CustomModal({
   onClose,
 }) {
   const renderButtons = () => {
+    //Si on ne fait pas passer d'information sur les boutons dans les props
+    // alors pas défaut c'est un bouton "OK" avec la fonctionnalité "onClose" (que l'on a passé dans les props)
     if (buttons.length === 0) {
       return (
-        <TouchableOpacity style={styles.button} onPress={onClose}>
-          <Text style={styles.buttonRedText}>OK</Text>
+        <TouchableOpacity style={globalStyles.buttonRed} onPress={onClose}>
+          <Text style={globalStyles.buttonRedText}>OK</Text>
         </TouchableOpacity>
       );
     }
 
+    // Et sinon on traite les boutons via les props que l'on a passé
+    // à savoir, leur text spécifique, leur style spécifique (si il y en a un), et leurs actions spécifiques de onPress
+    // ex. boutons "Oui" / "Non" de l'écran AccountInfoScreen pour abanbonner les modifications
     return buttons.map((btn, index) => (
       <TouchableOpacity
         key={index}
         style={[
-          styles.button,
-          btn.style === "destructive" && styles.destructive,
+          globalStyles.buttonRed,
           btn.style === "cancel" && styles.cancel,
         ]}
         onPress={btn.onPress}
@@ -74,18 +78,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
   },
-  button: {
-    backgroundColor: "#B85449",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
   cancel: {
     backgroundColor: "#aaa",
-  },
-  destructive: {
-    backgroundColor: "#B85449",
   },
   buttonText: {
     color: "#fff",

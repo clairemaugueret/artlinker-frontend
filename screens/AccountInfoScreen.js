@@ -60,8 +60,7 @@ export default function AccountInfoScreen({ navigation, route }) {
     if (!permissionResult.granted) {
       showModal(
         "Permission refusée",
-        "Autorisez l'accès à la galerie pour choisir une image.",
-        [{ text: "OK", onPress: () => setModalVisible(false) }]
+        "Autorisez l'accès à la galerie pour choisir une image."
       );
       return;
     }
@@ -95,13 +94,9 @@ export default function AccountInfoScreen({ navigation, route }) {
 
       if (data.result) {
         setAvatar(data.userInfo.avatar); // Met à jour l'affichage local
-        showModal("Succès", "Avatar modifié !", [
-          { text: "OK", onPress: () => setModalVisible(false) },
-        ]);
+        showModal("Succès", "Avatar modifié !");
       } else {
-        showModal("Erreur", data.error || "Impossible de modifier l'avatar.", [
-          { text: "OK", onPress: () => setModalVisible(false) },
-        ]);
+        showModal("Erreur", data.error || "Impossible de modifier l'avatar.");
       }
     }
   };
@@ -126,15 +121,12 @@ export default function AccountInfoScreen({ navigation, route }) {
 
     if (data.result) {
       dispatch(loginAndUpdate({ email, firstname, lastname }));
-      showModal("Succès", data.message || "Informations modifiées.", [
-        { text: "OK", onPress: () => setModalVisible(false) },
-      ]);
+      showModal("Succès", data.message || "Informations modifiées.");
       setIsEditing(false);
     } else {
       showModal(
         "Erreur",
-        data.error || data.message || "Une erreur est survenue.",
-        [{ text: "OK", onPress: () => setModalVisible(false) }]
+        data.error || data.message || "Une erreur est survenue."
       );
     }
   };
@@ -343,7 +335,6 @@ export default function AccountInfoScreen({ navigation, route }) {
                           setModalVisible(false);
                           setIsEditing(false);
                         },
-                        style: "destructive",
                       },
                     ]
                   );
