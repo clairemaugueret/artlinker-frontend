@@ -1,3 +1,10 @@
+//DEBUT DU BLOC A ENLEVER
+// Pour le Demoday, lignes de code pour masquer les alertes lié à des bugs et autres logs
+// À retirer lors du passage en prod / lors du déploiement
+import { LogBox } from "react-native";
+LogBox.ignoreAllLogs(); // 👈 Masque tous les logs et warnings
+//FIN DU BLOC A ENLEVER
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
