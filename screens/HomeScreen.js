@@ -1,5 +1,5 @@
 import { globalStyles } from "../globalStyles";
-import React, { use, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   Button,
   ScrollView,
   Dimensions,
+  Animated as RNAnimated,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -17,7 +18,7 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 //react-native-safe-area-context provides a flexible API for accessing device safe area inset information.
 // This allows you to position your content appropriately around notches, status bars, home indicators, and other such device and operating system interface elements
 
-const { width: screenWidth } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -27,6 +28,8 @@ export default function HomeScreen({ navigation }) {
   const [showTarifsSpecial, setShowTarifsSpecial] = useState(false);
   const [showTarifsPublic, setShowTarifsPublic] = useState(false);
   const [showTarifsBusiness, setShowTarifsBusiness] = useState(false);
+  const scrollViewRef = useRef(null);
+  const scrollY = useRef(new RNAnimated.Value(0)).current;
 
   const toggleTarifsNormal = () => {
     setShowTarifsNormal(!showTarifsNormal);
@@ -55,14 +58,75 @@ export default function HomeScreen({ navigation }) {
     setShowTarifsSpecial(false);
     setShowTarifsPublic(false);
   };
+
+  // Animation du chevron
+  const chevronAnim = useRef(new RNAnimated.Value(0)).current;
+
+  useEffect(() => {
+    RNAnimated.loop(
+      RNAnimated.sequence([
+        RNAnimated.timing(chevronAnim, {
+          toValue: 10,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        RNAnimated.timing(chevronAnim, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [chevronAnim]);
+
+  const handleChevronPress = () => {
+    if (scrollViewRef.current) {
+      scrollY.setValue(0); // Remet la valeur à 0 avant chaque scroll animé
+      RNAnimated.timing(scrollY, {
+        toValue: screenHeight * 0.8,
+        duration: 1200,
+        useNativeDriver: false,
+      }).start();
+    }
+  };
+
+  useEffect(() => {
+    const listener = scrollY.addListener(({ value }) => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({ y: value, animated: false });
+      }
+    });
+    return () => {
+      scrollY.removeListener(listener);
+    };
+  }, [scrollY]);
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <SafeAreaProvider>
+        {!user.token && (
+          <View style={styles.loginBtnContainer}>
+            <TouchableOpacity
+              style={globalStyles.buttonRed}
+              onPress={() =>
+                navigation.navigate("Stack", { screen: "Connection" })
+              }
+            >
+              <Text style={globalStyles.buttonRedText}>
+                Se connecter / Créer un compte
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <ScrollView
-          contentContainerStyle={styles.scrollviewContainer}
+          ref={scrollViewRef}
+          contentContainerStyle={{
+            ...styles.scrollviewContainer,
+            ...(user.token ? { paddingTop: 70 } : {}),
+          }}
           keyboardShouldPersistTaps="handled"
         >
-          <View
+          {/* <View
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
@@ -88,25 +152,37 @@ export default function HomeScreen({ navigation }) {
                 navigation.navigate("Stack", { screen: "Payment" })
               }
             />
+          </View> */}
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("../assets/logo-picto.png")}
+              style={styles.logo}
+            />
+            <Text style={[globalStyles.big, styles.title]}>
+              <Text style={globalStyles.darkred}>A</Text>RTLINKER
+            </Text>
+            <Text
+              style={[globalStyles.p, globalStyles.darkred, styles.subtitle]}
+            >
+              L'artothèque sociale et solidaire
+            </Text>
           </View>
-          <Image
-            source={require("../assets/logo-picto.png")}
-            style={styles.logo}
-          />
-          <Text style={[globalStyles.big, styles.title]}>
-            <Text style={globalStyles.darkred}>A</Text>RTLINKER
-          </Text>
-          <Text style={[globalStyles.p, globalStyles.darkred, styles.subtitle]}>
-            L'artothèque sociale et solidaire
-          </Text>
           <Text style={[globalStyles.h3, { marginVertical: 10 }]}>
             COMMENT ÇA MARCHE ?
           </Text>
+          <TouchableOpacity activeOpacity={0.7} onPress={handleChevronPress}>
+            <RNAnimated.View
+              style={{ transform: [{ translateY: chevronAnim }] }}
+            >
+              <FontAwesome
+                name="chevron-down"
+                size={56}
+                color={darkred}
+                style={{ marginBottom: 70 }}
+              />
+            </RNAnimated.View>
+          </TouchableOpacity>
           <View>
-            <Image
-              source={require("../assets/fake-map-1.png")}
-              style={styles.backgroundMap}
-            />
             <View style={styles.containerOne}>
               <Text
                 style={[
@@ -127,6 +203,10 @@ export default function HomeScreen({ navigation }) {
                 TROUVEZ DES ŒUVRES À EMPRUNTER SUR NOTRE CARTE INTÉRACTIVE
               </Text>
             </View>
+            <Image
+              source={require("../assets/fake-map-1.png")}
+              style={styles.backgroundMap}
+            />
           </View>
           <Text
             style={[
@@ -152,10 +232,13 @@ export default function HomeScreen({ navigation }) {
           >
             CHOISISSEZ UN ABONNEMENT
           </Text>
-          <View>
+          <View style={{ width: "100%", paddingHorizontal: 30 }}>
             <View>
               <TouchableOpacity
-                style={{ flexDirection: "row", alignItems: "center" }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
                 onPress={toggleTarifsNormal}
               >
                 <FontAwesome
@@ -164,25 +247,33 @@ export default function HomeScreen({ navigation }) {
                   color={!showTarifsNormal ? darkgray : darkred}
                 />
                 <Text style={[globalStyles.h4, { marginLeft: 12 }]}>
-                  <Text style={globalStyles.darkred}>P</Text>articulier (tarif
-                  normal)
+                  <Text style={[globalStyles.darkred, { lineHeight: 32 }]}>
+                    P
+                  </Text>
+                  articulier (tarif normal)
                 </Text>
               </TouchableOpacity>
             </View>
 
             {showTarifsNormal && (
-              <View>
+              <View style={{ marginBottom: 20 }}>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>100 € / an =</Text> 1
-                  œuvre tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    100 € / an =
+                  </Text>{" "}
+                  1 œuvre tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>180 € / an =</Text> 2
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    180 € / an =
+                  </Text>{" "}
+                  2 œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>250 € / an =</Text> 3
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    250 € / an =
+                  </Text>{" "}
+                  3 œuvres tous les 3 mois
                 </Text>
               </View>
             )}
@@ -383,30 +474,19 @@ export default function HomeScreen({ navigation }) {
                 textAlign: "center",
                 fontSize: 15,
                 marginHorizontal: 20,
+                marginBottom: 45,
               },
             ]}
           >
             {/* {"\n"} pour un saut à la ligne */}
-            Au bout de <Text style={{ fontWeight: 800 }}>3 mois</Text>, vous
-            pouvez : {"\n"}
-            {"\n"}• ramener l'œuvre et en emprunter une nouvelle.{"\n"}•
-            demander à renouveler l'emprunt de cette même œuvre pour 3 mois
+            Au bout de <Text style={{ fontWeight: 800 }}>3 mois</Text> : {"\n"}
+            {"\n"}• vous ramenez l'œuvre et vous pouvez en emprunter une
+            nouvelle (au même artiste ou à un·e autre artiste){"\n"}
+            {"\n"}OU{"\n"}
+            {"\n"}• vous demandez à l'artiste de prolonger l'emprunt pour 3 mois
             supplémentaires (pour une durée totale de 6 mois maximum).
           </Text>
         </ScrollView>
-        <View style={styles.loginBtnContainer}>
-          <TouchableOpacity
-            style={globalStyles.buttonRed}
-            onPress={() =>
-              navigation.navigate("Stack", { screen: "Connection" })
-            }
-            disabled={Boolean(user.token)}
-          >
-            <Text style={globalStyles.buttonRedText}>
-              Se connecter / Créer un compte
-            </Text>
-          </TouchableOpacity>
-        </View>
       </SafeAreaProvider>
     </SafeAreaView>
   );
@@ -416,11 +496,17 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "#fff",
+    marginBottom: -50,
   },
   scrollviewContainer: {
     flexGrow: 1,
     alignItems: "center",
     textAlign: "center",
+  },
+  logoContainer: {
+    alignItems: "center",
+    marginTop: screenHeight * 0.5 - 250,
+    marginBottom: 30,
   },
   logo: {
     width: "100",
@@ -432,13 +518,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subtitle: {
-    marginBottom: 60,
+    marginBottom: 20,
   },
   backgroundMap: {
     width: screenWidth,
-    height: screenWidth,
+    height: screenWidth * 0.8,
     resizeMode: "cover",
-    opacity: 0.15,
+    opacity: 1,
   },
   roundedNumber: {
     paddingHorizontal: 35,
@@ -450,8 +536,9 @@ const styles = StyleSheet.create({
   },
   containerOne: {
     alignItems: "center",
-    position: "absolute",
-    top: "25%",
+    marginVertical: 50,
+    // position: "absolute",
+    // top: "25%",
   },
   fakeMap: {
     width: 300,
@@ -459,8 +546,11 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   loginBtnContainer: {
-    marginTop: 20,
-    marginBottom: -30,
+    bottom: 0,
     marginHorizontal: 30,
+    marginTop: 10, // espace avec le bord bas
+    alignItems: "center",
+    backgroundColor: "transparent", // pour que le fond soit transparent
+    // zIndex: 10, // optionnel si tu veux être sûr qu'il passe au-dessus
   },
 });
