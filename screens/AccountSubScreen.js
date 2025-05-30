@@ -59,7 +59,8 @@ export default function AccountSubScreen({ navigation, route }) {
                 style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}
               >
                 Nombre d'emprunts autorisés :
-              </Text>{" "}
+              </Text>
+              {"\n"}
               {subscription.worksCount} œuvre
               {subscription.worksCount > 1 ? "s" : ""} tous les 3 mois
             </Text>
@@ -68,7 +69,8 @@ export default function AccountSubScreen({ navigation, route }) {
                 style={[globalStyles.lightred, globalStyles.nunitoSemiBold]}
               >
                 Crédit d'emprunts restant :
-              </Text>{" "}
+              </Text>
+              {"\n"}
               {loansCredit > 0
                 ? `${loansCredit} emprunt${loansCredit > 1 ? "s" : ""} restant${
                     loansCredit > 1 ? "s" : ""
