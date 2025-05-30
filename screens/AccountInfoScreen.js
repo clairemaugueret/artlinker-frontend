@@ -309,7 +309,13 @@ export default function AccountInfoScreen({ navigation, route }) {
 
           {/* Bouton */}
           {isEditing ? (
-            <View style={{ flexDirection: "row", width: "100%", gap: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                width: "100%",
+                gap: 10,
+              }}
+            >
               <TouchableOpacity
                 style={[
                   globalStyles.buttonRed,
@@ -359,7 +365,7 @@ export default function AccountInfoScreen({ navigation, route }) {
               ]}
               onPress={() => setIsEditing(true)}
             >
-              <Text style={globalStyles.buttonRedText}>
+              <Text style={[globalStyles.buttonRedText]}>
                 Modifier mes informations
               </Text>
             </TouchableOpacity>
@@ -382,6 +388,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flexGrow: 1,
     backgroundColor: "#fff",
+    paddingBottom: 50,
   },
   keyboardviewContainer: {
     flex: 1,
@@ -393,7 +400,7 @@ const styles = StyleSheet.create({
     width: "95%",
     alignSelf: "center",
     padding: 15,
-    gap: 20,
+    gap: 5,
   },
   shadowLine: {
     backgroundColor: "transparent",
