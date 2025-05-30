@@ -81,9 +81,11 @@ export default function SubScreen({ navigation }) {
           margin: 20,
         }}
       >
-        <Text style={[globalStyles.h1, { textAlign: "center" }]}>
-          Choisir un abonnement
-        </Text>
+        <View style={{ alignItems: "center", width: "100%" }}>
+          <Text style={[globalStyles.h1, { textAlign: "center" }]}>
+            Choisir un abonnement
+          </Text>
+        </View>
 
         <View>
           <TouchableOpacity

@@ -15,6 +15,7 @@ import {
 import { fetchAddress } from "../components/FetchAddress";
 import { FontAwesome } from "@expo/vector-icons";
 import { FormatDistance } from "../components/FormatDistance";
+import CustomModal from "../components/CustomModal";
 
 const typeLabels = {
   INDIVIDUAL_BASIC_COST: "Particulier",
@@ -36,6 +37,20 @@ export default function CartScreen({ navigation }) {
   const user = useSelector((state) => state.user) || {};
   const dispatch = useDispatch();
 
+  // Modale personnalisée grâce au composant CustomModal pour tous les messages d'erreur ou de succès de la page
+  // car le module "Alert" de react-native n'est pas personnalisable en style
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    buttons: [],
+  });
+  const showModal = (title, message, buttons = []) => {
+    //pour personnaliser la modale, on lui envoie les informations suivantes : le titre, le message, et les boutons
+    setModalContent({ title, message, buttons });
+    setModalVisible(true);
+  };
+
   const count = artworks.length;
   // State local pour le prix
   const [price, setPrice] = useState(
@@ -45,13 +60,6 @@ export default function CartScreen({ navigation }) {
   );
   // State local pour la capacité future
   const [futurBorrowCapacity, setFuturBorrowCapacity] = useState(0);
-
-  // Met à jour le prix dynamiquement quand count ou type change
-  // useEffect(() => {
-  //   const grid =
-  //     priceGrids[subscription.type] || priceGrids["INDIVIDUAL_BASIC_COST"];
-  //   setPrice(grid[subscription.count]);
-  // }, [count, subscription.type]);
 
   // Met à jour futurBorrowCapacity dynamiquement
   useEffect(() => {
@@ -123,8 +131,21 @@ export default function CartScreen({ navigation }) {
       dispatch(updateOnGoingLoans(user.value.ongoingLoans + count)); // Mise à jour du nombre d'emprunts en cours dans le store user
 
       // Ensuite, on vide le panier et navigue vers l'écran Account
+
+      //On redirige vers l'écran Account après l'affichage de la modale "Succès"
+      showModal(
+        "Confirmation d'emprunt",
+        "Votre emprunt a été enregistré avec succès.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.navigate("Account");
+            },
+          },
+        ]
+      );
       dispatch(clearCart());
-      navigation.navigate("Account");
     }
   };
 
@@ -231,6 +252,14 @@ export default function CartScreen({ navigation }) {
       >
         <Text style={globalStyles.buttonRedText}>Vider le panier</Text>
       </TouchableOpacity>
+      {/* Modale personnalisée grâce au composant CustomModal pour les messages d'alerte */}
+      <CustomModal
+        visible={modalVisible}
+        title={modalContent.title}
+        message={modalContent.message}
+        buttons={modalContent.buttons}
+        onClose={() => setModalVisible(false)}
+      />
     </ScrollView>
   );
 }

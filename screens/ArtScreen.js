@@ -240,21 +240,20 @@ export default function ArtScreen({ navigation, route }) {
               Œuvre déjà sélectionnée.
             </Text>
           )}
-          {artitemData?.disponibility &&
-            !user?.token && ( // si oeuvre dispo mais user pas inscrit/connecté, on affiche message pour lui demander de se inscrire ou se connecter
+          {!user?.token && ( // si oeuvre dispo mais user pas inscrit/connecté, on affiche message pour lui demander de se inscrire ou se connecter
+            <Text
+              style={[globalStyles.p, { fontSize: 14, textAlign: "center" }]}
+            >
+              Veuillez vous{" "}
               <Text
-                style={[globalStyles.p, { fontSize: 14, textAlign: "center" }]}
+                style={globalStyles.darkred}
+                onPress={() => navigation.navigate("Connection")}
               >
-                Veuillez vous{" "}
-                <Text
-                  style={globalStyles.darkred}
-                  onPress={() => navigation.navigate("Connection")}
-                >
-                  inscrire / connecter
-                </Text>{" "}
-                pour emprunter.
-              </Text>
-            )}
+                inscrire / connecter
+              </Text>{" "}
+              pour emprunter.
+            </Text>
+          )}
         </View>
         <View style={styles.itemsAuthorCarousel}>
           <Text style={[globalStyles.h3, { textAlign: "center" }]}>
@@ -294,8 +293,8 @@ export default function ArtScreen({ navigation, route }) {
                 { textAlign: "center", margin: 20 },
               ]}
             >
-              Aucune autre œuvre de cet artiste n’est disponible dans
-              l’artothèque.
+              Aucune autre œuvre de cet artiste n'est référencée dans
+              l'artothèque.
             </Text>
           )}
         </View>

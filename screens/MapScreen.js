@@ -321,7 +321,7 @@ export default function MapScreen({ navigation }) {
               />
             </TouchableOpacity>
           </View>
-          {/* Bouton grille à côté */}
+          {/* Bouton vue liste à côté */}
           <TouchableOpacity
             style={[
               globalStyles.buttonRed,
@@ -335,7 +335,10 @@ export default function MapScreen({ navigation }) {
             ]}
             onPress={() => handleGridButton()}
           >
-            <Text style={globalStyles.buttonRedText}>Grille</Text>
+            <Text style={[globalStyles.buttonRedText, { fontSize: 20 }]}>
+              {" "}
+              Liste{" "}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
