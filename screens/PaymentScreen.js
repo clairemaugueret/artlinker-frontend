@@ -15,6 +15,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import CustomModal from "../components/CustomModal";
 
 export default function PaymentScreen({ navigation }) {
   const subscription = useSelector((state) => state.subscription) || {};
@@ -26,6 +27,20 @@ export default function PaymentScreen({ navigation }) {
   const [focusedField, setFocusedField] = useState(null); // pour pouvoir gérer l'état focus des inputs afin de pouvoir changer le style quand l'input est actif/focusé
   const [expiration, setExpiration] = useState("");
   const [cvc, setCvc] = useState("");
+
+  // Modale personnalisée grâce au composant CustomModal pour tous les messages d'erreur ou de succès de la page
+  // car le module "Alert" de react-native n'est pas personnalisable en style
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    buttons: [],
+  });
+  const showModal = (title, message, buttons = []) => {
+    //pour personnaliser la modale, on lui envoie les informations suivantes : le titre, le message, et les boutons
+    setModalContent({ title, message, buttons });
+    setModalVisible(true);
+  };
 
   const validate = async () => {
     const body = {
@@ -45,14 +60,33 @@ export default function PaymentScreen({ navigation }) {
       const data = await response.json();
 
       if (!data.result) {
-        alert(data.error || "Erreur lors de la création de l'abonnement.");
+        showModal(
+          "Erreur",
+          data.error || "Erreur lors de la création de l'abonnement."
+        );
         return;
       }
 
       dispatch(clearCart());
-      navigation.navigate("Account");
+      // navigation.navigate("Account");
+      //en attente de la mise en place de Stripe, on redirige vers l'écran Account après l'affichage de la modale "Succès"
+      showModal(
+        "Paiement confirmé",
+        "Votre abonnement ainsi que vos emprunts ont été enregistrés avec succès.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.navigate("Account");
+            },
+          },
+        ]
+      );
     } catch (err) {
-      alert("Erreur réseau ou serveur lors de la création de l'abonnement.");
+      showModal(
+        "Erreur",
+        "Erreur réseau ou serveur lors de la création de l'abonnement."
+      );
       console.error(err);
       return;
     }
@@ -73,14 +107,15 @@ export default function PaymentScreen({ navigation }) {
         const data = await response.json();
 
         if (!data.result) {
-          alert(
+          showModal(
+            "Erreur",
             data.error ||
               `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
           );
           return; // Arrête la boucle si une erreur survient
         }
       } catch (err) {
-        alert("Erreur réseau ou serveur.");
+        showModal("Erreur", "Erreur réseau ou serveur");
         console.error(err);
         return;
       }
@@ -94,9 +129,9 @@ export default function PaymentScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={[globalStyles.h2, { textAlign: "center" }]}>Paiement</Text>
-      <Text style={[globalStyles.h3, { textAlign: "center" }]}>
+      {/* <Text style={[globalStyles.h3, { textAlign: "center" }]}>
         (A remplacer par Stripe)
-      </Text>
+      </Text> */}
       <TextInput
         onChangeText={(value) => setEmailSignIn(value)}
         value={emailSignIn}
@@ -122,7 +157,7 @@ export default function PaymentScreen({ navigation }) {
             focusedField === "expiration" && globalStyles.inputIsFocused,
             styles.inputHalf, // <-- Place ce style EN DERNIER
           ]}
-          placeholder="MM/AA"
+          placeholder="MM / AA"
           keyboardType="numeric"
           maxLength={5}
           autoCapitalize="none"
@@ -147,6 +182,14 @@ export default function PaymentScreen({ navigation }) {
       <TouchableOpacity style={globalStyles.buttonRed} onPress={validate}>
         <Text style={globalStyles.buttonRedText}>Payer</Text>
       </TouchableOpacity>
+      {/* Modale personnalisée grâce au composant CustomModal pour les messages d'alerte */}
+      <CustomModal
+        visible={modalVisible}
+        title={modalContent.title}
+        message={modalContent.message}
+        buttons={modalContent.buttons}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }
@@ -158,6 +201,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",
+    gap: 20,
   },
   image: {
     width: "100%",
