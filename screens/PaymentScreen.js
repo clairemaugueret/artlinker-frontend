@@ -141,10 +141,10 @@ export default function PaymentScreen({ navigation }) {
           globalStyles.input,
           focusedField === "emailSignIn" && globalStyles.inputIsFocused,
         ]}
-        placeholder="Card Number"
+        placeholder="Numéro de Carte"
+        keyboardType="numeric"
+        maxLength={16}
         autoCapitalize="none"
-        keyboardType="email-address"
-        textContenType="emailAddress"
       />
       <View style={styles.inline}>
         <TextInput
@@ -159,7 +159,7 @@ export default function PaymentScreen({ navigation }) {
           ]}
           placeholder="MM / AA"
           keyboardType="numeric"
-          maxLength={5}
+          maxLength={4}
           autoCapitalize="none"
         />
         <TextInput
@@ -174,7 +174,7 @@ export default function PaymentScreen({ navigation }) {
           ]}
           placeholder="CVC"
           keyboardType="numeric"
-          maxLength={4}
+          maxLength={3}
           autoCapitalize="none"
           secureTextEntry
         />
