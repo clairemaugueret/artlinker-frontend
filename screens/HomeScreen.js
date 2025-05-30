@@ -117,34 +117,6 @@ export default function HomeScreen({ navigation }) {
           }
           scrollEventThrottle={16}
         >
-          {/* <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              gap: 5,
-            }}
-          >
-            <Button
-              title="Sub Screen"
-              onPress={() => navigation.navigate("Stack", { screen: "Sub" })}
-            />
-            <Button
-              title="Price Screen"
-              onPress={() => navigation.navigate("Stack", { screen: "Price" })}
-            />
-            <Button
-              title="Cart Screen"
-              onPress={() => navigation.navigate("Stack", { screen: "Cart" })}
-            />
-            <Button
-              title="Payment Screen"
-              onPress={() =>
-                navigation.navigate("Stack", { screen: "Payment" })
-              }
-            />
-          </View> */}
-
           <View style={styles.introContainer}>
             <Image
               source={require("../assets/logo-picto.png")}
@@ -303,18 +275,24 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             {showTarifsSpecial && (
-              <View>
+              <View style={{ marginBottom: 20 }}>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>75 € / an =</Text> 1 œuvre
-                  tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    75 € / an =
+                  </Text>{" "}
+                  1 œuvre tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>130 € / an =</Text> 2
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    130 € / an =
+                  </Text>{" "}
+                  2 œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>180 € / an =</Text> 3
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    180 € / an =
+                  </Text>{" "}
+                  3 œuvres tous les 3 mois
                 </Text>
               </View>
             )}
@@ -337,18 +315,24 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             {showTarifsPublic && (
-              <View>
+              <View style={{ marginBottom: 20 }}>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>350 € / an =</Text> 3
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    350 € / an =
+                  </Text>{" "}
+                  3 œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>420 € / an =</Text> 4
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    420 € / an =
+                  </Text>{" "}
+                  4 œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>500 € / an =</Text> 5
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    500 € / an =
+                  </Text>{" "}
+                  5 œuvres tous les 3 mois
                 </Text>
                 <Text style={[globalStyles.p]}>
                   +100 € / an / œuvre supplémentaire
@@ -373,18 +357,24 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             {showTarifsBusiness && (
-              <View>
+              <View style={{ marginBottom: 20 }}>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>500 € / an =</Text> 3
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    500 € / an =
+                  </Text>{" "}
+                  3 œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>600 € / an =</Text> 4
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    600 € / an =
+                  </Text>{" "}
+                  4 œuvres tous les 3 mois
                 </Text>
                 <Text style={globalStyles.p}>
-                  <Text style={globalStyles.lightred}>700 € / an =</Text> 5
-                  œuvres tous les 3 mois
+                  <Text style={[globalStyles.darkred, { fontWeight: 700 }]}>
+                    700 € / an =
+                  </Text>{" "}
+                  5 œuvres tous les 3 mois
                 </Text>
                 <Text style={[globalStyles.p]}>
                   +130 € / an / œuvre supplémentaire
