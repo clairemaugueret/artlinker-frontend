@@ -81,7 +81,7 @@ export default function HomeScreen({ navigation }) {
 
   const handleChevronPress = () => {
     if (scrollViewRef.current) {
-      scrollY.setValue(0); // Remet la valeur à 0 avant chaque scroll animé
+      //scrollY.setValue(0); // Remet la valeur à 0 avant chaque scroll animé
       RNAnimated.timing(scrollY, {
         toValue: screenHeight * 0.8,
         duration: 1200,
@@ -153,7 +153,7 @@ export default function HomeScreen({ navigation }) {
               }
             />
           </View> */}
-          <View style={styles.logoContainer}>
+          <View style={styles.introContainer}>
             <Image
               source={require("../assets/logo-picto.png")}
               style={styles.logo}
@@ -166,22 +166,23 @@ export default function HomeScreen({ navigation }) {
             >
               L'artothèque sociale et solidaire
             </Text>
+
+            <Text style={[globalStyles.h3, { marginVertical: 10 }]}>
+              COMMENT ÇA MARCHE ?
+            </Text>
+            <TouchableOpacity activeOpacity={0.7} onPress={handleChevronPress}>
+              <RNAnimated.View
+                style={{ transform: [{ translateY: chevronAnim }] }}
+              >
+                <FontAwesome
+                  name="angle-down" // plus arrondi que "chevron-down"
+                  size={92}
+                  color={darkred}
+                  style={{ marginBottom: 70 }}
+                />
+              </RNAnimated.View>
+            </TouchableOpacity>
           </View>
-          <Text style={[globalStyles.h3, { marginVertical: 10 }]}>
-            COMMENT ÇA MARCHE ?
-          </Text>
-          <TouchableOpacity activeOpacity={0.7} onPress={handleChevronPress}>
-            <RNAnimated.View
-              style={{ transform: [{ translateY: chevronAnim }] }}
-            >
-              <FontAwesome
-                name="chevron-down"
-                size={56}
-                color={darkred}
-                style={{ marginBottom: 70 }}
-              />
-            </RNAnimated.View>
-          </TouchableOpacity>
           <View>
             <View style={styles.containerOne}>
               <Text
@@ -503,10 +504,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
   },
-  logoContainer: {
+  introContainer: {
     alignItems: "center",
-    marginTop: screenHeight * 0.5 - 250,
-    marginBottom: 30,
+    paddingTop: screenHeight * 0.5 - 250,
+    height: screenHeight - 125,
   },
   logo: {
     width: "100",
@@ -536,7 +537,7 @@ const styles = StyleSheet.create({
   },
   containerOne: {
     alignItems: "center",
-    marginVertical: 50,
+    marginBottom: 50,
     // position: "absolute",
     // top: "25%",
   },
