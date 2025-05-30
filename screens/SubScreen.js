@@ -75,7 +75,7 @@ export default function SubScreen({ navigation }) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          alignItems: "center",
+          alignItems: "flex-start",
           paddingBottom: 40,
           gap: 40,
           margin: 20,
@@ -113,22 +113,28 @@ export default function SubScreen({ navigation }) {
         {showTarifsNormal && (
           <View style={{ width: "95%", marginTop: -35, gap: 8 }}>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>100 € / an =</Text> 1 œuvre
-              tous les 3 mois{"\n"}{" "}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>100 € / an =</Text>
+              </Text>{" "}
+              1 œuvre tous les 3 mois{"\n"}{" "}
               <Text style={{ fontSize: 16 }}>
                 (soit 4 œuvres différentes dans l'année)
               </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>180 € / an =</Text> 2 œuvres
-              tous les 3 mois{"\n"}{" "}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>180 € / an =</Text>
+              </Text>{" "}
+              2 œuvres tous les 3 mois{"\n"}{" "}
               <Text style={{ fontSize: 16 }}>
                 (soit 8 œuvres différentes dans l'année)
               </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>250 € / an =</Text> 3 œuvres
-              tous les 3 mois{"\n"}{" "}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>250 € / an =</Text>
+              </Text>{" "}
+              3 œuvres tous les 3 mois{"\n"}{" "}
               <Text style={{ fontSize: 16 }}>
                 (soit 12 œuvres différentes dans l'année)
               </Text>
@@ -169,22 +175,28 @@ export default function SubScreen({ navigation }) {
         {showTarifsSpecial && (
           <View style={{ width: "95%", marginTop: -35, gap: 8 }}>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>75 € / an =</Text> 1 œuvre
-              tous les 3 mois{"\n"}{" "}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>75 € / an =</Text>
+              </Text>{" "}
+              1 œuvre tous les 3 mois{"\n"}{" "}
               <Text style={{ fontSize: 16 }}>
                 (soit 4 œuvres différentes dans l'année)
               </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>130 € / an =</Text> 2 œuvres
-              tous les 3 mois{"\n"}{" "}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>130 € / an =</Text>
+              </Text>{" "}
+              2 œuvres tous les 3 mois{"\n"}{" "}
               <Text style={{ fontSize: 16 }}>
                 (soit 8 œuvres différentes dans l'année)
               </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>180 € / an =</Text> 3 œuvres
-              tous les 3 mois{"\n"}{" "}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>180 € / an =</Text>
+              </Text>{" "}
+              3 œuvres tous les 3 mois{"\n"}{" "}
               <Text style={{ fontSize: 16 }}>
                 (soit 12 œuvres différentes dans l'année)
               </Text>
@@ -225,22 +237,28 @@ export default function SubScreen({ navigation }) {
         {showTarifsPublic && (
           <View style={{ width: "95%", marginTop: -35, gap: 8 }}>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>350 € / an =</Text> 3 œuvre
-              tous les 3 mois{"\n"}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>350 € / an =</Text>
+              </Text>{" "}
+              3 œuvre tous les 3 mois{"\n"}
               <Text style={{ fontSize: 16 }}>
                 (soit 12 œuvres différentes dans l'année)
               </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>420 € / an =</Text> 4 œuvres
-              tous les 3 mois{"\n"}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>420 € / an =</Text>
+              </Text>{" "}
+              4 œuvres tous les 3 mois{"\n"}
               <Text style={{ fontSize: 16 }}>
                 (soit 16 œuvres différentes dans l'année)
               </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>500 € / an =</Text> 5 œuvres
-              tous les 3 mois{"\n"}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>500 € / an =</Text>
+              </Text>{" "}
+              5 œuvres tous les 3 mois{"\n"}
               <Text style={{ fontSize: 16 }}>
                 (soit 20 œuvres différentes dans l'année)
               </Text>
@@ -284,22 +302,28 @@ export default function SubScreen({ navigation }) {
         {showTarifsBusiness && (
           <View style={{ width: "95%", marginTop: -35, gap: 8 }}>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>500 € / an =</Text> 3 œuvre
-              tous les 3 mois{"\n"}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>500 € / an =</Text>
+              </Text>{" "}
+              3 œuvre tous les 3 mois{"\n"}
               <Text style={{ fontSize: 16 }}>
                 (soit 12 œuvres différentes dans l'année)
               </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>600 € / an =</Text> 4 œuvres
-              tous les 3 mois{"\n"}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>600 € / an =</Text>
+              </Text>{" "}
+              4 œuvres tous les 3 mois{"\n"}
               <Text style={{ fontSize: 16 }}>
                 (soit 16 œuvres différentes dans l'année)
               </Text>
             </Text>
             <Text style={globalStyles.p}>
-              <Text style={globalStyles.lightred}>700 € / an =</Text> 5 œuvres
-              tous les 3 mois{"\n"}
+              <Text style={globalStyles.lightred}>
+                <Text style={globalStyles.nunitoSemiBold}>700 € / an =</Text>
+              </Text>{" "}
+              5 œuvres tous les 3 mois{"\n"}
               <Text style={{ fontSize: 16 }}>
                 (soit 20 œuvres différentes dans l'année)
               </Text>
@@ -309,7 +333,7 @@ export default function SubScreen({ navigation }) {
             </Text>
             <TouchableOpacity
               style={globalStyles.buttonRed}
-              onPress={handleValidationPublic}
+              onPress={handleValidationBusiness}
             >
               <Text style={globalStyles.buttonRedText}>
                 Choisir cet abonnement
