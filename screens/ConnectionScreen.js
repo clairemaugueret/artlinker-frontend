@@ -173,7 +173,7 @@ export default function ConnectionScreen({ navigation }) {
                 globalStyles.input,
                 focusedField === "emailSignUp" && globalStyles.inputIsFocused,
               ]}
-              placeholder="Email"
+              placeholder="Email (obligatoire)"
               autoCapitalize="none"
               keyboardType="email-address"
             />
@@ -186,7 +186,7 @@ export default function ConnectionScreen({ navigation }) {
                 globalStyles.input,
                 focusedField === "firstname" && globalStyles.inputIsFocused,
               ]}
-              placeholder="Prénom"
+              placeholder="Prénom (obligatoire)"
             />
             <TextInput
               onChangeText={(value) => setLastname(value)}
@@ -197,7 +197,7 @@ export default function ConnectionScreen({ navigation }) {
                 globalStyles.input,
                 focusedField === "lastname" && globalStyles.inputIsFocused,
               ]}
-              placeholder="Nom"
+              placeholder="Nom (obligatoire)"
             />
             <TextInput
               onChangeText={(value) => setPhoneNumber(value)}
@@ -232,7 +232,7 @@ export default function ConnectionScreen({ navigation }) {
                 focusedField === "passwordSignUp" &&
                   globalStyles.inputIsFocused,
               ]}
-              placeholder="Mot de passe"
+              placeholder="Mot de passe (obligatoire)"
               autoCapitalize="none"
               secureTextEntry
             />

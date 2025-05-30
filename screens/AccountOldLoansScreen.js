@@ -1,5 +1,6 @@
 import { Image, StyleSheet, View, Text, ScrollView } from "react-native";
 import { globalStyles } from "../globalStyles";
+import { FormatDate } from "../components/FormatDate";
 
 export default function AccountOldLoansScreen({ route }) {
   const previousLoans = route?.params?.userData?.previousLoans || [];
@@ -70,15 +71,13 @@ export default function AccountOldLoansScreen({ route }) {
                 <Text style={[globalStyles.p, globalStyles.darkred]}>
                   Début d'emprunt :{" "}
                   <Text style={globalStyles.p}>
-                    {new Date(loan.startDate).toLocaleDateString()}
+                    {FormatDate(loan.startDate)}
                   </Text>
                 </Text>
                 <Text style={[globalStyles.p, globalStyles.darkred]}>
                   Fin d'emprunt :{" "}
                   <Text style={globalStyles.p}>
-                    {loan.endDate
-                      ? new Date(loan.endDate).toLocaleDateString()
-                      : "N/A"}
+                    {loan.endDate ? FormatDate(loan.endDate) : "N/A"}
                   </Text>
                 </Text>
                 <Text style={[globalStyles.p, globalStyles.darkred]}>

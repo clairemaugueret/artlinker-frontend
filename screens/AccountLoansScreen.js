@@ -12,6 +12,7 @@ import { globalStyles } from "../globalStyles";
 import { fetchAddress } from "../components/FetchAddress";
 import { useSelector, useDispatch } from "react-redux";
 import { updateSubscription } from "../reducers/user";
+import { FormatDate } from "../components/FormatDate";
 
 export default function AccountLoansScreen({ navigation, route }) {
   const dispatch = useDispatch();
@@ -103,7 +104,7 @@ export default function AccountLoansScreen({ navigation, route }) {
                 <Text style={[globalStyles.p, globalStyles.darkred]}>
                   Début d'emprunt :{" "}
                   <Text style={globalStyles.p}>
-                    {new Date(loan.startDate).toLocaleDateString()}
+                    {FormatDate(loan.startDate)}
                   </Text>
                 </Text>
                 <Text style={[globalStyles.p, globalStyles.darkred]}>
@@ -118,9 +119,7 @@ export default function AccountLoansScreen({ navigation, route }) {
                     ]}
                   >
                     {loan.artItem.expectedReturnDate
-                      ? new Date(
-                          loan.artItem.expectedReturnDate
-                        ).toLocaleDateString()
+                      ? FormatDate(loan.artItem.expectedReturnDate)
                       : "N/A"}
                   </Text>
                 </Text>

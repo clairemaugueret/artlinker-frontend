@@ -1,5 +1,5 @@
 import { globalStyles } from "../globalStyles";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 //react-native-safe-area-context provides a flexible API for accessing device safe area inset information.
@@ -19,6 +20,7 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 const { width: screenWidth } = Dimensions.get("window"); // pour récupérer la largeur de l'écran
 
 export default function HomeScreen({ navigation }) {
+  const user = useSelector((state) => state.user.value);
   const darkgray = globalStyles.darkgray.color;
   const darkred = globalStyles.darkred.color;
   const [showTarifsNormal, setShowTarifsNormal] = useState(false);
@@ -398,6 +400,7 @@ export default function HomeScreen({ navigation }) {
             onPress={() =>
               navigation.navigate("Stack", { screen: "Connection" })
             }
+            disabled={Boolean(user.token)}
           >
             <Text style={globalStyles.buttonRedText}>
               Se connecter / Créer un compte
