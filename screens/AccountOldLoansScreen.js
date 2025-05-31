@@ -1,8 +1,19 @@
-import { Image, StyleSheet, View, Text, ScrollView } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { globalStyles } from "../globalStyles";
 import { FormatDate } from "../components/FormatDate";
+import { useSelector } from "react-redux";
 
-export default function AccountOldLoansScreen({ route }) {
+const { getDistanceInKm } = require("../components/getDistanceInKm");
+
+export default function AccountOldLoansScreen({ navigation, route }) {
+  const user = useSelector((state) => state.user.value);
   const previousLoans = route?.params?.userData?.previousLoans || [];
 
   const statusLabels = {
@@ -51,11 +62,32 @@ export default function AccountOldLoansScreen({ route }) {
         ) : (
           previousLoans.map((loan) => (
             <View key={loan._id} style={styles.cardsContainer}>
-              <Image
-                source={{ uri: loan.artItem.imgMain }}
+              <TouchableOpacity
                 style={styles.image}
-                resizeMode="cover"
-              />
+                onPress={() => {
+                  // Comme la distance initiale est envoyée depuis la MapScreen mais uniquement pour l'oeuvre principale
+                  // on doit recalculer la distance de l'oeuvre cliquée par rapport à la position enregistrée dans le store Redux
+                  const distance = getDistanceInKm(
+                    user.position.latitude,
+                    user.position.longitude,
+                    loan.artItem.artothequePlace.latitude,
+                    loan.artItem.artothequePlace.longitude
+                  );
+
+                  navigation.push("Art", {
+                    artitemData: {
+                      ...loan.artItem,
+                      distance,
+                    },
+                  });
+                }}
+              >
+                <Image
+                  source={{ uri: loan.artItem.imgMain }}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
               <View style={styles.card}>
                 <Text style={[globalStyles.h3, { marginTop: 10 }]}>
                   {loan.artItem.title}
