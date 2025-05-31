@@ -179,7 +179,11 @@ export default function PaymentScreen({ navigation }) {
           secureTextEntry
         />
       </View>
-      <TouchableOpacity style={globalStyles.buttonRed} onPress={validate}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={globalStyles.buttonRed}
+        onPress={validate}
+      >
         <Text style={globalStyles.buttonRedText}>Payer</Text>
       </TouchableOpacity>
       {/* Modale personnalisée grâce au composant CustomModal pour les messages d'alerte */}

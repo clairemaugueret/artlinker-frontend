@@ -14,7 +14,11 @@ export default function CustomModal({
     // alors pas défaut c'est un bouton "OK" avec la fonctionnalité "onClose" (que l'on a passé dans les props)
     if (buttons.length === 0) {
       return (
-        <TouchableOpacity style={globalStyles.buttonRed} onPress={onClose}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={globalStyles.buttonRed}
+          onPress={onClose}
+        >
           <Text style={globalStyles.buttonRedText}>OK</Text>
         </TouchableOpacity>
       );
@@ -25,6 +29,7 @@ export default function CustomModal({
     // ex. boutons "Oui" / "Non" de l'écran AccountInfoScreen pour abanbonner les modifications
     return buttons.map((btn, index) => (
       <TouchableOpacity
+        activeOpacity={0.8}
         key={index}
         style={[
           globalStyles.buttonRed,

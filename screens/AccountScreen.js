@@ -218,6 +218,7 @@ export default function AccountScreen({ navigation }) {
           </Text>
           <View style={{ alignItems: "center" }}>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={[globalStyles.buttonRed, { width: "80%" }]}
               onPress={() =>
                 navigation.navigate("Stack", { screen: "Connection" })
@@ -255,6 +256,7 @@ export default function AccountScreen({ navigation }) {
               </View>
               <View style={styles.buttonsUserInfo}>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={[
                     globalStyles.buttonRed,
                     { marginBottom: 0, marginTop: 0, paddingVertical: 12 },
@@ -272,6 +274,7 @@ export default function AccountScreen({ navigation }) {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -293,6 +296,7 @@ export default function AccountScreen({ navigation }) {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -314,6 +318,7 @@ export default function AccountScreen({ navigation }) {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -335,6 +340,7 @@ export default function AccountScreen({ navigation }) {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -356,7 +362,7 @@ export default function AccountScreen({ navigation }) {
                   />
                 </TouchableOpacity>
                 {/* Bouton favoris pour plus tard */}
-                {/* <TouchableOpacity
+                {/* <TouchableOpacity activeOpacity={0.8}
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -384,6 +390,7 @@ export default function AccountScreen({ navigation }) {
                 </Text>
                 {/* Bouton Piece Identité */}
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -434,6 +441,7 @@ export default function AccountScreen({ navigation }) {
                 />
                 {/* Bouton Justificatif Domicile */}
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -486,6 +494,7 @@ export default function AccountScreen({ navigation }) {
                 />
                 {/* Bouton Responsabilité Civile */}
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={[
                     globalStyles.buttonWhite,
                     { flexDirection: "row", justifyContent: "space-between" },
@@ -543,6 +552,7 @@ export default function AccountScreen({ navigation }) {
           </ScrollView>
           <View style={styles.loginBtnContainer}>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={globalStyles.buttonRed}
               onPress={() => handleLogout()}
             >
@@ -589,6 +599,7 @@ export default function AccountScreen({ navigation }) {
               style={{ marginTop: 20, width: "100%", alignItems: "center" }}
             >
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[globalStyles.buttonRed, { width: "40%" }]}
                 onPress={() => {
                   setShowModalEndLoan(false);

@@ -32,6 +32,7 @@ export default function GridScreen({ navigation, route }) {
     return (
       <View key={item._id} style={styles.card}>
         <TouchableOpacity
+          activeOpacity={0.8}
           onPress={() =>
             navigation.navigate("Stack", {
               screen: "Art",

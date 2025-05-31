@@ -63,6 +63,7 @@ export default function AccountOldLoansScreen({ navigation, route }) {
           previousLoans.map((loan) => (
             <View key={loan._id} style={styles.cardsContainer}>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={styles.image}
                 onPress={() => {
                   // Comme la distance initiale est envoyée depuis la MapScreen mais uniquement pour l'oeuvre principale

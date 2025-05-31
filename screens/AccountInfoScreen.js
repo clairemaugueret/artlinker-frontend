@@ -148,7 +148,10 @@ export default function AccountInfoScreen({ navigation, route }) {
           {/* Avatar + nom/prénom */}
           <View style={styles.idContainer}>
             <View>
-              <TouchableOpacity onPress={() => handleAvatarChange()}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => handleAvatarChange()}
+              >
                 <Image
                   source={
                     avatar
@@ -317,6 +320,7 @@ export default function AccountInfoScreen({ navigation, route }) {
               }}
             >
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[
                   globalStyles.buttonRed,
                   { marginTop: 30 },
@@ -347,6 +351,7 @@ export default function AccountInfoScreen({ navigation, route }) {
                 <Text style={globalStyles.buttonRedText}>Annuler</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[globalStyles.buttonRed, { marginTop: 30 }, { flex: 1 }]}
                 onPress={handleSave}
                 disabled={loading}
@@ -358,6 +363,7 @@ export default function AccountInfoScreen({ navigation, route }) {
             </View>
           ) : (
             <TouchableOpacity
+              activeOpacity={0.8}
               style={[
                 globalStyles.buttonRed,
                 { alignSelf: "center" },

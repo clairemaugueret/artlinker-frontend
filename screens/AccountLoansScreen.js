@@ -86,6 +86,7 @@ export default function AccountLoansScreen({ navigation, route }) {
           ongoingLoans.map((loan) => (
             <View key={loan._id} style={styles.cardsContainer}>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={styles.image}
                 onPress={() => {
                   // Comme la distance initiale est envoyée depuis la MapScreen mais uniquement pour l'oeuvre principale
@@ -163,6 +164,7 @@ export default function AccountLoansScreen({ navigation, route }) {
               {new Date(loan.artItem.expectedReturnDate) <= new Date() && (
                 <View style={{ alignItems: "center", width: "100%" }}>
                   <TouchableOpacity
+                    activeOpacity={0.8}
                     style={[globalStyles.buttonRed, { width: "60%" }]}
                     onPress={() => handleEndLoan(loan.artItem._id)}
                   >
@@ -181,6 +183,7 @@ export default function AccountLoansScreen({ navigation, route }) {
             <View style={styles.endLoanModalContainer}>
               <Text style={globalStyles.p}>Retour de l'œuvre enregistré.</Text>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[globalStyles.buttonRed, { marginTop: 20 }]}
                 onPress={() => {
                   setShowModal(false);

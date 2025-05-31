@@ -204,6 +204,7 @@ export default function MapScreen({ navigation }) {
     return (
       <View style={styles.slide}>
         <TouchableOpacity
+          activeOpacity={0.8}
           style={styles.imageWrapper}
           onPress={() =>
             navigation.navigate("Stack", {
@@ -276,9 +277,9 @@ export default function MapScreen({ navigation }) {
 
         {/* Bouton GPS positionné sur la carte */}
         <TouchableOpacity
+          activeOpacity={0.8}
           style={styles.gpsButtonOnMap}
           onPress={centerOnCurrentPosition}
-          activeOpacity={0.7}
         >
           <MaterialCommunityIcons
             name="crosshairs-gps"
@@ -313,7 +314,7 @@ export default function MapScreen({ navigation }) {
               onChangeText={(value) => setCity(value)}
               placeholderTextColor="#888"
             />
-            <TouchableOpacity onPress={handleSearchCity}>
+            <TouchableOpacity activeOpacity={0.8} onPress={handleSearchCity}>
               <FontAwesome
                 name="search"
                 size={27}
@@ -323,6 +324,7 @@ export default function MapScreen({ navigation }) {
           </View>
           {/* Bouton vue liste à côté */}
           <TouchableOpacity
+            activeOpacity={0.8}
             style={[
               globalStyles.buttonRed,
               {

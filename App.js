@@ -181,7 +181,9 @@ export default function App() {
                 return null; // Du coup si route = "Stack", alors bouton caché mais bouton existant et actif
               },
               tabBarButton: (props) =>
-                route.name === "Stack" ? null : <TouchableOpacity {...props} />, // En complément de tabBarIcon, si route = "Stack" alors bouton désactivé, sinon on peut cliquer sur les autres boutons existants
+                route.name === "Stack" ? null : (
+                  <TouchableOpacity activeOpacity={0.8} {...props} />
+                ), // En complément de tabBarIcon, si route = "Stack" alors bouton désactivé, sinon on peut cliquer sur les autres boutons existants
               tabBarActiveTintColor: "#B85449",
               tabBarInactiveTintColor: "#393837",
               headerShown: false,
