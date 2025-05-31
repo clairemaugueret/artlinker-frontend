@@ -148,7 +148,7 @@ export default function PaymentScreen({ navigation }) {
         const { error } = await initPaymentSheet({
           paymentIntentClientSecret: clientSecret,
           merchantDisplayName: "Artlinker",
-          returnURL: "stripe-example://payment-sheet",
+          returnURL: "/account",
           allowsDelayedPaymentMethods: true,
         });
         if (error) {
