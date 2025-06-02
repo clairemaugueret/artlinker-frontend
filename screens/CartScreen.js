@@ -2,7 +2,7 @@ import { globalStyles } from "../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
 import { setSubscriptionCount } from "../reducers/subscription";
 import { removeFromCart, clearCart } from "../reducers/cart";
-import { updateOnGoingLoans } from "../reducers/user";
+import { updateOnGoingLoans, updateSubscription } from "../reducers/user";
 import { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -15,6 +15,14 @@ import {
 import { fetchAddress } from "../components/FetchAddress";
 import { FontAwesome } from "@expo/vector-icons";
 import { FormatDistance } from "../components/FormatDistance";
+import { useStripe, PaymentSheetError } from "@stripe/stripe-react-native";
+// import {
+//   initPaymentSheet,
+//   presentPaymentSheet,
+// } from "@stripe/stripe-react-native";
+
+// import { loadStripe } from "@stripe/stripe-js";
+// import { Elements } from "@stripe/react-stripe-js";
 
 const typeLabels = {
   INDIVIDUAL_BASIC_COST: "Particulier",
@@ -31,16 +39,17 @@ const priceGrids = {
 };
 
 export default function CartScreen({ navigation }) {
-  const subscription = useSelector((state) => state.subscription) || {};
+  const subscriptionInfos = useSelector((state) => state.subscription) || {};
   const artworks = useSelector((state) => state.cart.artWorkInCart) || [];
   const user = useSelector((state) => state.user) || {};
   const dispatch = useDispatch();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const count = artworks.length;
   // State local pour le prix
   const [price, setPrice] = useState(
-    (priceGrids[subscription.type] || priceGrids["INDIVIDUAL_BASIC_COST"])[
-      subscription.count
+    (priceGrids[subscriptionInfos.type] || priceGrids["INDIVIDUAL_BASIC_COST"])[
+      subscriptionInfos.count
     ]
   );
   // State local pour la capacité future
@@ -59,7 +68,7 @@ export default function CartScreen({ navigation }) {
     if (user.value?.hasSubcribed) {
       borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
     } else {
-      borrowCapacity = subscription.count || 0; // Utilise le count de l'abonnement si l'utilisateur n'est pas abonné
+      borrowCapacity = subscriptionInfos.count || 0; // Utilise le count de l'abonnement si l'utilisateur n'est pas abonné
     }
     setFuturBorrowCapacity(borrowCapacity - count);
   }, [count, user]);
@@ -68,7 +77,7 @@ export default function CartScreen({ navigation }) {
   if (user.value?.hasSubcribed) {
     maximum = user.value.authorisedLoans;
   } else {
-    maximum = subscription.count || 0;
+    maximum = subscriptionInfos.count || 0;
   }
 
   // Calcul de la capacité d'emprunt actuelle
@@ -76,7 +85,7 @@ export default function CartScreen({ navigation }) {
   if (user.value?.hasSubcribed) {
     borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
   } else {
-    borrowCapacity = subscription.count || 0;
+    borrowCapacity = subscriptionInfos.count || 0;
   }
 
   // Désactive le bouton si le nombre d'œuvres dépasse la capacité
@@ -85,10 +94,127 @@ export default function CartScreen({ navigation }) {
 
   const validate = async () => {
     if (!user.value.hasSubcribed) {
-      // Met à jour le count dans le reducer subscription
-      dispatch(setSubscriptionCount(count));
-      // Navigue vers la page Payment
-      navigation.navigate("Stack", { screen: "Payment" });
+      try {
+        // 1. Créer le Customer
+        const createCustomer = await fetch(
+          `${fetchAddress}/payments/create-customer`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: "raphael.bgere@hotmail.fr",
+              name: "Raph",
+            }),
+          }
+        );
+        if (createCustomer.status === 200) {
+          const customer = await createCustomer.json();
+          // 2. Créer l'abonnement
+          const createSubscription = await fetch(
+            `${fetchAddress}/payments/create-subscription`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                priceId: "price_1RVTy1CRuiuQazlKnLCYqs2I",
+                customerId: customer.customerId,
+              }),
+            }
+          );
+          if (createSubscription.status === 200) {
+            const subscription = await createSubscription.json();
+            // 3. Initialiser le PaymentSheet
+            const { error: initError } = await initPaymentSheet({
+              paymentIntentClientSecret: subscription.clientSecret,
+              merchantDisplayName: "Artlinker",
+              returnURL: "stripe-example://payment-sheet",
+              allowsDelayedPaymentMethods: true,
+            });
+            if (initError) {
+              alert("Erreur lors de l'initialisation du paiement.");
+              return;
+            }
+            // 4. Présenter le PaymentSheet
+            const { error: presentError } = await presentPaymentSheet();
+            if (presentError) {
+              if (presentError.code === PaymentSheetError.Failed) {
+                alert("Le paiement a échoué.");
+              } else if (presentError.code === PaymentSheetError.Canceled) {
+                alert("Paiement annulé.");
+              }
+              return;
+            }
+            // 5. Paiement réussi, suite du process
+            alert("Paiement réussi !");
+            // Création de l'abonnement
+            const body = {
+              token: user.value?.token,
+              subscriptionType: subscriptionInfos.type,
+              count: subscriptionInfos.count,
+              price: subscriptionInfos.price,
+              stripeSubscriptionId: subscription.subscriptionId, // Ajoutez l'ID Stripe
+            };
+            try {
+              const response = await fetch(
+                `${fetchAddress}/subscriptions/create`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(body),
+                }
+              );
+              const data = await response.json();
+              if (!data.result) {
+                alert(
+                  data.error || "Erreur lors de la création de l'abonnement."
+                );
+                return;
+              }
+            } catch (err) {
+              alert(
+                "Erreur réseau ou serveur lors de la création de l'abonnement."
+              );
+              return;
+            }
+            // Création des emprunts
+            for (const art of artworks) {
+              try {
+                const body = {
+                  token: user.value.token,
+                  artitemId: art.id,
+                };
+                const response = await fetch(
+                  `${fetchAddress}/artitems/createloan`,
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body),
+                  }
+                );
+                const data = await response.json();
+                if (!data.result) {
+                  alert(
+                    data.error ||
+                      `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
+                  );
+                  return;
+                }
+              } catch (err) {
+                alert("Erreur réseau ou serveur.");
+                return;
+              }
+            }
+            // Tout est OK
+            dispatch(updateOnGoingLoans(artworks.length));
+            dispatch(updateSubscription(subscription.count));
+            dispatch(clearCart());
+            navigation.navigate("Account");
+          }
+        }
+      } catch (error) {
+        alert("Erreur lors du paiement.");
+        console.error("Error:", error);
+      }
     } else {
       // Pour chaque œuvre du panier, on effectue un fetch vers /createloan
       for (const art of artworks) {
@@ -188,7 +314,7 @@ export default function CartScreen({ navigation }) {
       <Text style={styles.info}>
         Type d'abonnement :{" "}
         <Text style={{ fontWeight: "bold" }}>
-          {typeLabels[subscription.type]}
+          {typeLabels[subscriptionInfos.type]}
         </Text>
       </Text>
       <Text style={styles.info}>
