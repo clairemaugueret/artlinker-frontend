@@ -150,6 +150,7 @@ export default function ConnectionScreen({ navigation }) {
               </Text>
             )}
             <TouchableOpacity
+              activeOpacity={0.8}
               style={globalStyles.buttonRed}
               onPress={handleConnection}
             >
@@ -247,6 +248,7 @@ export default function ConnectionScreen({ navigation }) {
               </Text>
             )}
             <TouchableOpacity
+              activeOpacity={0.8}
               style={globalStyles.buttonRed}
               onPress={handleInscription}
             >

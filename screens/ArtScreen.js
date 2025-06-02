@@ -150,6 +150,7 @@ export default function ArtScreen({ navigation, route }) {
     return (
       <View key={item._id} style={styles.slideItemsAuthor}>
         <TouchableOpacity
+          activeOpacity={0.8}
           style={styles.imageWrapperItemsAuthor}
           onPress={() => {
             // Comme la distance initiale est envoyée depuis la MapScreen mais uniquement pour l'oeuvre principale
@@ -219,6 +220,7 @@ export default function ArtScreen({ navigation, route }) {
           </Text>
           <Text>{renderAvailability(artitemData.disponibility)}</Text>
           <TouchableOpacity
+            activeOpacity={0.8}
             style={[
               globalStyles.buttonRed,
               { width: "100%", marginTop: 15 },

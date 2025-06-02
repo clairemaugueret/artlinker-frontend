@@ -14,6 +14,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateSubscription } from "../reducers/user";
 import { FormatDate } from "../components/FormatDate";
 
+const { getDistanceInKm } = require("../components/getDistanceInKm");
+
 export default function AccountLoansScreen({ navigation, route }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
@@ -83,11 +85,33 @@ export default function AccountLoansScreen({ navigation, route }) {
         ) : (
           ongoingLoans.map((loan) => (
             <View key={loan._id} style={styles.cardsContainer}>
-              <Image
-                source={{ uri: loan.artItem.imgMain }}
+              <TouchableOpacity
+                activeOpacity={0.8}
                 style={styles.image}
-                resizeMode="cover"
-              />
+                onPress={() => {
+                  // Comme la distance initiale est envoyée depuis la MapScreen mais uniquement pour l'oeuvre principale
+                  // on doit recalculer la distance de l'oeuvre cliquée par rapport à la position enregistrée dans le store Redux
+                  const distance = getDistanceInKm(
+                    user.position.latitude,
+                    user.position.longitude,
+                    loan.artItem.artothequePlace.latitude,
+                    loan.artItem.artothequePlace.longitude
+                  );
+
+                  navigation.push("Art", {
+                    artitemData: {
+                      ...loan.artItem,
+                      distance,
+                    },
+                  });
+                }}
+              >
+                <Image
+                  source={{ uri: loan.artItem.imgMain }}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
               <View style={styles.card}>
                 <Text style={[globalStyles.h3, { marginTop: 10 }]}>
                   {loan.artItem.title}
@@ -140,6 +164,7 @@ export default function AccountLoansScreen({ navigation, route }) {
               {new Date(loan.artItem.expectedReturnDate) <= new Date() && (
                 <View style={{ alignItems: "center", width: "100%" }}>
                   <TouchableOpacity
+                    activeOpacity={0.8}
                     style={[globalStyles.buttonRed, { width: "60%" }]}
                     onPress={() => handleEndLoan(loan.artItem._id)}
                   >
@@ -158,6 +183,7 @@ export default function AccountLoansScreen({ navigation, route }) {
             <View style={styles.endLoanModalContainer}>
               <Text style={globalStyles.p}>Retour de l'œuvre enregistré.</Text>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[globalStyles.buttonRed, { marginTop: 20 }]}
                 onPress={() => {
                   setShowModal(false);

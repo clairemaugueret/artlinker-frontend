@@ -142,6 +142,7 @@ export default function CertificateModal({ isOpen, onClose, userToken }) {
           />
 
           <TouchableOpacity
+            activeOpacity={0.8}
             style={[globalStyles.buttonRed, { width: "65%" }]}
             onPress={handleFilePick}
           >
@@ -154,6 +155,7 @@ export default function CertificateModal({ isOpen, onClose, userToken }) {
             <ActivityIndicator />
           ) : (
             <TouchableOpacity
+              activeOpacity={0.8}
               style={[globalStyles.buttonRed, { width: "65%" }]}
               onPress={handleUpload}
             >
@@ -184,7 +186,11 @@ export default function CertificateModal({ isOpen, onClose, userToken }) {
             </Text>
           ) : null}
 
-          <TouchableOpacity style={styles.closeBtn} onPress={handleClose}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.closeBtn}
+            onPress={handleClose}
+          >
             <Text
               style={[
                 globalStyles.h3,

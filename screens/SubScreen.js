@@ -89,6 +89,7 @@ export default function SubScreen({ navigation }) {
 
         <View>
           <TouchableOpacity
+            activeOpacity={0.8}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -142,6 +143,7 @@ export default function SubScreen({ navigation }) {
               </Text>
             </Text>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={globalStyles.buttonRed}
               onPress={handleValidationNormal}
             >
@@ -154,6 +156,7 @@ export default function SubScreen({ navigation }) {
 
         <View>
           <TouchableOpacity
+            activeOpacity={0.8}
             style={{ flexDirection: "row", alignItems: "center" }}
             onPress={toggleTarifsSpecial}
           >
@@ -204,6 +207,7 @@ export default function SubScreen({ navigation }) {
               </Text>
             </Text>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={globalStyles.buttonRed}
               onPress={handleValidationSpecial}
             >
@@ -216,6 +220,7 @@ export default function SubScreen({ navigation }) {
 
         <View>
           <TouchableOpacity
+            activeOpacity={0.8}
             style={{ flexDirection: "row", alignItems: "center" }}
             onPress={toggleTarifsPublic}
           >
@@ -269,6 +274,7 @@ export default function SubScreen({ navigation }) {
               +100 € / an / œuvre supplémentaire
             </Text>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={globalStyles.buttonRed}
               onPress={handleValidationPublic}
             >
@@ -281,6 +287,7 @@ export default function SubScreen({ navigation }) {
 
         <View>
           <TouchableOpacity
+            activeOpacity={0.8}
             style={{ flexDirection: "row", alignItems: "center" }}
             onPress={toggleTarifsBusiness}
           >
@@ -334,6 +341,7 @@ export default function SubScreen({ navigation }) {
               +130 € / an / œuvre supplémentaire
             </Text>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={globalStyles.buttonRed}
               onPress={handleValidationBusiness}
             >

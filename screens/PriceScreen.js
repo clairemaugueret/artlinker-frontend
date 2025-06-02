@@ -70,7 +70,11 @@ export default function PriceScreen({ navigation }) {
         Choisir le nombre d'œuvres
       </Text>
       <View style={styles.counterRow}>
-        <TouchableOpacity onPress={decrement} disabled={count === minCount}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={decrement}
+          disabled={count === minCount}
+        >
           <FontAwesome
             name="angle-left"
             size={64}
@@ -78,7 +82,11 @@ export default function PriceScreen({ navigation }) {
           />
         </TouchableOpacity>
         <Text style={[globalStyles.h1, styles.counterValue]}>{count}</Text>
-        <TouchableOpacity onPress={increment} disabled={count === maxCount}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={increment}
+          disabled={count === maxCount}
+        >
           <FontAwesome
             name="angle-right"
             size={64}
@@ -89,7 +97,11 @@ export default function PriceScreen({ navigation }) {
       <Text style={styles.priceText}>
         Prix : <Text style={{ fontWeight: "bold" }}>{price} €</Text>
       </Text>
-      <TouchableOpacity style={globalStyles.buttonRed} onPress={validate}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={globalStyles.buttonRed}
+        onPress={validate}
+      >
         <Text style={globalStyles.buttonRedText}>Valider</Text>
       </TouchableOpacity>
     </View>

@@ -291,6 +291,7 @@ export default function CartScreen({ navigation }) {
               <View style={styles.cardImageWrapper}>
                 <Image source={{ uri: art.image }} style={styles.cardImage} />
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={styles.trashIcon}
                   onPress={() => handleDelete(art.id)}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -355,12 +356,14 @@ export default function CartScreen({ navigation }) {
         </Text>
       )}
       <TouchableOpacity
+        activeOpacity={0.8}
         style={globalStyles.buttonRed}
         onPress={() => navigation.navigate("Map")}
       >
         <Text style={globalStyles.buttonRedText}>Ajouter d'autres œuvres</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        activeOpacity={0.8}
         style={[globalStyles.buttonRed, isDisabled && { opacity: 0.5 }]}
         onPress={validate}
         disabled={isDisabled}
@@ -373,6 +376,7 @@ export default function CartScreen({ navigation }) {
         </Text>
       )}
       <TouchableOpacity
+        activeOpacity={0.8}
         style={globalStyles.buttonRed}
         onPress={() => dispatch(clearCart())}
       >

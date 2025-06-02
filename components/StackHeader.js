@@ -24,6 +24,7 @@ export const StackHeader = ({ navigation, height = 55, margin = 8 }) => ({
       }}
     >
       <TouchableOpacity
+        activeOpacity={0.8}
         onPress={() => navigation.navigate("Home")}
         style={{
           flexDirection: "row",

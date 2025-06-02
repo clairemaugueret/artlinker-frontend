@@ -133,6 +133,7 @@ export default function HomeScreen({ navigation }) {
             {!user.token && (
               <View style={styles.loginBtnContainer}>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={globalStyles.buttonRed}
                   onPress={() =>
                     navigation.navigate("Stack", { screen: "Connection" })
@@ -148,7 +149,10 @@ export default function HomeScreen({ navigation }) {
             <Text style={[globalStyles.h4, { marginTop: 70 }]}>
               COMMENT ÇA MARCHE ?
             </Text>
-            <TouchableOpacity activeOpacity={0.7} onPress={handleChevronPress}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={handleChevronPress}
+            >
               <RNAnimated.View
                 style={{ transform: [{ translateY: chevronAnim }] }}
               >
@@ -214,6 +218,7 @@ export default function HomeScreen({ navigation }) {
           <View style={{ width: "100%", paddingHorizontal: 30 }}>
             <View>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
@@ -259,6 +264,7 @@ export default function HomeScreen({ navigation }) {
 
             <View>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={{ flexDirection: "row", alignItems: "center" }}
                 onPress={toggleTarifsSpecial}
               >
@@ -299,6 +305,7 @@ export default function HomeScreen({ navigation }) {
 
             <View>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={{ flexDirection: "row", alignItems: "center" }}
                 onPress={toggleTarifsPublic}
               >
@@ -342,6 +349,7 @@ export default function HomeScreen({ navigation }) {
 
             <View>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={{ flexDirection: "row", alignItems: "center" }}
                 onPress={toggleTarifsBusiness}
               >
@@ -486,6 +494,7 @@ export default function HomeScreen({ navigation }) {
           {!user.token && (
             <View style={[styles.loginBtnContainer, { marginBottom: 100 }]}>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[globalStyles.buttonRed, { height: 70 }]}
                 onPress={() =>
                   navigation.navigate("Stack", { screen: "Connection" })
