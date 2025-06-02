@@ -16,7 +16,7 @@ import ConnectionScreen from "./screens/ConnectionScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ListScreen from "./screens/ListScreen";
 import MapScreen from "./screens/MapScreen";
-import PaymentScreen from "./screens/PaymentScreen";
+import PaymentScreen from "./screens/PaymentScreen(old)";
 import PriceScreen from "./screens/PriceScreen";
 import SubScreen from "./screens/SubScreen";
 import { StackHeader } from "./components/StackHeader";
