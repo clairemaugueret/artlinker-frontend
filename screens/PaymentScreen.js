@@ -168,6 +168,7 @@ export default function PaymentScreen({ navigation }) {
           onPress={async () => {
             const { error } = await presentPaymentSheet();
             if (error) {
+              console.log(error);
               if (error.code === PaymentSheetError.Failed) {
                 alert("Le paiement a échoué.");
               } else if (error.code === PaymentSheetError.Canceled) {
