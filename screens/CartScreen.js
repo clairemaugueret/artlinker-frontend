@@ -16,13 +16,6 @@ import { fetchAddress } from "../components/FetchAddress";
 import { FontAwesome } from "@expo/vector-icons";
 import { FormatDistance } from "../components/FormatDistance";
 import { useStripe, PaymentSheetError } from "@stripe/stripe-react-native";
-// import {
-//   initPaymentSheet,
-//   presentPaymentSheet,
-// } from "@stripe/stripe-react-native";
-
-// import { loadStripe } from "@stripe/stripe-js";
-// import { Elements } from "@stripe/react-stripe-js";
 import CustomModal from "../components/CustomModal";
 
 const typeLabels = {
@@ -44,6 +37,7 @@ export default function CartScreen({ navigation }) {
   const artworks = useSelector((state) => state.cart.artWorkInCart) || [];
   const user = useSelector((state) => state.user) || {};
   const dispatch = useDispatch();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   // Modale personnalisée grâce au composant CustomModal pour tous les messages d'erreur ou de succès de la page
   // car le module "Alert" de react-native n'est pas personnalisable en style
@@ -58,7 +52,6 @@ export default function CartScreen({ navigation }) {
     setModalContent({ title, message, buttons });
     setModalVisible(true);
   };
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const count = artworks.length;
   // State local pour le prix
@@ -101,7 +94,7 @@ export default function CartScreen({ navigation }) {
   const markerImage = require("../assets/redmarker.png");
 
   const validate = async () => {
-    if (!user.value.hasSubcribed) {
+    if (!user.value.hasSubscribed) {
       try {
         // 1. Créer le Customer
         const createCustomer = await fetch(
@@ -139,21 +132,36 @@ export default function CartScreen({ navigation }) {
               allowsDelayedPaymentMethods: true,
             });
             if (initError) {
-              alert("Erreur lors de l'initialisation du paiement.");
+              showModal(
+                "Erreur",
+                "Erreur lors de l'initialisation du paiement."
+              );
               return;
             }
             // 4. Présenter le PaymentSheet
             const { error: presentError } = await presentPaymentSheet();
             if (presentError) {
               if (presentError.code === PaymentSheetError.Failed) {
-                alert("Le paiement a échoué.");
+                showModal("Erreur", "Le paiement a échoué.");
               } else if (presentError.code === PaymentSheetError.Canceled) {
-                alert("Paiement annulé.");
+                showModal("Erreur", "Paiement annulé.");
               }
               return;
             }
             // 5. Paiement réussi, suite du process
-            alert("Paiement réussi !");
+            showModal(
+              "Paiement confirmé",
+              "Votre abonnement ainsi que vos emprunts ont été enregistrés avec succès.",
+              [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    navigation.navigate("Account");
+                    dispatch(clearCart());
+                  },
+                },
+              ]
+            );
             // Création de l'abonnement
             const body = {
               token: user.value?.token,
@@ -173,13 +181,15 @@ export default function CartScreen({ navigation }) {
               );
               const data = await response.json();
               if (!data.result) {
-                alert(
+                showModal(
+                  "Erreur",
                   data.error || "Erreur lors de la création de l'abonnement."
                 );
                 return;
               }
             } catch (err) {
-              alert(
+              showModal(
+                "Erreur",
                 "Erreur réseau ou serveur lors de la création de l'abonnement."
               );
               return;
@@ -201,26 +211,25 @@ export default function CartScreen({ navigation }) {
                 );
                 const data = await response.json();
                 if (!data.result) {
-                  alert(
+                  showModal(
+                    "Erreur",
                     data.error ||
                       `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
                   );
                   return;
                 }
               } catch (err) {
-                alert("Erreur réseau ou serveur.");
+                showModal("Erreur", "Erreur réseau ou serveur");
                 return;
               }
             }
             // Tout est OK
             dispatch(updateOnGoingLoans(artworks.length));
             dispatch(updateSubscription(subscription.count));
-            dispatch(clearCart());
-            navigation.navigate("Account");
           }
         }
       } catch (error) {
-        alert("Erreur lors du paiement.");
+        showModal("Erreur", "Erreur lors du paiement.");
         console.error("Error:", error);
       }
     } else {
@@ -241,14 +250,15 @@ export default function CartScreen({ navigation }) {
           const data = await response.json();
 
           if (!data.result) {
-            alert(
+            showModal(
+              "Erreur",
               data.error ||
                 `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
             );
             return; // Arrête la boucle si une erreur survient
           }
         } catch (err) {
-          alert("Erreur réseau ou serveur.");
+          showModal("Erreur", "Erreur réseau ou serveur");
           console.error(err);
           return;
         }
@@ -267,11 +277,11 @@ export default function CartScreen({ navigation }) {
             text: "OK",
             onPress: () => {
               navigation.navigate("Account");
+              dispatch(clearCart());
             },
           },
         ]
       );
-      dispatch(clearCart());
     }
   };
 

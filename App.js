@@ -22,7 +22,6 @@ import CartScreen from "./screens/CartScreen";
 import ConnectionScreen from "./screens/ConnectionScreen";
 import HomeScreen from "./screens/HomeScreen";
 import MapScreen from "./screens/MapScreen";
-import PaymentScreen from "./screens/PaymentScreen(old)";
 import PriceScreen from "./screens/PriceScreen";
 import SubScreen from "./screens/SubScreen";
 import GridScreen from "./screens/GridScreen";
@@ -89,12 +88,6 @@ const StackNavigator = () => {
       <Stack.Screen
         name="Connection"
         component={ConnectionScreen}
-        options={StackHeader}
-      />
-
-      <Stack.Screen
-        name="Payment"
-        component={PaymentScreen}
         options={StackHeader}
       />
       <Stack.Screen
