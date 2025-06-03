@@ -1,6 +1,5 @@
 import { globalStyles } from "../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
-import { setSubscriptionCount } from "../reducers/subscription";
 import { removeFromCart, clearCart } from "../reducers/cart";
 import { updateOnGoingLoans, updateSubscription } from "../reducers/user";
 import { useState, useEffect } from "react";
@@ -39,6 +38,16 @@ export default function CartScreen({ navigation }) {
   const dispatch = useDispatch();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
+  // State local pour la capacité future
+  const [futurBorrowCapacity, setFuturBorrowCapacity] = useState(0);
+
+  // State local pour le prix
+  const [price, setPrice] = useState(
+    (priceGrids[subscriptionInfos.type] || priceGrids["INDIVIDUAL_BASIC_COST"])[
+      subscriptionInfos.count
+    ]
+  );
+
   // Modale personnalisée grâce au composant CustomModal pour tous les messages d'erreur ou de succès de la page
   // car le module "Alert" de react-native n'est pas personnalisable en style
   const [modalVisible, setModalVisible] = useState(false);
@@ -53,50 +62,35 @@ export default function CartScreen({ navigation }) {
     setModalVisible(true);
   };
 
+  //Nombres d'oeuvres dans le panier
   const count = artworks.length;
-  // State local pour le prix
-  const [price, setPrice] = useState(
-    (priceGrids[subscriptionInfos.type] || priceGrids["INDIVIDUAL_BASIC_COST"])[
-      subscriptionInfos.count
-    ]
-  );
-  // State local pour la capacité future
-  const [futurBorrowCapacity, setFuturBorrowCapacity] = useState(0);
+
+  //Nombre d'oeuvres déjà en cours d'emprunt (ie. si info stockée dans le reducer)
+  const currentLoans = user.value?.ongoingLoans || 0;
+
+  //Maximum d'oeuvres empruntables selon l'abonnement déjà souscrit ou en cours souscription
+  const maxLoans = user.value?.hasSubscribed
+    ? user.value.authorisedLoans
+    : subscriptionInfos.count || 0;
+
+  // Calcul de la capacité d'emprunt actuelle
+  const borrowCapacity = maxLoans - currentLoans;
 
   // Met à jour futurBorrowCapacity dynamiquement
   useEffect(() => {
-    let borrowCapacity;
-    if (user.value?.hasSubscribed) {
-      borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
-    } else {
-      borrowCapacity = subscriptionInfos.count || 0; // Utilise le count de l'abonnement si l'utilisateur n'est pas abonné
-    }
     setFuturBorrowCapacity(borrowCapacity - count);
-  }, [count, user]);
-
-  let maximum;
-  if (user.value?.hasSubscribed) {
-    maximum = user.value.authorisedLoans;
-  } else {
-    maximum = subscriptionInfos.count || 0;
-  }
-
-  // Calcul de la capacité d'emprunt actuelle
-  let borrowCapacity;
-  if (user.value?.hasSubscribed) {
-    borrowCapacity = user.value.authorisedLoans - user.value.ongoingLoans;
-  } else {
-    borrowCapacity = subscriptionInfos.count || 0;
-  }
+  }, [count, user, borrowCapacity]);
 
   // Désactive le bouton si le nombre d'œuvres dépasse la capacité
   const isDisabled = count > borrowCapacity;
-  const markerImage = require("../assets/redmarker.png");
 
+  //Fonction validation panier
   const validate = async () => {
     if (!user.value.hasSubscribed) {
+      //CAS 1: l'utilisateur souscrit à un abonnement
+      //Cascade d'action → souscription abonnement avec paiement par Stripe puis fetch pour mettre à jour base de données
       try {
-        // 1. Créer le Customer
+        // 1. Stripe: Créer le Customer
         const createCustomer = await fetch(
           `${fetchAddress}/payments/create-customer`,
           {
@@ -110,7 +104,7 @@ export default function CartScreen({ navigation }) {
         );
         if (createCustomer.status === 200) {
           const customer = await createCustomer.json();
-          // 2. Créer l'abonnement
+          // 2. Stripe: Créer l'abonnement
           const createSubscription = await fetch(
             `${fetchAddress}/payments/create-subscription`,
             {
@@ -124,7 +118,7 @@ export default function CartScreen({ navigation }) {
           );
           if (createSubscription.status === 200) {
             const subscription = await createSubscription.json();
-            // 3. Initialiser le PaymentSheet
+            // 3. Stripe: Initialiser le PaymentSheet
             const { error: initError } = await initPaymentSheet({
               paymentIntentClientSecret: subscription.clientSecret,
               merchantDisplayName: "Artlinker",
@@ -138,7 +132,7 @@ export default function CartScreen({ navigation }) {
               );
               return;
             }
-            // 4. Présenter le PaymentSheet
+            // 4. Stripe: Présenter le PaymentSheet
             const { error: presentError } = await presentPaymentSheet();
             if (presentError) {
               if (presentError.code === PaymentSheetError.Failed) {
@@ -149,20 +143,7 @@ export default function CartScreen({ navigation }) {
               return;
             }
             // 5. Paiement réussi, suite du process
-            showModal(
-              "Paiement confirmé",
-              "Votre abonnement ainsi que vos emprunts ont été enregistrés avec succès.",
-              [
-                {
-                  text: "OK",
-                  onPress: () => {
-                    navigation.navigate("Account");
-                    dispatch(clearCart());
-                  },
-                },
-              ]
-            );
-            // Création de l'abonnement
+            // Base de données: Création de l'abonnement dans le document de l'utilisateur
             const body = {
               token: user.value?.token,
               subscriptionType: subscriptionInfos.type,
@@ -194,7 +175,8 @@ export default function CartScreen({ navigation }) {
               );
               return;
             }
-            // Création des emprunts
+            // Base de données: Création des emprunts dans le document de l'utilisateur
+            // NB: boucle pour faire autant de fetch que d'oeuvres dans le panier
             for (const art of artworks) {
               try {
                 const body = {
@@ -216,16 +198,35 @@ export default function CartScreen({ navigation }) {
                     data.error ||
                       `Erreur lors de la création du prêt pour l'œuvre ${art.title}`
                   );
-                  return;
+                  return; // Arrête la boucle si une erreur survient
                 }
               } catch (err) {
                 showModal("Erreur", "Erreur réseau ou serveur");
                 return;
               }
             }
-            // Tout est OK
-            dispatch(updateOnGoingLoans(artworks.length));
-            dispatch(updateSubscription(subscription.count));
+            // Si tout s'est bien passé pour toutes les œuvres
+            dispatch(
+              updateOnGoingLoans(user.value.ongoingLoans + artworks.length)
+            ); // Mise à jour du nombre d'emprunts en cours dans le store user
+            dispatch(
+              updateSubscription({ authorisedLoans: subscriptionInfos.count })
+            ); // Mise à jour de l'abonnement et de sa capacité d'emprunt dans le store user
+
+            // Ensuite, on vide le panier et navigue vers l'écran Account
+            showModal(
+              "Paiement confirmé",
+              "Votre abonnement ainsi que vos emprunts ont été enregistrés avec succès.",
+              [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    navigation.navigate("Account");
+                    dispatch(clearCart());
+                  },
+                },
+              ]
+            );
           }
         }
       } catch (error) {
@@ -233,7 +234,8 @@ export default function CartScreen({ navigation }) {
         console.error("Error:", error);
       }
     } else {
-      // Pour chaque œuvre du panier, on effectue un fetch vers /createloan
+      // CAS 2: L'utilisateur a déjà un abonnement → pas besoin de paiement Stripe, directement les fetch pour MAJ la base de données
+      // NB: boucle pour faire autant de fetch que d'oeuvres dans le panier
       for (const art of artworks) {
         try {
           const body = {
@@ -267,8 +269,6 @@ export default function CartScreen({ navigation }) {
       dispatch(updateOnGoingLoans(user.value.ongoingLoans + count)); // Mise à jour du nombre d'emprunts en cours dans le store user
 
       // Ensuite, on vide le panier et navigue vers l'écran Account
-
-      //On redirige vers l'écran Account après l'affichage de la modale "Succès"
       showModal(
         "Confirmation d'emprunt",
         "Votre emprunt a été enregistré avec succès.",
@@ -285,10 +285,9 @@ export default function CartScreen({ navigation }) {
     }
   };
 
-  // Fonction de suppression
+  // Fonction de suppression dans le panier
   const handleDelete = (id) => {
     dispatch(removeFromCart({ id }));
-    //setArtworks((prev) => prev.filter((art) => art.id !== id));
   };
 
   return (
@@ -346,18 +345,18 @@ export default function CartScreen({ navigation }) {
       </Text>
       <Text style={styles.info}>
         Nombre d'œuvres maximum :{" "}
-        <Text style={{ fontWeight: "bold" }}>{maximum}</Text>
+        <Text style={{ fontWeight: "bold" }}>{maxLoans}</Text>
       </Text>
       <Text style={styles.info}>
         Œuvre(s) en cours d'emprunt :{" "}
         <Text style={{ fontWeight: "bold" }}>{user.value.ongoingLoans}</Text>
       </Text>
       <Text style={styles.info}>
-        Œuvres sélectionnées :{" "}
+        Œuvre(s) sélectionnées :{" "}
         <Text style={{ fontWeight: "bold" }}>{count}</Text>
       </Text>
       <Text style={styles.info}>
-        Crédit restant après emprunt:{" "}
+        Crédit(s) restant(s) après emprunt:{" "}
         <Text style={{ fontWeight: "bold" }}>{futurBorrowCapacity}</Text>
       </Text>
       {!user.value?.hasSubscribed && (
