@@ -7,14 +7,32 @@ import {
   setSubscriptionType,
   setSubscriptionCount,
   setSubscriptionPrice,
-  setSubscriptionState, // <-- exporte la nouvelle action
+  setSubscriptionState,
 } from "../reducers/subscription";
 
 const priceGrids = {
   INDIVIDUAL_BASIC_COST: { 1: 100, 2: 180, 3: 250 },
   INDIVIDUAL_REDUCT_COST: { 1: 80, 2: 150, 3: 200 },
-  PUBLIC_ESTABLISHMENT: { 3: 350, 4: 420, 5: 500 },
-  LIBERAL_PRO: { 3: 500, 4: 600, 5: 700 },
+  PUBLIC_ESTABLISHMENT: {
+    3: 350,
+    4: 420,
+    5: 500,
+    6: 600,
+    7: 700,
+    8: 800,
+    9: 900,
+    10: 1000,
+  },
+  LIBERAL_PRO: {
+    3: 500,
+    4: 600,
+    5: 700,
+    6: 830,
+    7: 960,
+    8: 1090,
+    9: 1220,
+    10: 1350,
+  },
 };
 
 export default function PriceScreen({ navigation }) {
@@ -27,17 +45,16 @@ export default function PriceScreen({ navigation }) {
     subscription.type === "PUBLIC_ESTABLISHMENT" ||
     subscription.type === "LIBERAL_PRO";
   const minCount = isPublicOrEntreprise ? 3 : 1; // On définit le nombre minimum d'œuvres à 3 pour les abonnements Public et Entreprise, sinon c'est 1
-  const maxCount = isPublicOrEntreprise ? 5 : 3; // On définit le nombre maximum d'œuvres à 5 pour les abonnements Public et Entreprise, sinon c'est 3
+  const maxCount = isPublicOrEntreprise ? 10 : 3; // On définit le nombre maximum d'œuvres à 5 pour les abonnements Public et Entreprise, sinon c'est 3
 
-  // Si le type d'abonnement change, réinitialiser le compteur au cas où il est en dehors du nombre minimum ou maximum
+  // Selon ne type d'abonnement, on s'assure que le compteur ne soit pas en dehors du nombre minimum ou maximum
   useEffect(() => {
     setCount((actualValue) => {
       if (actualValue < minCount) return minCount; // Si la valeur actuelle est inférieure au minimum possible par l'abonnement, on la met à jour avec cette valeur minimum
       if (actualValue > maxCount) return maxCount; // Si la valeur actuelle est supérieure au maximum possible par l'abonnement, on la met à jour avec cette valeur maximale
       return actualValue; // Sinon, on garde la valeur actuelle
     });
-  }, [subscription.type]); // On fait en sorte que le
-  // Initialiser le compteur selon le type d'abonnement
+  }, [subscription.type]); // On fait en sorte que le useEffect se déclenche à chaque fois que le type d'abonnement change
 
   //Création de la variable qui stocke le nombre d'œuvres sélectionnées par l'utilisateur
   const [count, setCount] = useState(minCount); // Ne pas déplacer !!
@@ -73,24 +90,24 @@ export default function PriceScreen({ navigation }) {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={decrement}
-          disabled={count === minCount}
+          disabled={count === minCount} // Désactive le bouton si le compteur est au minimum
         >
           <FontAwesome
             name="angle-left"
             size={64}
-            color={count === minCount ? lightgray : darkred}
+            color={count === minCount ? lightgray : darkred} // Change la couleur du bouton si le compteur est au minimum
           />
         </TouchableOpacity>
         <Text style={[globalStyles.h1, styles.counterValue]}>{count}</Text>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={increment}
-          disabled={count === maxCount}
+          disabled={count === maxCount} // Désactive le bouton si le compteur est au maximum
         >
           <FontAwesome
             name="angle-right"
             size={64}
-            color={count === maxCount ? lightgray : darkred}
+            color={count === maxCount ? lightgray : darkred} // Change la couleur du bouton si le compteur est au maximum
           />
         </TouchableOpacity>
       </View>
