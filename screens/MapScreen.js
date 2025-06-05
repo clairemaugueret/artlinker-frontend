@@ -31,6 +31,10 @@ export default function MapScreen({ navigation }) {
   // Récupération du dispatch Redux et des infos utilisateur
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+  const cart = useSelector((state) => state.cart.artWorkInCart);
+  const sub = useSelector((state) => state.subscription);
+
+  console.log("user", user);
 
   // RAPHAEL - Map
   //Position par défaut de la carte si pas d'autorisation ou si pas de GPS: centré sur Toulouse

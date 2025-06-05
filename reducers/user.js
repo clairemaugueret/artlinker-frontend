@@ -37,7 +37,7 @@ export const userSlice = createSlice({
     },
     updateSubscription: (state, action) => {
       state.value.hasSubscribed = true;
-      state.value.ongoingLoans = action.payload;
+      state.value.authorisedLoans = action.payload.authorisedLoans;
     },
     setReminderUpcomingEndLoan: (state, action) => {
       action.payload.forEach((item) =>

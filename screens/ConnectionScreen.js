@@ -12,8 +12,11 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { loginAndUpdate } from "../reducers/user";
+import { loginAndUpdate, logout } from "../reducers/user";
+import { clearSubscription } from "../reducers/subscription";
+import { clearCart } from "../reducers/cart";
 import { fetchAddress } from "../components/FetchAddress";
+import { CardElement } from "@stripe/react-stripe-js";
 
 // Grabbed from emailregex.com
 const EMAIL_REGEX =
@@ -46,6 +49,11 @@ export default function ConnectionScreen({ navigation }) {
         .then((response) => response.json())
         .then((data) => {
           if (data.result) {
+            //on s'assure d'abord que les reducers sont bien vides
+            dispatch(logout());
+            dispatch(clearSubscription());
+            dispatch(clearCart());
+            // puis on update le reducer avec les infos du user
             dispatch(loginAndUpdate(data.userInfo));
             setEmailSignIn("");
             setPasswordSignIn("");
@@ -77,6 +85,11 @@ export default function ConnectionScreen({ navigation }) {
         .then((response) => response.json())
         .then((data) => {
           if (data.result) {
+            //on s'assure d'abord que les reducers sont bien vides
+            dispatch(logout());
+            dispatch(clearSubscription());
+            dispatch(clearCart());
+            // puis on update le reducer avec les infos du user
             dispatch(loginAndUpdate(data.userInfo));
             setEmailSignUp("");
             setPasswordSignUp("");

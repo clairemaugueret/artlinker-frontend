@@ -4,7 +4,6 @@
 
 import { globalStyles } from "../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
-import { setSubscriptionCount } from "../reducers/subscription";
 import { removeFromCart, clearCart } from "../reducers/cart";
 import { updateOnGoingLoans, updateSubscription } from "../reducers/user";
 import { useState, useEffect } from "react";
@@ -134,15 +133,14 @@ export default function CartScreen({ navigation }) {
 
   // Désactive le bouton "Terminer" si le crédit est insuffisant
   const isDisabled = cartCount > borrowCapacity;
-  console.log(isDisabled);
-  console.log(cartCount);
-  console.log(borrowCapacity);
 
   // ===== FONCTION PRINCIPALE DE VALIDATION POUR PASSER AU PAIEMENT =====
   const validate = async () => {
     // ===== CAS 1: UTILISATEUR SANS ABONNEMENT =====
     // Doit passer par le processus de paiement Stripe
     if (!user.value.hasSubscribed) {
+      //CAS 1: l'utilisateur souscrit à un abonnement
+      //Cascade d'action → souscription abonnement avec paiement par Stripe puis fetch pour mettre à jour base de données
       try {
         // ÉTAPE 1: Requête pour création du client Stripe
         const createCustomer = await fetch(
@@ -240,11 +238,6 @@ export default function CartScreen({ navigation }) {
                 );
                 return; // Arrêt de la fonction, aucune œuvre ne sera empruntée
               }
-
-              // Si on arrive ici, l'abonnement a été créé avec succès dans notre BDD
-              console.log(
-                "Abonnement créé avec succès dans la base de données"
-              );
             } catch (err) {
               // Gestion des erreurs réseau (pas de connexion, serveur down, etc.)
               console.error(
@@ -260,17 +253,10 @@ export default function CartScreen({ navigation }) {
 
             // ÉTAPE 6: Création des emprunts pour chaque œuvre du panier
             // Maintenant que l'abonnement est validé et enregistré, on peut créer les emprunts
-            console.log(
-              `Début de la création de ${artworks.length} emprunt(s)`
-            );
 
             // Boucle séquentielle pour traiter chaque œuvre une par une
             for (const art of artworks) {
               try {
-                console.log(
-                  `Création de l'emprunt pour l'œuvre: ${art.title} (ID: ${art.id})`
-                );
-
                 // Préparation des données pour créer l'emprunt
                 const body = {
                   token: user.value.token, // Token utilisateur pour l'authentification
@@ -303,9 +289,6 @@ export default function CartScreen({ navigation }) {
                   );
                   return; // Arrêt complet du processus si une œuvre échoue
                 }
-
-                // Log de succès pour cette œuvre
-                console.log(`Emprunt créé avec succès pour: ${art.title}`);
               } catch (err) {
                 // Gestion des erreurs réseau pour cette œuvre spécifique
                 console.error(`Erreur réseau pour l'œuvre ${art.title}:`, err);
@@ -314,17 +297,10 @@ export default function CartScreen({ navigation }) {
               }
             }
 
-            // Si on arrive ici, TOUS les emprunts ont été créés avec succès
-            console.log("Tous les emprunts ont été créés avec succès");
-
             // ÉTAPE 7: Mise à jour du store Redux
             // Mise à jour des données utilisateur dans l'état global de l'application
             dispatch(updateOnGoingLoans(artworks.length)); // Incrémente le nombre d'emprunts en cours
             dispatch(updateSubscription(subscriptionInfos.count)); // Met à jour les informations d'abonnement
-
-            console.log(
-              `Mise à jour Redux: +${artworks.length} emprunts en cours`
-            );
 
             //CLAIRE
 
@@ -337,9 +313,6 @@ export default function CartScreen({ navigation }) {
                 {
                   text: "OK", // Texte du bouton
                   onPress: () => {
-                    console.log(
-                      "Redirection vers la page Account et nettoyage du panier"
-                    );
                     navigation.navigate("Account"); // Redirection vers la page compte utilisateur
                     dispatch(clearCart()); // Vide complètement le panier
                   },
@@ -491,7 +464,7 @@ export default function CartScreen({ navigation }) {
         <Text style={{ fontWeight: "bold" }}>{cartCount}</Text>
       </Text>
       <Text style={styles.info}>
-        Crédit restant après emprunt:{" "}
+        Crédit(s) restant(s) après emprunt:{" "}
         <Text style={{ fontWeight: "bold" }}>{futurBorrowCapacity}</Text>
       </Text>
 
