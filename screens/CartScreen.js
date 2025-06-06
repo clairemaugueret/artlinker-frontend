@@ -129,7 +129,7 @@ export default function CartScreen({ navigation }) {
   useEffect(() => {
     // Met à jour la capacité d'emprunt future quand le panier est mis à jour (œuvre ajoutée ou retirée)
     setFuturBorrowCapacity(borrowCapacity - cartCount); // Capacité future = capacité actuelle - nombre d'œuvres dans le panier
-  }, [cartCount]);
+  }, [cartCount, borrowCapacity]);
 
   // Désactive le bouton "Terminer" si le crédit est insuffisant
   const isDisabled = cartCount > borrowCapacity;
@@ -300,7 +300,9 @@ export default function CartScreen({ navigation }) {
             // ÉTAPE 7: Mise à jour du store Redux
             // Mise à jour des données utilisateur dans l'état global de l'application
             dispatch(updateOnGoingLoans(artworks.length)); // Incrémente le nombre d'emprunts en cours
-            dispatch(updateSubscription(subscriptionInfos.count)); // Met à jour les informations d'abonnement
+            dispatch(
+              updateSubscription({ authorisedLoans: subscriptionInfos.count })
+            ); // Met à jour les informations d'abonnement
 
             //CLAIRE
 

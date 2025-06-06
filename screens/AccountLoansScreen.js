@@ -52,7 +52,9 @@ export default function AccountLoansScreen({ navigation, route }) {
       .then((response) => response.json())
       .then((data) => {
         setShowModal(true);
-        dispatch(updateSubscription(user.ongoingLoans - 1));
+        dispatch(
+          updateSubscription({ authorisedLoans: user.ongoingLoans - 1 })
+        );
       });
   };
 

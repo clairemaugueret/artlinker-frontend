@@ -31,10 +31,6 @@ export default function MapScreen({ navigation }) {
   // Récupération du dispatch Redux et des infos utilisateur
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const cart = useSelector((state) => state.cart.artWorkInCart);
-  const sub = useSelector((state) => state.subscription);
-
-  console.log("user", user);
 
   // RAPHAEL - Map
   //Position par défaut de la carte si pas d'autorisation ou si pas de GPS: centré sur Toulouse
@@ -47,7 +43,7 @@ export default function MapScreen({ navigation }) {
 
   // États locaux pour la position, la recherche, les markers, etc.
   const [currentPosition, setCurrentPosition] = useState(user.position); // Position affichée sur la carte (grâce au store persistant on garde la dernière géolocalisation de l'utilisateur et par défaut null dans le store)
-  const [modalVisible, setModalVisible] = useState(false); // Contrôle de la modale pour les filtres
+  const [modalVisible, setModalVisible] = useState(false); // Contrôle de la modale pour les filtres (pour plus tard)
   const [placesFiltered, setPlacesFiltered] = useState([]); // Données des lieux filtrés reçues par le backend
   const [city, setCity] = useState(""); // Ville saisie dans la barre de recherche
   const [gpsPosition, setGpsPosition] = useState(null); // Position GPS réelle de l'utilisateur
