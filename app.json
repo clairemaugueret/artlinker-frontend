@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "artlinker-frontend",
-    "slug": "artlinker-frontend",
+    "name": "artlinker",
+    "slug": "artlinker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
