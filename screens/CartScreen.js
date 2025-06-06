@@ -493,7 +493,9 @@ export default function CartScreen({ navigation }) {
         onPress={validate}
         disabled={isDisabled}
       >
-        <Text style={globalStyles.buttonRedText}>Terminer</Text>
+        <Text style={globalStyles.buttonRedText}>
+          {!user.value.hasSubscribed ? "Payer" : "Terminer"}
+        </Text>
       </TouchableOpacity>
 
       {/* Message d'erreur si le crédit est insuffisant */}
