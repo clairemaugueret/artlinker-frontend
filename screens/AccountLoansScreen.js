@@ -11,7 +11,7 @@ import {
 import { globalStyles } from "../globalStyles";
 import { fetchAddress } from "../components/FetchAddress";
 import { useSelector, useDispatch } from "react-redux";
-import { updateSubscription } from "../reducers/user";
+import { updateOnGoingLoans } from "../reducers/user";
 import { FormatDate } from "../components/FormatDate";
 
 const { getDistanceInKm } = require("../components/getDistanceInKm");
@@ -52,9 +52,7 @@ export default function AccountLoansScreen({ navigation, route }) {
       .then((response) => response.json())
       .then((data) => {
         setShowModal(true);
-        dispatch(
-          updateSubscription({ authorisedLoans: user.ongoingLoans - 1 })
-        );
+        dispatch(updateOnGoingLoans(user.ongoingLoans - 1));
       });
   };
 
